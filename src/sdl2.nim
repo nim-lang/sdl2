@@ -17,7 +17,7 @@ else:
   elif defined(macosx):
     const LibName = "libSDL2.dylib"
 
-include fowltek/sdl2/private/keycodes
+include sdl2/private/keycodes
 
 const
   SDL_TEXTEDITINGEVENT_TEXT_SIZE* = 32
