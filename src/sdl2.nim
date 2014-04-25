@@ -3,15 +3,9 @@ import macros
 import unsigned, strutils
 export unsigned, strutils.`%`
 
-when defined(SDL_Static):
-  #static: echo "SDL2 will be statically linked."
-  #{.passl: gorge("pkg-config --libs sdl2").}
-  #{.pragma: sdl_header, header: "<SDL2/SDL.h>".}
-  {.error: "Static linking SDL2 is disabled.".}
-  
-else:
+when not defined(SDL_Static):
   when defined(Windows):
-    const libName = "SDL2.dll"
+    const LibName = "SDL2.dll"
   elif defined(Linux):
     const LibName = "libSDL2.so"
   elif defined(macosx):
@@ -482,9 +476,7 @@ type
     here*: ptr byte
     stop*: ptr byte
 
-when defined(SDL_Static):
-  {.push header: "<SDL2/SDL.h>".}
-else:
+when not defined(SDL_Static):
   {.push callConv: cdecl, dynlib: LibName.}
 
 
