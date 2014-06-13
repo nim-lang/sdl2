@@ -1365,3 +1365,13 @@ proc Point*[T: TNumber](x, y: T): TPoint = (x.cint, y.cint)
 proc Contains*(some: TRect; point: TPoint): bool = 
   return point.x >= some.x and point.x <= (some.x + some.w) and
           point.y >= some.y and point.y <= (some.y + some.h)
+
+proc SetHint*(name: cstring, value: cstring): bool {.
+  importc: "SDL_SetHint".}
+
+proc SetHintWithPriority*(name: cstring, value: cstring, priority: cint): bool {.
+  importc: "SDL_SetHintWithPriority".}
+
+proc GetHint*(name: cstring): cstring {.
+  importc: "SDL_GetHint".}
+
