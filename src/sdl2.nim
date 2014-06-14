@@ -762,9 +762,9 @@ proc GL_BindTexture*(texture: PTexture; texw, texh: var cfloat): cint
 proc GL_UnbindTexture*(texture: PTexture)
 
 proc CreateRGBSurface*(flags: cint; width, height, depth: cint; 
-  Rmask, Gmask, BMask, Amask: cint): PSurface 
+  Rmask, Gmask, BMask, Amask: uint32): PSurface 
 proc CreateRGBSurfaceFrom*(pixels: pointer; width, height, depth, pitch: cint;
-  Rmask, Gmask, Bmask, Amask: cint): PSurface 
+  Rmask, Gmask, Bmask, Amask: uint32): PSurface 
 
 proc FreeSurface*(surface: PSurface) 
 
@@ -1365,3 +1365,13 @@ proc Point*[T: TNumber](x, y: T): TPoint = (x.cint, y.cint)
 proc Contains*(some: TRect; point: TPoint): bool = 
   return point.x >= some.x and point.x <= (some.x + some.w) and
           point.y >= some.y and point.y <= (some.y + some.h)
+
+proc SetHint*(name: cstring, value: cstring): bool {.
+  importc: "SDL_SetHint".}
+
+proc SetHintWithPriority*(name: cstring, value: cstring, priority: cint): bool {.
+  importc: "SDL_SetHintWithPriority".}
+
+proc GetHint*(name: cstring): cstring {.
+  importc: "SDL_GetHint".}
+
