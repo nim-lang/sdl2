@@ -3,6 +3,10 @@ import macros
 import unsigned, strutils
 export unsigned, strutils.`%`
 
+
+# Add for people running sdl 2.0.0
+{. deadCodeElim: on .}
+
 when defined(SDL_Static):
   #static: echo "SDL2 will be statically linked."
   #{.passl: gorge("pkg-config --libs sdl2").}
