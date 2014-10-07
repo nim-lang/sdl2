@@ -1,3 +1,4 @@
+import sdl2
 #
 #  Simple DirectMedia Layer
 #  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
@@ -28,7 +29,7 @@
 #*
 #   \brief Audio format flags.
 # 
-#   These are what the 16 bits in SDL_AudioFormat currently mean...
+#   These are what the 16 bits in TAudioFormat currently mean...
 #   (Unspecified bits are always zero).
 # 
 #   \verbatim
@@ -46,7 +47,7 @@
 #   There are macros in SDL 2.0 and later to query these bits.
 # 
 type 
-  SDL_AudioFormat* = Uint16
+  TAudioFormat* = uint16
 #*
 #   \name Audio flags
 # 
@@ -115,18 +116,20 @@ const
 #   \name Native audio byte ordering
 # 
 # @{ 
-when SDL_BYTEORDER == SDL_LIL_ENDIAN: 
-  const 
-    AUDIO_U16SYS* = AUDIO_U16LSB
-    AUDIO_S16SYS* = AUDIO_S16LSB
-    AUDIO_S32SYS* = AUDIO_S32LSB
-    AUDIO_F32SYS* = AUDIO_F32LSB
-else: 
-  const 
-    AUDIO_U16SYS* = AUDIO_U16MSB
-    AUDIO_S16SYS* = AUDIO_S16MSB
-    AUDIO_S32SYS* = AUDIO_S32MSB
-    AUDIO_F32SYS* = AUDIO_F32MSB
+when false:
+  ## TODO system.cpuEndian
+  when SDL_BYTEORDER == SDL_LIL_ENDIAN: 
+    const 
+      AUDIO_U16SYS* = AUDIO_U16LSB
+      AUDIO_S16SYS* = AUDIO_S16LSB
+      AUDIO_S32SYS* = AUDIO_S32LSB
+      AUDIO_F32SYS* = AUDIO_F32LSB
+  else: 
+    const 
+      AUDIO_U16SYS* = AUDIO_U16MSB
+      AUDIO_S16SYS* = AUDIO_S16MSB
+      AUDIO_S32SYS* = AUDIO_S32MSB
+      AUDIO_F32SYS* = AUDIO_F32MSB
 # @} 
 #*
 #   \name Allow change flags
@@ -147,7 +150,7 @@ const
 #   This function is called when the audio device needs more data.
 # 
 #   \param userdata An application-specific parameter saved in
-#                   the SDL_AudioSpec structure
+#                   the TAudioSpec structure
 #   \param stream A pointer to the audio data buffer.
 #   \param len    The length of that buffer in bytes.
 # 
@@ -155,56 +158,79 @@ const
 #   Stereo samples are stored in a LRLRLR ordering.
 # 
 type 
-  SDL_AudioCallback* = proc (userdata: pointer; stream: ptr Uint8; len: cint)
+  TAudioCallback* = proc (userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.}
 #*
 #   The calculated values in this structure are calculated by SDL_OpenAudio().
 # 
 type 
-  SDL_AudioSpec* {.pure, final.} = object 
+  TAudioSpec* = object 
     freq*: cint             #*< DSP frequency -- samples per second 
-    format*: SDL_AudioFormat #*< Audio data format 
-    channels*: Uint8        #*< Number of channels: 1 mono, 2 stereo 
-    silence*: Uint8         #*< Audio buffer silence value (calculated) 
-    samples*: Uint16        #*< Audio buffer size in samples (power of 2) 
-    padding*: Uint16        #*< Necessary for some compile environments 
-    size*: Uint32           #*< Audio buffer size in bytes (calculated) 
-    callback*: SDL_AudioCallback
+    format*: TAudioFormat #*< Audio data format 
+    channels*: uint8        #*< Number of channels: 1 mono, 2 stereo 
+    silence*: uint8         #*< Audio buffer silence value (calculated) 
+    samples*: uint16        #*< Audio buffer size in samples (power of 2) 
+    padding*: uint16        #*< Necessary for some compile environments 
+    size*: uint32           #*< Audio buffer size in bytes (calculated) 
+    callback*: TAudioCallback
     userdata*: pointer
 
-  type 
-    SDL_AudioCVT* {.pure, final.} = object 
-    
-type 
-  SDL_AudioFilter* = proc (cvt: ptr SDL_AudioCVT; format: SDL_AudioFormat)
-#*
-#   A structure to hold a set of audio conversion filters and buffers.
-# 
-when defined(__GNUC__): 
-  # This structure is 84 bytes on 32-bit architectures, make sure GCC doesn't
-  #   pad it out to 88 bytes to guarantee ABI compatibility between compilers.
-  #   vvv
-  #   The next time we rev the ABI, make sure to size the ints and add padding.
-  #
-  const 
-    SDL_AUDIOCVT_PACKED* = __attribute__((packed))
-else: 
-  const 
-    SDL_AUDIOCVT_PACKED* = true
-# 
-type 
-  SDL_AudioCVT* {.pure, final.} = object 
+  TAudioCVT* {.packed.} = object 
     needed*: cint           #*< Set to 1 if conversion possible 
-    src_format*: SDL_AudioFormat #*< Source audio format 
-    dst_format*: SDL_AudioFormat #*< Target audio format 
+    src_format*: TAudioFormat #*< Source audio format 
+    dst_format*: TAudioFormat #*< Target audio format 
     rate_incr*: cdouble     #*< Rate conversion increment 
-    buf*: ptr Uint8         #*< Buffer to hold entire audio data 
+    buf*: ptr uint8         #*< Buffer to hold entire audio data 
     len*: cint              #*< Length of original audio buffer 
     len_cvt*: cint          #*< Length of converted audio buffer 
     len_mult*: cint         #*< buffer must be len*len_mult big 
     len_ratio*: cdouble     #*< Given len, final size is len*len_ratio 
-    filters*: array[0..10 - 1, SDL_AudioFilter] #*< Filter list 
+    filters*: array[10, TAudioFilter] #*< Filter list 
     filter_index*: cint     #*< Current audio conversion function 
-  
+
+  TAudioFilter* = proc (cvt: ptr TAudioCVT; format: TAudioFormat){.cdecl.}
+
+when false:
+  #*
+  #   A structure to hold a set of audio conversion filters and buffers.
+  # 
+  when defined(GNUC):#__GNUC__): 
+    # This structure is 84 bytes on 32-bit architectures, make sure GCC doesn't
+    #   pad it out to 88 bytes to guarantee ABI compatibility between compilers.
+    #   vvv
+    #   The next time we rev the ABI, make sure to size the ints and add padding.
+    #
+    const 
+      TAudioCVT_PACKED* = x#__attribute__((packed))
+  else: 
+    const 
+      TAudioCVT_PACKED* = true
+
+
+#*
+#   SDL Audio Device IDs.
+# 
+#   A successful call to SDL_OpenAudio() is always device id 1, and legacy
+#   SDL audio APIs assume you want this device ID. SDL_OpenAudioDevice() calls
+#   always returns devices >= 2 on success. The legacy calls are good both
+#   for backwards compatibility and when you don't care about multiple,
+#   specific, or capture devices.
+# 
+type 
+  TAudioDeviceID* = uint32
+
+#*
+#   \name Audio state
+# 
+#   Get the current audio state.
+# 
+# @{ 
+type 
+  TAudioStatus* {.size: sizeof(cint).} = enum 
+    SDL_AUDIO_STOPPED = 0, SDL_AUDIO_PLAYING, SDL_AUDIO_PAUSED
+const 
+  SDL_MIX_MAXVOLUME* = 128
+{.push callconv: cdecl, dynlib: sdl2.LibName, importc: "SDL_$1".}
+
 # Function prototypes 
 #*
 #   \name Driver discovery functions
@@ -213,8 +239,8 @@ type
 #   order that they are normally initialized by default.
 # 
 # @{ 
-proc SDL_GetNumAudioDrivers*(): cint
-proc SDL_GetAudioDriver*(index: cint): cstring
+proc GetNumAudioDrivers*(): cint
+proc GetAudioDriver*(index: cint): cstring
 # @} 
 #*
 #   \name Initialization and cleanup
@@ -224,14 +250,14 @@ proc SDL_GetAudioDriver*(index: cint): cstring
 #             use.  You should normally use SDL_Init() or SDL_InitSubSystem().
 # 
 # @{ 
-proc SDL_AudioInit*(driver_name: cstring): cint
-proc SDL_AudioQuit*()
+proc AudioInit*(driver_name: cstring): cint
+proc AudioQuit*()
 # @} 
 #*
 #   This function returns the name of the current audio driver, or NULL
 #   if no driver has been initialized.
 # 
-proc SDL_GetCurrentAudioDriver*(): cstring
+proc GetCurrentAudioDriver*(): cstring
 #*
 #   This function opens the audio device with the desired parameters, and
 #   returns 0 if successful, placing the actual hardware parameters in the
@@ -274,18 +300,8 @@ proc SDL_GetCurrentAudioDriver*(): cstring
 #   may modify the requested size of the audio buffer, you should allocate
 #   any local mixing buffers after you open the audio device.
 # 
-proc SDL_OpenAudio*(desired: ptr SDL_AudioSpec; obtained: ptr SDL_AudioSpec): cint
-#*
-#   SDL Audio Device IDs.
-# 
-#   A successful call to SDL_OpenAudio() is always device id 1, and legacy
-#   SDL audio APIs assume you want this device ID. SDL_OpenAudioDevice() calls
-#   always returns devices >= 2 on success. The legacy calls are good both
-#   for backwards compatibility and when you don't care about multiple,
-#   specific, or capture devices.
-# 
-type 
-  SDL_AudioDeviceID* = Uint32
+proc OpenAudio*(desired: ptr TAudioSpec; obtained: ptr TAudioSpec): cint
+
 #*
 #   Get the number of available devices exposed by the current driver.
 #   Only valid after a successfully initializing the audio subsystem.
@@ -298,7 +314,7 @@ type
 #   successfully open the default device (NULL for first argument of
 #   SDL_OpenAudioDevice()).
 # 
-proc SDL_GetNumAudioDevices*(iscapture: cint): cint
+proc GetNumAudioDevices*(iscapture: cint): cint
 #*
 #   Get the human-readable name of a specific audio device.
 #   Must be a value between 0 and (number of audio devices-1).
@@ -312,7 +328,7 @@ proc SDL_GetNumAudioDevices*(iscapture: cint): cint
 #   string for any length of time, you should make your own copy of it, as it
 #   will be invalid next time any of several other SDL functions is called.
 # 
-proc SDL_GetAudioDeviceName*(index: cint; iscapture: cint): cstring
+proc GetAudioDeviceName*(index: cint; iscapture: cint): cstring
 #*
 #   Open a specific audio device. Passing in a device name of NULL requests
 #   the most reasonable default (and is equivalent to calling SDL_OpenAudio()).
@@ -326,20 +342,12 @@ proc SDL_GetAudioDeviceName*(index: cint; iscapture: cint): cstring
 # 
 #   SDL_OpenAudio(), unlike this function, always acts on device ID 1.
 # 
-proc SDL_OpenAudioDevice*(device: cstring; iscapture: cint; 
-                          desired: ptr SDL_AudioSpec; 
-                          obtained: ptr SDL_AudioSpec; allowed_changes: cint): SDL_AudioDeviceID
-#*
-#   \name Audio state
-# 
-#   Get the current audio state.
-# 
-# @{ 
-type 
-  SDL_AudioStatus* {.size: sizeof(cint).} = enum 
-    SDL_AUDIO_STOPPED = 0, SDL_AUDIO_PLAYING, SDL_AUDIO_PAUSED
-proc SDL_GetAudioStatus*(): SDL_AudioStatus
-proc SDL_GetAudioDeviceStatus*(dev: SDL_AudioDeviceID): SDL_AudioStatus
+proc OpenAudioDevice*(device: cstring; iscapture: cint; 
+                          desired: ptr TAudioSpec; 
+                          obtained: ptr TAudioSpec; allowed_changes: cint): TAudioDeviceID
+
+proc GetAudioStatus*(): TAudioStatus
+proc GetAudioDeviceStatus*(dev: TAudioDeviceID): TAudioStatus
 # @} 
 # Audio State 
 #*
@@ -352,8 +360,8 @@ proc SDL_GetAudioDeviceStatus*(dev: SDL_AudioDeviceID): SDL_AudioStatus
 #   Silence will be written to the audio device during the pause.
 # 
 # @{ 
-proc SDL_PauseAudio*(pause_on: cint)
-proc SDL_PauseAudioDevice*(dev: SDL_AudioDeviceID; pause_on: cint)
+proc PauseAudio*(pause_on: cint)
+proc PauseAudioDevice*(dev: TAudioDeviceID; pause_on: cint)
 # @} 
 # Pause audio functions 
 #*
@@ -364,7 +372,7 @@ proc SDL_PauseAudioDevice*(dev: SDL_AudioDeviceID; pause_on: cint)
 #       SDL_LoadWAV_RW(SDL_RWFromFile("sample.wav", "rb"), 1, ...);
 #   \endcode
 # 
-#   If this function succeeds, it returns the given SDL_AudioSpec,
+#   If this function succeeds, it returns the given TAudioSpec,
 #   filled with the audio data format of the wave data, and sets
 #   \c *audio_buf to a malloc()'d buffer containing the audio data,
 #   and sets \c *audio_len to the length of that audio buffer, in bytes.
@@ -375,20 +383,20 @@ proc SDL_PauseAudioDevice*(dev: SDL_AudioDeviceID; pause_on: cint)
 #   wave file cannot be opened, uses an unknown data format, or is
 #   corrupt.  Currently raw and MS-ADPCM WAVE files are supported.
 # 
-proc SDL_LoadWAV_RW*(src: ptr SDL_RWops; freesrc: cint; 
-                     spec: ptr SDL_AudioSpec; audio_buf: ptr ptr Uint8; 
-                     audio_len: ptr Uint32): ptr SDL_AudioSpec
+proc LoadWAV_RW*(src: ptr TRWops; freesrc: cint; 
+                     spec: ptr TAudioSpec; audio_buf: ptr ptr uint8; 
+                     audio_len: ptr uint32): ptr TAudioSpec
 #*
 #   Loads a WAV from a file.
 #   Compatibility convenience function.
 # 
-template SDL_LoadWAV*(file, spec, audio_buf, audio_len: expr): expr = 
-  SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
+template LoadWAV*(file, spec, audio_buf, audio_len: expr): expr = 
+  SDL_LoadWAV_RW(RWFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
 
 #*
 #   This function frees data previously allocated with SDL_LoadWAV_RW()
 # 
-proc SDL_FreeWAV*(audio_buf: ptr Uint8)
+proc FreeWAV*(audio_buf: ptr uint8)
 #*
 #   This function takes a source format and rate and a destination format
 #   and rate, and initializes the \c cvt structure with information needed
@@ -398,23 +406,22 @@ proc SDL_FreeWAV*(audio_buf: ptr Uint8)
 #   \return -1 if the format conversion is not supported, 0 if there's
 #   no conversion needed, or 1 if the audio filter is set up.
 # 
-proc SDL_BuildAudioCVT*(cvt: ptr SDL_AudioCVT; src_format: SDL_AudioFormat; 
-                        src_channels: Uint8; src_rate: cint; 
-                        dst_format: SDL_AudioFormat; dst_channels: Uint8; 
+proc BuildAudioCVT*(cvt: ptr TAudioCVT; src_format: TAudioFormat; 
+                        src_channels: uint8; src_rate: cint; 
+                        dst_format: TAudioFormat; dst_channels: uint8; 
                         dst_rate: cint): cint
 #*
-#   Once you have initialized the \c cvt structure using SDL_BuildAudioCVT(),
+#   Once you have initialized the \c cvt structure using SDL_BuildTAudioCVT(),
 #   created an audio buffer \c cvt->buf, and filled it with \c cvt->len bytes of
 #   audio data in the source format, this function will convert it in-place
 #   to the desired format.
 # 
 #   The data conversion may expand the size of the audio data, so the buffer
 #   \c cvt->buf should be allocated after the \c cvt structure is initialized by
-#   SDL_BuildAudioCVT(), and should be \c cvt->len*cvt->len_mult bytes long.
+#   SDL_BuildTAudioCVT(), and should be \c cvt->len*cvt->len_mult bytes long.
 # 
-proc SDL_ConvertAudio*(cvt: ptr SDL_AudioCVT): cint
-const 
-  SDL_MIX_MAXVOLUME* = 128
+proc ConvertAudio*(cvt: ptr TAudioCVT): cint
+
 #*
 #   This takes two audio buffers of the playing audio format and mixes
 #   them, performing addition, volume adjustment, and overflow clipping.
@@ -422,14 +429,14 @@ const
 #   for full audio volume.  Note this does not change hardware volume.
 #   This is provided for convenience -- you can mix your own audio data.
 # 
-proc SDL_MixAudio*(dst: ptr Uint8; src: ptr Uint8; len: Uint32; volume: cint)
+proc MixAudio*(dst: ptr uint8; src: ptr uint8; len: uint32; volume: cint)
 #*
 #   This works like SDL_MixAudio(), but you specify the audio format instead of
 #   using the format of audio device 1. Thus it can be used when no audio
 #   device is open at all.
 # 
-proc SDL_MixAudioFormat*(dst: ptr Uint8; src: ptr Uint8; 
-                         format: SDL_AudioFormat; len: Uint32; volume: cint)
+proc MixAudioFormat*(dst: ptr uint8; src: ptr uint8; 
+                         format: TAudioFormat; len: uint32; volume: cint)
 #*
 #   \name Audio lock functions
 # 
@@ -439,17 +446,18 @@ proc SDL_MixAudioFormat*(dst: ptr Uint8; src: ptr Uint8;
 #   function or you will cause deadlock.
 # 
 # @{ 
-proc SDL_LockAudio*()
-proc SDL_LockAudioDevice*(dev: SDL_AudioDeviceID)
-proc SDL_UnlockAudio*()
-proc SDL_UnlockAudioDevice*(dev: SDL_AudioDeviceID)
+proc LockAudio*()
+proc LockAudioDevice*(dev: TAudioDeviceID)
+proc UnlockAudio*()
+proc UnlockAudioDevice*(dev: TAudioDeviceID)
 # @} 
 # Audio lock functions 
 #*
 #   This function shuts down audio processing and closes the audio device.
 # 
-proc SDL_CloseAudio*()
-proc SDL_CloseAudioDevice*(dev: SDL_AudioDeviceID)
+proc CloseAudio*()
+proc CloseAudioDevice*(dev: TAudioDeviceID)
 # Ends C function definitions when using C++ 
 
 # vi: set ts=4 sw=4 expandtab: 
+{.pop.}
