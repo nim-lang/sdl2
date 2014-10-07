@@ -28,6 +28,7 @@ while runGame:
   render.clear
   
   render.present
+  fpsman.delay
 
 destroy render
 destroy window
