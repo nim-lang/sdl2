@@ -15,11 +15,11 @@ when defined(SDL_Static):
   
 else:
   when defined(Windows):
-    const libName = "SDL2.dll"
+    const LibName* = "SDL2.dll"
   elif defined(Linux):
-    const LibName = "libSDL2.so"
+    const LibName* = "libSDL2.so"
   elif defined(macosx):
-    const LibName = "libSDL2.dylib"
+    const LibName* = "libSDL2.dylib"
 
 include sdl2/private/keycodes
 
@@ -263,9 +263,9 @@ type
   PRendererInfo* = ptr TRendererInfo 
   TRendererInfo* {.pure, final.} = object 
     name*: cstring          #*< The name of the renderer 
-    flags*: Uint32          #*< Supported ::SDL_RendererFlags 
-    num_texture_formats*: Uint32 #*< The number of available texture formats 
-    texture_formats*: array[0..16 - 1, Uint32] #*< The available texture formats 
+    flags*: uint32          #*< Supported ::SDL_RendererFlags 
+    num_texture_formats*: uint32 #*< The number of available texture formats 
+    texture_formats*: array[0..16 - 1, uint32] #*< The available texture formats 
     max_texture_width*: cint #*< The maximimum texture width 
     max_texture_height*: cint #*< The maximimum texture height 
   
@@ -302,41 +302,41 @@ const ## WindowFlags
     SDL_WINDOW_FULLSCREEN_DESKTOP*:cuint = ( SDL_WINDOW_FULLSCREEN or 0x00001000 )
     SDL_WINDOW_FOREIGN*:cuint = 0x00000800#             /**< window not created by SDL */
 
-converter toBool*(some: bool32): bool = bool(some)
+converter toBool*(some: Bool32): bool = bool(some)
 converter toBool*(some: SDL_Return): bool = some == SdlSuccess
 converter toCint*(some: TTextureAccess): cint = some.cint
 
 type 
   TColor* {.pure, final.} = tuple[
-    r: Uint8,
-    g: Uint8,
-    b: Uint8,
-    a: Uint8]
+    r: uint8,
+    g: uint8,
+    b: uint8,
+    a: uint8]
 
   TPalette* {.pure, final.} = object 
     ncolors*: cint
     colors*: ptr TColor
-    version*: Uint32
+    version*: uint32
     refcount*: cint
 
   TPixelFormat* {.pure, final.} = object 
-    format*: Uint32
+    format*: uint32
     palette*: ptr TPalette
-    BitsPerPixel*: Uint8
-    BytesPerPixel*: Uint8
-    padding*: array[0..2 - 1, Uint8]
-    Rmask*: Uint32
-    Gmask*: Uint32
-    Bmask*: Uint32
-    Amask*: Uint32
-    Rloss*: Uint8
-    Gloss*: Uint8
-    Bloss*: Uint8
-    Aloss*: Uint8
-    Rshift*: Uint8
-    Gshift*: Uint8
-    Bshift*: Uint8
-    Ashift*: Uint8
+    BitsPerPixel*: uint8
+    BytesPerPixel*: uint8
+    padding*: array[0..2 - 1, uint8]
+    Rmask*: uint32
+    Gmask*: uint32
+    Bmask*: uint32
+    Amask*: uint32
+    Rloss*: uint8
+    Gloss*: uint8
+    Bloss*: uint8
+    Aloss*: uint8
+    Rshift*: uint8
+    Gshift*: uint8
+    Bshift*: uint8
+    Ashift*: uint8
     refcount*: cint
     next*: ptr TPixelFormat
   
@@ -349,7 +349,7 @@ type
     w*, h*, pitch*: int32   #*< Read-only 
     pixels*: pointer        #*< Read-write 
     userdata*: pointer      #*< Read-write  
-    locked*: int32          #*< Read-only   ## see if this should be bool32
+    locked*: int32          #*< Read-only   ## see if this should be Bool32
     lock_data*: pointer     #*< Read-only 
     clip_rect*: TRect       #*< Read-only 
     map: PBlitMap           #*< Private 
@@ -363,7 +363,7 @@ type
   TBlitFunction* = proc(src: PSurface; srcrect: ptr TRect; dst: PSurface; 
     dstrect: ptr TRect): cint
     
-  TTimerCallback* = proc (interval: Uint32; param: pointer): Uint32
+  TTimerCallback* = proc (interval: uint32; param: pointer): uint32
   TTimerID* = cint
 
 const ##RendererFlags
@@ -445,9 +445,9 @@ const ## SDL_MessageBox flags. If supported will display warning icon, etc.
 
 type
   TMessageBoxColor* {.pure, final.} = object 
-    r*: Uint8
-    g*: Uint8
-    b*: Uint8
+    r*: uint8
+    g*: uint8
+    b*: uint8
 
   TMessageBoxColorType* = enum 
     SDL_MESSAGEBOX_COLOR_BACKGROUND, SDL_MESSAGEBOX_COLOR_TEXT, 
@@ -527,17 +527,17 @@ proc SetDisplayMode*(window: PWindow;
 proc GetDisplayMode*(window: PWindow; mode: var TDisplayMode): cint  {.
   importc: "SDL_GetWindowDisplayMode".}
 #*
-proc GetPixelFormat*(window: PWindow): Uint32 {.importc: "SDL_GetWindowPixelFormat".}
+proc GetPixelFormat*(window: PWindow): uint32 {.importc: "SDL_GetWindowPixelFormat".}
 
 #*
 #   \brief Get the numeric ID of a window, for logging purposes.
 # 
-proc GetID*(window: PWindow): Uint32 {.importc: "SDL_GetWindowID".}
+proc GetID*(window: PWindow): uint32 {.importc: "SDL_GetWindowID".}
 
 #*
 #   \brief Get the window flags.
 # 
-proc GetFlags*(window: PWindow): Uint32 {.importc: "SDL_GetWindowFlags".}
+proc GetFlags*(window: PWindow): uint32 {.importc: "SDL_GetWindowFlags".}
 #*
 #   \brief Set the title of a window, in UTF-8 format.
 #   
@@ -568,24 +568,24 @@ proc GetPosition*(window: PWindow; x, y: var cint)  {.importc: "SDL_GetWindowPos
 proc SetSize*(window: PWindow; w, h: cint)  {.importc: "SDL_SetWindowSize".}
 proc GetSize*(window: PWindow; w, h: var cint) {.importc: "SDL_GetWindowSize".}
 
-proc SetBordered*(window: PWindow; bordered: bool32) {.importc: "SDL_SetWindowBordered".}
+proc SetBordered*(window: PWindow; bordered: Bool32) {.importc: "SDL_SetWindowBordered".}
 
 
-proc SetFullscreen*(window: PWindow; fullscreen: bool32): SDL_Return {.importc: "SDL_SetWindowFullscreen".}
+proc SetFullscreen*(window: PWindow; fullscreen: Bool32): SDL_Return {.importc: "SDL_SetWindowFullscreen".}
 proc GetSurface*(window: PWindow): PSurface {.importc: "SDL_GetWindowSurface".}
 
 proc UpdateSurface*(window: PWindow): SDL_Return  {.importc: "SDL_UpdateWindowSurface".}
 proc UpdateSurfaceRects*(window: PWindow; rects: ptr TRect; 
   numrects: cint): SDL_Return  {.importc: "SDL_UpdateWindowSurfaceRects".}
 #*
-proc SetGrab*(window: PWindow; grabbed: bool32) {.importc: "SDL_SetWindowGrab".}
-proc GetGrab*(window: PWindow): bool32 {.importc: "SDL_GetWindowGrab".}
+proc SetGrab*(window: PWindow; grabbed: Bool32) {.importc: "SDL_SetWindowGrab".}
+proc GetGrab*(window: PWindow): Bool32 {.importc: "SDL_GetWindowGrab".}
 proc SetBrightness*(window: PWindow; brightness: cfloat): SDL_Return {.importc: "SDL_SetWindowBrightness".}
 
 proc GetBrightness*(window: PWindow): cfloat {.importc: "SDL_GetWindowBrightness".}
 
 proc SetGammaRamp*(window: PWindow; 
-  red, green, blue: ptr Uint16): SDL_Return {.importc: "SDL_SetWindowGammaRamp".}
+  red, green, blue: ptr uint16): SDL_Return {.importc: "SDL_SetWindowGammaRamp".}
 #*
 #   \brief Get the gamma ramp for a window.
 #   
@@ -600,8 +600,8 @@ proc SetGammaRamp*(window: PWindow;
 #   
 #   \sa SDL_SetWindowGammaRamp()
 # 
-proc GetGammaRamp*(window: PWindow; red: ptr Uint16; 
-                               green: ptr Uint16; blue: ptr Uint16): cint {.importc: "SDL_GetWindowGammaRamp".}
+proc GetGammaRamp*(window: PWindow; red: ptr uint16; 
+                               green: ptr uint16; blue: ptr uint16): cint {.importc: "SDL_GetWindowGammaRamp".}
 
 
 
@@ -633,7 +633,7 @@ proc GetRevisionNumber*(): cint
 
 proc GetNumRenderDrivers*(): cint 
 proc GetRenderDriverInfo*(index: cint; info: var TRendererInfo): SDL_Return 
-proc CreateWindowAndRenderer*(width, height: cint; window_flags: Uint32; 
+proc CreateWindowAndRenderer*(width, height: cint; window_flags: uint32; 
   window: var PWindow; renderer: var PRenderer): SDL_Return 
 
 proc CreateRenderer*(window: PWindow; index: cint; flags: cint): PRenderer 
@@ -641,7 +641,7 @@ proc CreateSoftwareRenderer*(surface: PSurface): PRenderer
 proc GetRenderer*(window: PWindow): PRenderer 
 proc GetRendererInfo*(renderer: PRenderer; info: PRendererInfo): cint 
 
-proc CreateTexture*(renderer: PRenderer; format: Uint32; 
+proc CreateTexture*(renderer: PRenderer; format: uint32; 
   access, w, h: cint): PTexture 
 
 proc CreateTextureFromSurface*(renderer: PRenderer; surface: PSurface): PTexture {.
@@ -649,19 +649,19 @@ proc CreateTextureFromSurface*(renderer: PRenderer; surface: PSurface): PTexture
 proc CreateTexture*(renderer: PRenderer; surface: PSurface): PTexture {.
   inline.} = renderer.createTextureFromSurface(surface) 
 
-proc QueryTexture*(texture: PTexture; format: ptr Uint32; 
+proc QueryTexture*(texture: PTexture; format: ptr uint32; 
   access, w, h: ptr cint): SDL_Return {.discardable.}
 
-proc SetTextureColorMod*(texture: PTexture; r, g, b: Uint8): SDL_Return {.
+proc SetTextureColorMod*(texture: PTexture; r, g, b: uint8): SDL_Return {.
   importc: "SDL_SetTextureColorMod".}
 
-proc GetTextureColorMod*(texture: PTexture; r, g, b: var Uint8): SDL_Return {.
+proc GetTextureColorMod*(texture: PTexture; r, g, b: var uint8): SDL_Return {.
   importc: "SDL_GetTextureColorMod".}
 
-proc SetTextureAlphaMod*(texture: PTexture; alpha: Uint8): SDL_Return {.
+proc SetTextureAlphaMod*(texture: PTexture; alpha: uint8): SDL_Return {.
   importc: "SDL_SetTextureAlphaMod", discardable.}
 
-proc GetTextureAlphaMod*(texture: PTexture; alpha: var Uint8): SDL_Return {.
+proc GetTextureAlphaMod*(texture: PTexture; alpha: var uint8): SDL_Return {.
   importc: "SDL_GetTextureAlphaMod", discardable.}
   
 proc SetTextureBlendMode*(texture: PTexture; blendMode: TBlendMode): SDL_Return {.
@@ -826,20 +826,20 @@ proc SaveBMP_RW*(surface: PSurface; dst: PRWops;
 
 proc SetSurfaceRLE*(surface: PSurface; flag: cint): cint {.
   importc:"SDL_SetSurfaceRLE".}
-proc SetColorKey*(surface: PSurface; flag: cint; key: Uint32): cint {.
+proc SetColorKey*(surface: PSurface; flag: cint; key: uint32): cint {.
   importc: "SDL_SetColorKey".}
 
-proc GetColorKey*(surface: PSurface; key: var Uint32): cint {.
+proc GetColorKey*(surface: PSurface; key: var uint32): cint {.
   importc: "SDL_GetColorKey".}
-proc SetSurfaceColorMod*(surface: PSurface; r, g, b: Uint8): cint {.
+proc SetSurfaceColorMod*(surface: PSurface; r, g, b: uint8): cint {.
   importc: "SDL_SetSurfaceColorMod".}
 
-proc GetSurfaceColorMod*(surface: PSurface; r, g, b: var Uint8): cint {.
+proc GetSurfaceColorMod*(surface: PSurface; r, g, b: var uint8): cint {.
   importc: "SDL_GetSurfaceColorMod".}
 
-proc SetSurfaceAlphaMod*(surface: PSurface; alpha: Uint8): cint {.
+proc SetSurfaceAlphaMod*(surface: PSurface; alpha: uint8): cint {.
   importc: "SDL_SetSurfaceAlphaMod".}
-proc GetSurfaceAlphaMod*(surface: PSurface; alpha: var Uint8): cint {.
+proc GetSurfaceAlphaMod*(surface: PSurface; alpha: var uint8): cint {.
   importc: "SDL_GetSurfaceAlphaMod".}
 
 proc SetSurfaceBlendMode*(surface: PSurface; blendMode: TBlendMode): cint {.
@@ -847,7 +847,7 @@ proc SetSurfaceBlendMode*(surface: PSurface; blendMode: TBlendMode): cint {.
 proc GetSurfaceBlendMode*(surface: PSurface; blendMode: ptr TBlendMode): cint {.
   importc: "SDL_GetSurfaceBlendMode".}
 
-proc SetClipRect*(surface: PSurface; rect: ptr TRect): bool32 {.
+proc SetClipRect*(surface: PSurface; rect: ptr TRect): Bool32 {.
   importc: "SDL_SetClipRect".}
 proc GetClipRect*(surface: PSurface; rect: ptr TRect) {.
   importc: "SDL_GetClipRect".}
@@ -855,10 +855,10 @@ proc GetClipRect*(surface: PSurface; rect: ptr TRect) {.
 proc ConvertSurface*(src: PSurface; fmt: ptr TPixelFormat; 
   flags: cint): PSurface {.importc: "SDL_ConvertSurface".}
 proc ConvertSurfaceFormat*(src: PSurface; pixel_format, 
-  flags: Uint32): PSurface {.importc: "SDL_ConvertSurfaceFormat".}
+  flags: uint32): PSurface {.importc: "SDL_ConvertSurfaceFormat".}
 
-proc ConvertPixels*(width, height: cint; src_format: Uint32; src: pointer; 
-  src_pitch: cint; dst_format: Uint32; dst: pointer; dst_pitch: cint): cint {.
+proc ConvertPixels*(width, height: cint; src_format: uint32; src: pointer; 
+  src_pitch: cint; dst_format: uint32; dst: pointer; dst_pitch: cint): cint {.
   importc: "SDL_ConvertPixels".}
 #*
 #   Performs a fast fill of the given rectangle with \c color.
@@ -870,10 +870,10 @@ proc ConvertPixels*(width, height: cint; src_format: Uint32; src: pointer;
 #   
 #   \return 0 on success, or -1 on error.
 # 
-proc FillRect*(dst: PSurface; rect: ptr TRect; color: Uint32): SDL_Return {.
+proc FillRect*(dst: PSurface; rect: ptr TRect; color: uint32): SDL_Return {.
   importc: "SDL_FillRect", discardable.}
 proc FillRects*(dst: PSurface; rects: ptr TRect; count: cint; 
-                    color: Uint32): cint {.importc: "SDL_FillRects".}
+                    color: uint32): cint {.importc: "SDL_FillRects".}
 
 proc UpperBlit*(src: PSurface; srcrect: ptr TRect; dst: PSurface; 
   dstrect: ptr TRect): SDL_Return {.importc: "SDL_UpperBlit".}
@@ -892,25 +892,25 @@ proc LowerBlitScaled*(src: PSurface; srcrect: ptr TRect; dst: PSurface;
 
 
 
-proc ReadU8*(src: PRWops): Uint8 {.importc: "SDL_ReadU8".}
-proc ReadLE16*(src: PRWops): Uint16 {.importc: "SDL_ReadLE16".}
-proc ReadBE16*(src: PRWops): Uint16 {.importc: "SDL_ReadBE16".}
-proc ReadLE32*(src: PRWops): Uint32 {.importc: "SDL_ReadLE32".}
-proc ReadBE32*(src: PRWops): Uint32 {.importc: "SDL_ReadBE32".}
-proc ReadLE64*(src: PRWops): Uint64 {.importc: "SDL_ReadLE64".}
-proc ReadBE64*(src: PRWops): Uint64 {.importc: "SDL_ReadBE64".}
-proc WriteU8*(dst: PRWops; value: Uint8): csize {.importc: "SDL_WriteU8".}
-proc WriteLE16*(dst: PRWops; value: Uint16): csize {.importc: "SDL_WriteLE16".}
-proc WriteBE16*(dst: PRWops; value: Uint16): csize {.importc: "SDL_WriteBE16".}
-proc WriteLE32*(dst: PRWops; value: Uint32): csize {.importc: "SDL_WriteLE32".}
-proc WriteBE32*(dst: PRWops; value: Uint32): csize {.importc: "SDL_WriteBE32".}
-proc WriteLE64*(dst: PRWops; value: Uint64): csize {.importc: "SDL_WriteLE64".}
-proc WriteBE64*(dst: PRWops; value: Uint64): csize {.importc: "SDL_WriteBE64".}
+proc ReadU8*(src: PRWops): uint8 {.importc: "SDL_ReadU8".}
+proc ReadLE16*(src: PRWops): uint16 {.importc: "SDL_ReadLE16".}
+proc ReadBE16*(src: PRWops): uint16 {.importc: "SDL_ReadBE16".}
+proc ReadLE32*(src: PRWops): uint32 {.importc: "SDL_ReadLE32".}
+proc ReadBE32*(src: PRWops): uint32 {.importc: "SDL_ReadBE32".}
+proc ReadLE64*(src: PRWops): uint64 {.importc: "SDL_ReadLE64".}
+proc ReadBE64*(src: PRWops): uint64 {.importc: "SDL_ReadBE64".}
+proc WriteU8*(dst: PRWops; value: uint8): csize {.importc: "SDL_WriteU8".}
+proc WriteLE16*(dst: PRWops; value: uint16): csize {.importc: "SDL_WriteLE16".}
+proc WriteBE16*(dst: PRWops; value: uint16): csize {.importc: "SDL_WriteBE16".}
+proc WriteLE32*(dst: PRWops; value: uint32): csize {.importc: "SDL_WriteLE32".}
+proc WriteBE32*(dst: PRWops; value: uint32): csize {.importc: "SDL_WriteBE32".}
+proc WriteLE64*(dst: PRWops; value: uint64): csize {.importc: "SDL_WriteLE64".}
+proc WriteBE64*(dst: PRWops; value: uint64): csize {.importc: "SDL_WriteBE64".}
 
 proc ShowMessageBox*(messageboxdata: ptr TMessageBoxData; 
   buttonid: var cint): cint {.importc: "SDL_ShowMessageBox".}
 
-proc ShowSimpleMessageBox*(flags: Uint32; title, message: cstring; 
+proc ShowSimpleMessageBox*(flags: uint32; title, message: cstring; 
   window: PWindow): cint {.importc: "SDL_ShowSimpleMessageBox".}
   #   \return 0 on success, -1 on error
 
@@ -942,14 +942,14 @@ proc GetClosestDisplayMode*(displayIndex: cint; mode: ptr TDisplayMode;
 #*
 #*
 proc CreateWindow*(title: cstring; x, y, w, h: cint; 
-                       flags: Uint32): PWindow  {.importc: "SDL_CreateWindow".}
+                       flags: uint32): PWindow  {.importc: "SDL_CreateWindow".}
 #*
 proc CreateWindowFrom*(data: pointer): PWindow {.importc: "SDL_CreateWindowFrom".}
 
 #*
 #   \brief Get a window from a stored ID, or NULL if it doesn't exist.
 # 
-proc GetWindowFromID*(id: Uint32): PWindow {.importc: "SDL_GetWindowFromID".}
+proc GetWindowFromID*(id: uint32): PWindow {.importc: "SDL_GetWindowFromID".}
 
 
 
@@ -972,16 +972,16 @@ proc EnableScreenSaver*() {.importc: "SDL_EnableScreenSaver".}
 proc DisableScreenSaver*() {.importc: "SDL_DisableScreenSaver".}
 
 
-proc GetTicks*(): Uint32 {.importc: "SDL_GetTicks".}
-proc GetPerformanceCounter*(): Uint64 {.importc: "SDL_GetPerformanceCounter".}
-proc GetPerformanceFrequency*(): Uint64 {.importc: "SDL_GetPerformanceFrequency".}
-proc Delay*(ms: Uint32) {.importc: "SDL_Delay".}
+proc GetTicks*(): uint32 {.importc: "SDL_GetTicks".}
+proc GetPerformanceCounter*(): uint64 {.importc: "SDL_GetPerformanceCounter".}
+proc GetPerformanceFrequency*(): uint64 {.importc: "SDL_GetPerformanceFrequency".}
+proc Delay*(ms: uint32) {.importc: "SDL_Delay".}
 #*
 #  \brief Add a new timer to the pool of timers already running.
 # 
 #  \return A timer ID, or NULL when an error occurs.
 # 
-proc AddTimer*(interval: Uint32; callback: TTimerCallback; 
+proc AddTimer*(interval: uint32; callback: TTimerCallback; 
       param: pointer): TTimerID {.importc: "SDL_AddTimer".}
 #*
 #  \brief Remove a timer knowing its ID.
@@ -990,7 +990,7 @@ proc AddTimer*(interval: Uint32; callback: TTimerCallback;
 # 
 #  \warning It is not safe to remove a timer multiple times.
 # 
-proc RemoveTimer*(id: TTimerID): bool32 {.importc: "SDL_RemoveTimer".}
+proc RemoveTimer*(id: TTimerID): Bool32 {.importc: "SDL_RemoveTimer".}
 
 
 #*
@@ -1091,21 +1091,21 @@ proc GetMouseFocus*(): PWindow {.importc: "SDL_GetMouseFocus".}
 #   mouse cursor position relative to the focus window for the currently
 #   selected mouse.  You can pass NULL for either x or y.
 # 
-proc GetMouseState*(x, y: var cint): Uint8 {.importc: "SDL_GetMouseState", discardable.}
-proc GetMouseState*(x, y: ptr cint): Uint8 {.importc: "SDL_GetMouseState", discardable.}
+proc GetMouseState*(x, y: var cint): uint8 {.importc: "SDL_GetMouseState", discardable.}
+proc GetMouseState*(x, y: ptr cint): uint8 {.importc: "SDL_GetMouseState", discardable.}
 #*
-proc GetRelativeMouseState*(x, y: var cint): Uint8 {.
+proc GetRelativeMouseState*(x, y: var cint): uint8 {.
   importc: "SDL_GetRelativeMouseState".}
 #*
 proc WarpMouseInWindow*(window: PWindow; x, y: cint)  {.
   importc: "SDL_WarpMouseInWindow".}
 #*
-proc SetRelativeMouseMode*(enabled: bool32): SDL_Return  {.
+proc SetRelativeMouseMode*(enabled: Bool32): SDL_Return  {.
   importc: "SDL_SetRelativeMouseMode".}
 #*
-proc GetRelativeMouseMode*(): bool32 {.importc: "SDL_GetRelativeMouseMode".}
+proc GetRelativeMouseMode*(): Bool32 {.importc: "SDL_GetRelativeMouseMode".}
 #*
-proc CreateCursor*(data, mask: ptr Uint8; 
+proc CreateCursor*(data, mask: ptr uint8; 
   w, h, hot_x, hot_y: cint): PCursor {.importc: "SDL_CreateCursor".}
 #*
 proc CreateColorCursor*(surface: PSurface; hot_x, hot_y: cint): PCursor {.
@@ -1145,15 +1145,15 @@ proc PumpEvents*() {.importc: "SDL_PumpEvents".}
 #   This function is thread-safe.
 # 
 proc PeepEvents*(events: ptr TEvent; numevents: cint; action: TEventaction; 
-  minType: Uint32; maxType: Uint32): cint {.importc: "SDL_PeepEvents".}
+  minType: uint32; maxType: uint32): cint {.importc: "SDL_PeepEvents".}
 #@}
 #*
 #   Checks to see if certain event types are in the event queue.
 # 
-proc HasEvent*(kind: Uint32): bool32 {.importc: "SDL_HasEvent".}
-proc HasEvents*(minType: Uint32; maxType: Uint32): bool32 {.importc: "SDL_HasEvents".}
-proc FlushEvent*(kind: Uint32) {.importc: "SDL_FlushEvent".}
-proc FlushEvents*(minType: Uint32; maxType: Uint32) {.importc: "SDL_FlushEvents".}
+proc HasEvent*(kind: uint32): Bool32 {.importc: "SDL_HasEvent".}
+proc HasEvents*(minType: uint32; maxType: uint32): Bool32 {.importc: "SDL_HasEvents".}
+proc FlushEvent*(kind: uint32) {.importc: "SDL_FlushEvent".}
+proc FlushEvents*(minType: uint32; maxType: uint32) {.importc: "SDL_FlushEvents".}
 
 proc PollEvent*(event: var TEvent): Bool32 {.importc: "SDL_PollEvent".}
 proc WaitEvent*(event: var TEvent): Bool32 {.importc: "SDL_WaitEvent".}
@@ -1172,7 +1172,7 @@ proc SetEventFilter*(filter: TEventFilter; userdata: pointer) {.importc: "SDL_Se
 #   Return the current event filter - can be used to "chain" filters.
 #   If there is no event filter set, this function returns SDL_FALSE.
 # 
-proc GetEventFilter*(filter: var TEventFilter; userdata: var pointer): bool32 {.importc: "SDL_GetEventFilter".}
+proc GetEventFilter*(filter: var TEventFilter; userdata: var pointer): Bool32 {.importc: "SDL_GetEventFilter".}
 #*
 #   Add a function which is called when an event is added to the queue.
 # 
@@ -1197,7 +1197,7 @@ proc FilterEvents*(filter: TEventFilter; userdata: pointer) {.importc: "SDL_Filt
 #    - If \c state is set to ::SDL_QUERY, SDL_EventState() will return the 
 #      current processing state of the specified event.
 # 
-proc EventState*(kind: TEventType; state: cint): Uint8 {.importc: "SDL_EventState".}
+proc EventState*(kind: TEventType; state: cint): uint8 {.importc: "SDL_EventState".}
 #@}
 #
 #/**
@@ -1205,41 +1205,41 @@ proc EventState*(kind: TEventType; state: cint): Uint8 {.importc: "SDL_EventStat
 #   the beginning event number for that set of events.
 # 
 #   If there aren't enough user-defined events left, this function
-#   returns (Uint32)-1
+#   returns (uint32)-1
 # 
-proc RegisterEvents*(numevents: cint): Uint32 {.importc: "SDL_RegisterEvents".}
+proc RegisterEvents*(numevents: cint): uint32 {.importc: "SDL_RegisterEvents".}
 
 
 proc SetError*(fmt: cstring) {.varargs, importc: "SDL_SetError".}
 proc GetError*(): cstring {.importc: "SDL_GetError".}
 proc ClearError*() {.importc: "SDL_ClearError".}
 
-#extern DECLSPEC const char* SDLCALL SDL_GetPixelFormatName(Uint32 format);
+#extern DECLSPEC const char* SDLCALL SDL_GetPixelFormatName(uint32 format);
 proc GetPixelFormatName* (format: uint32): cstring 
   ## Get the human readable name of a pixel format
 
-#extern DECLSPEC SDL_bool SDLCALL SDL_PixelFormatEnumToMasks(Uint32 format,
+#extern DECLSPEC SDL_bool SDLCALL SDL_PixelFormatEnumToMasks(uint32 format,
 #                                                            int *bpp,
-#                                                            Uint32 * Rmask,
-#                                                            Uint32 * Gmask,
-#                                                            Uint32 * Bmask,
-#                                                            Uint32 * Amask);
+#                                                            uint32 * Rmask,
+#                                                            uint32 * Gmask,
+#                                                            uint32 * Bmask,
+#                                                            uint32 * Amask);
 proc PixelFormatEnumToMasks* (format: uint32; bpp: var cint;
   Rmask, Gmask, Bmask, Amask: var uint32): bool
   ##Convert one of the enumerated pixel formats to a bpp and RGBA masks.
   ##Returns TRUE or FALSE if the conversion wasn't possible.
 
 
-#extern DECLSPEC Uint32 SDLCALL SDL_MasksToPixelFormatEnum(int bpp,
-#                                                          Uint32 Rmask,
-#                                                          Uint32 Gmask,
-#                                                          Uint32 Bmask,
-#                                                          Uint32 Amask);
+#extern DECLSPEC uint32 SDLCALL SDL_MasksToPixelFormatEnum(int bpp,
+#                                                          uint32 Rmask,
+#                                                          uint32 Gmask,
+#                                                          uint32 Bmask,
+#                                                          uint32 Amask);
 proc MasksToPixelFormatEnum* (bpp: cint; Rmask, Gmask, Bmask, Amask: uint32): uint32
   ##Convert a bpp and RGBA masks to an enumerated pixel format.
   ##The pixel format, or ::SDL_PIXELFORMAT_UNKNOWN if the conversion wasn't possible.
 
-#extern DECLSPEC SDL_PixelFormat * SDLCALL SDL_AllocFormat(Uint32 pixel_format);
+#extern DECLSPEC SDL_PixelFormat * SDLCALL SDL_AllocFormat(uint32 pixel_format);
 proc AllocFormat* (pixelFormat: uint32): ptr TPixelFormat
 ##Create an SDL_PixelFormat structure from a pixel format enum.
 
@@ -1267,31 +1267,31 @@ proc SetPaletteColors* (palette: ptr TPalette; colors: ptr TColor; first, numCol
 proc FreePalette* (palette: ptr TPalette)
   ##Free a palette created with SDL_AllocPalette().
 
-#extern DECLSPEC Uint32 SDLCALL SDL_MapRGB(const SDL_PixelFormat * format,
-#                                          Uint8 r, Uint8 g, Uint8 b);
+#extern DECLSPEC uint32 SDLCALL SDL_MapRGB(const SDL_PixelFormat * format,
+#                                          uint8 r, uint8 g, uint8 b);
 proc MapRGB* (format: ptr TPixelFormat; r,g,b: uint8): uint32
   ##Maps an RGB triple to an opaque pixel value for a given pixel format.
 
-#extern DECLSPEC Uint32 SDLCALL SDL_MapRGBA(const SDL_PixelFormat * format,
-#                                           Uint8 r, Uint8 g, Uint8 b,
-#                                           Uint8 a);
+#extern DECLSPEC uint32 SDLCALL SDL_MapRGBA(const SDL_PixelFormat * format,
+#                                           uint8 r, uint8 g, uint8 b,
+#                                           uint8 a);
 proc MapRGBA* (format: ptr TPixelFormat; r,g,b,a: uint8): uint32
   ##Maps an RGBA quadruple to a pixel value for a given pixel format.
 
-#extern DECLSPEC void SDLCALL SDL_GetRGB(Uint32 pixel,
+#extern DECLSPEC void SDLCALL SDL_GetRGB(uint32 pixel,
 #                                        const SDL_PixelFormat * format,
-#                                        Uint8 * r, Uint8 * g, Uint8 * b);
+#                                        uint8 * r, uint8 * g, uint8 * b);
 proc GetRGB* (pixel: uint32; format: ptr TPixelFormat; r,g,b: var uint8)
   ##Get the RGB components from a pixel of the specified format.
 
-#extern DECLSPEC void SDLCALL SDL_GetRGBA(Uint32 pixel,
+#extern DECLSPEC void SDLCALL SDL_GetRGBA(uint32 pixel,
 #                                         const SDL_PixelFormat * format,
-#                                         Uint8 * r, Uint8 * g, Uint8 * b,
-#                                         Uint8 * a);
+#                                         uint8 * r, uint8 * g, uint8 * b,
+#                                         uint8 * a);
 proc GetRGBA* (pixel: uint32; format: ptr TPixelFormat; r,g,b,a: var uint8)
   ##Get the RGBA components from a pixel of the specified format.
 
-#extern DECLSPEC void SDLCALL SDL_CalculateGammaRamp(float gamma, Uint16 * ramp);
+#extern DECLSPEC void SDLCALL SDL_CalculateGammaRamp(float gamma, uint16 * ramp);
 proc CalculateGammaRamp* (gamma: cfloat; ramp: ptr uint16)
   ##Calculate a 256 entry gamma ramp for a gamma value.
 
@@ -1328,16 +1328,16 @@ const
 
 proc CreateRGBSurface* (width, height, depth: int32): PSurface {.inline.} = sdl2.CreateRGBSurface(
   0, width, height, depth, 0,0,0,0)
-proc GetSize*(window: PWindow): TPoint {.inline.} = getSize(window, result.x, result.y)
+proc GetSize*(window: PWindow): TPoint {.inline.} = GetSize(window, result.x, result.y)
 
 proc DestroyTexture*(texture: PTexture) {.inline.} = destroy(texture)
 #proc destroy* (texture: PTexture) {.inline.} = texture.destroyTexture
 proc DestroyRenderer*(renderer: PRenderer) {.inline.} = destroy(renderer)
 #proc destroy* (renderer: PRenderer) {.inline.} = renderer.destroyRenderer
 
-proc destroy* (window: PWindow) {.inline.} = window.destroyWindow
-proc destroy* (cursor: PCursor) {.inline.} = cursor.freeCursor
-proc destroy* (surface: PSurface) {.inline.} = surface.freeSurface
+proc destroy* (window: PWindow) {.inline.} = window.DestroyWindow
+proc destroy* (cursor: PCursor) {.inline.} = cursor.FreeCursor
+proc destroy* (surface: PSurface) {.inline.} = surface.FreeSurface
 proc destroy* (format: ptr TPixelFormat) {.inline.} = format.FreeFormat
 proc destroy* (palette: ptr TPalette) {.inline.} = palette.FreePalette
 
@@ -1347,7 +1347,7 @@ proc BlitScaled*(src: PSurface; srcrect: ptr TRect; dst: PSurface;
   dstrect: ptr TRect): SDL_Return {.inline, discardable.} = UpperBlitScaled(src, srcrect, dst, dstrect) 
 
 proc SDL_Init*(flags: cint): SDL_Return {.inline, deprecated.} = sdl2.Init(flags)
-proc SDL_Quit*() {.inline,deprecated.} = sdl2.quit()
+proc SDL_Quit*() {.inline,deprecated.} = sdl2.Quit()
 
 #/#define SDL_LoadBMP(file)	SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
 proc LoadBMP*(file: string): PSurface {.inline.} = LoadBMP_RW(RWFromFile(cstring(file), "rb"), 1)

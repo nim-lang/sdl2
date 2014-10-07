@@ -57,154 +57,154 @@ type
 # ---- Function Prototypes 
 # Note: all ___Color routines expect the color to be in format 0xRRGGBBAA 
 # Pixel 
-proc pixelColor*(renderer: PRenderer; x, y: int16; color: Uint32): SDL_Return {.importc, discardable.}
-proc pixelRGBA*(renderer: PRenderer; x: int16; y: int16; r: Uint8; 
-                g: Uint8; b: Uint8; a: Uint8): SDL_Return  {.importc, discardable.}
+proc pixelColor*(renderer: PRenderer; x, y: int16; color: uint32): SDL_Return {.importc, discardable.}
+proc pixelRGBA*(renderer: PRenderer; x: int16; y: int16; r: uint8; 
+                g: uint8; b: uint8; a: uint8): SDL_Return  {.importc, discardable.}
 # Horizontal line 
 proc hlineColor*(renderer: PRenderer; x1: int16; x2: int16; 
-                 y: int16; color: Uint32): SDL_Return {.importc, discardable.}
+                 y: int16; color: uint32): SDL_Return {.importc, discardable.}
 proc hlineRGBA*(renderer: PRenderer; x1: int16; x2: int16; y: int16; 
-                r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Vertical line 
 proc vlineColor*(renderer: PRenderer; x,y1,y2: int16; 
-                  color: Uint32): SDL_Return {.importc, discardable.}
+                  color: uint32): SDL_Return {.importc, discardable.}
 proc vlineRGBA*(renderer: PRenderer; x,y1,y2: int16; 
-                r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Rectangle 
 proc rectangleColor*(renderer: PRenderer; x1,y1,x2,y2: int16; 
-      color: Uint32): SDL_Return {.importc, discardable.}
-proc rectangleRGBA*(renderer: PRenderer; x1,y1,x2,y2: int16; r,g,b,a: Uint8): SDL_Return {.
+      color: uint32): SDL_Return {.importc, discardable.}
+proc rectangleRGBA*(renderer: PRenderer; x1,y1,x2,y2: int16; r,g,b,a: uint8): SDL_Return {.
       importc, discardable.}
 # Rounded-Corner Rectangle 
 proc roundedRectangleColor*(renderer: PRenderer; x1,y1,x2,y2,rad: int16; 
-                            color: Uint32): SDL_Return {.importc, discardable.}
+                            color: uint32): SDL_Return {.importc, discardable.}
 proc roundedRectangleRGBA*(renderer: PRenderer; x1,y1,x2,y2,rad: int16; 
-              r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+              r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Filled rectangle (Box) 
 proc boxColor*(renderer: PRenderer; x1, y1, x2, y2: int16; 
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc boxRGBA*(renderer: PRenderer; x1, y1, x2, y2: int16; 
-  r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+  r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Rounded-Corner Filled rectangle (Box) 
 proc roundedBoxColor*(renderer: PRenderer; x1,y1,x2,y2,rad: int16; 
-                       color: Uint32): SDL_Return {.importc, discardable.}
+                       color: uint32): SDL_Return {.importc, discardable.}
 proc roundedBoxRGBA*(renderer: PRenderer; x1,y1,x2,y2,rad: int16; 
-                  r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                  r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Line 
 proc lineColor*(renderer: PRenderer; x1,y1,x2,y2: int16; 
-    color: Uint32): SDL_Return {.importc, discardable.}
-proc lineRGBA*(renderer: PRenderer; x1,y1,x2,y2: int16; r,g,b,a: Uint8): SDL_Return {.
+    color: uint32): SDL_Return {.importc, discardable.}
+proc lineRGBA*(renderer: PRenderer; x1,y1,x2,y2: int16; r,g,b,a: uint8): SDL_Return {.
   importc, discardable.}
 # AA Line 
 proc aalineColor*(renderer: PRenderer; x1: int16; y1: int16; 
-                  x2: int16; y2: int16; color: Uint32): SDL_Return {.importc, discardable.}
+                  x2: int16; y2: int16; color: uint32): SDL_Return {.importc, discardable.}
 proc aalineRGBA*(renderer: PRenderer; x1: int16; y1: int16; 
-                 x2: int16; y2: int16; r: Uint8; g: Uint8; b: Uint8; 
-                 a: Uint8): SDL_Return {.importc, discardable.}
+                 x2: int16; y2: int16; r: uint8; g: uint8; b: uint8; 
+                 a: uint8): SDL_Return {.importc, discardable.}
 # Thick Line 
 proc thickLineColor*(renderer: PRenderer; x1, y1, x2, y2: int16; 
-  width: Uint8; color: Uint32): SDL_Return {.importc, discardable.}
+  width: uint8; color: uint32): SDL_Return {.importc, discardable.}
 proc thickLineRGBA*(renderer: PRenderer; x1, y1, x2, y2: int16; 
-  width, r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+  width, r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Circle 
 proc circleColor*(renderer: PRenderer; x, y, rad: int16; 
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc circleRGBA*(renderer: PRenderer; x, y, rad: int16; 
-  r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+  r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Arc 
 proc arcColor*(renderer: PRenderer; x, y, rad, start, finish: int16; 
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc arcRGBA*(renderer: PRenderer; x, y, rad, start, finish: int16;
-  r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+  r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # AA Circle 
 proc aacircleColor*(renderer: PRenderer; x, y, rad: int16; 
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc aacircleRGBA*(renderer: PRenderer; x, y, rad: int16; 
-  r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+  r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Filled Circle 
 proc filledCircleColor*(renderer: PRenderer; x, y, r: int16;
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc filledCircleRGBA*(renderer: PRenderer; x, y, rad: int16; 
-  r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+  r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Ellipse 
 proc ellipseColor*(renderer: PRenderer; x: int16; y: int16; 
-                   rx: int16; ry: int16; color: Uint32): SDL_Return {.importc, discardable.}
+                   rx: int16; ry: int16; color: uint32): SDL_Return {.importc, discardable.}
 proc ellipseRGBA*(renderer: PRenderer; x: int16; y: int16; 
-                  rx: int16; ry: int16; r: Uint8; g: Uint8; b: Uint8; 
-                  a: Uint8): SDL_Return {.importc, discardable.}
+                  rx: int16; ry: int16; r: uint8; g: uint8; b: uint8; 
+                  a: uint8): SDL_Return {.importc, discardable.}
 # AA Ellipse 
 proc aaellipseColor*(renderer: PRenderer; x, y, rx, ry: int16; 
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc aaellipseRGBA*(renderer: PRenderer; x, y, rx, ry: int16; 
-  r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+  r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Filled Ellipse 
 proc filledEllipseColor*(renderer: PRenderer; x, y, rx, ry: int16; 
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc filledEllipseRGBA*(renderer: PRenderer; x, y, rx, ry: int16; 
-  r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+  r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Pie 
 proc pieColor*(renderer: PRenderer; x, y, rad, start, finish: int16; 
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc pieRGBA*(renderer: PRenderer; x, y, rad, start, finish: int16; 
   r, g, b, a: uint8): SDL_Return  {.importc, discardable.}
 # Filled Pie 
 proc filledPieColor*(renderer: PRenderer; x, y, rad, start, finish: int16;
-  color: Uint32): SDL_Return {.importc, discardable.}
+  color: uint32): SDL_Return {.importc, discardable.}
 proc filledPieRGBA*(renderer: PRenderer; x, y, rad, start, finish: int16;
   r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Trigon 
 proc trigonColor*(renderer: PRenderer; x1,y1,x2,y2,x3,y3: int16,
-                   color: Uint32): SDL_Return {.importc, discardable.}
+                   color: uint32): SDL_Return {.importc, discardable.}
 proc trigonRGBA*(renderer: PRenderer; x1, y1, x2, y2, x3, y3: int16; 
-                  r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                  r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # AA-Trigon 
 proc aatrigonColor*(renderer: PRenderer; x1, y1, x2, y2, x3, y3: int16; 
-                    color: Uint32): SDL_Return {.importc, discardable.}
+                    color: uint32): SDL_Return {.importc, discardable.}
 proc aatrigonRGBA*(renderer: PRenderer; x1, y1, x2, y2, x3, y3: int16;
-                    r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                    r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Filled Trigon 
 proc filledTrigonColor*(renderer: PRenderer; x1: int16; y1: int16; 
                         x2: int16; y2: int16; x3: int16; y3: int16; 
-                        color: Uint32): SDL_Return {.importc, discardable.}
+                        color: uint32): SDL_Return {.importc, discardable.}
 proc filledTrigonRGBA*(renderer: PRenderer; x1: int16; y1: int16; 
                        x2: int16; y2: int16; x3: int16; y3: int16; 
-                       r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                       r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Polygon 
 proc polygonColor*(renderer: PRenderer; vx: ptr int16; vy: ptr int16; 
-                   n: cint; color: Uint32): SDL_Return {.importc, discardable.}
+                   n: cint; color: uint32): SDL_Return {.importc, discardable.}
 proc polygonRGBA*(renderer: PRenderer; vx: ptr int16; vy: ptr int16; 
-                  n: cint; r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                  n: cint; r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # AA-Polygon 
 proc aapolygonColor*(renderer: PRenderer; vx: ptr int16; 
-                     vy: ptr int16; n: cint; color: Uint32): SDL_Return {.importc, discardable.}
+                     vy: ptr int16; n: cint; color: uint32): SDL_Return {.importc, discardable.}
 proc aapolygonRGBA*(renderer: PRenderer; vx: ptr int16; 
-                    vy: ptr int16; n: cint; r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                    vy: ptr int16; n: cint; r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Filled Polygon 
 proc filledPolygonColor*(renderer: PRenderer; vx: ptr int16; 
-                         vy: ptr int16; n: cint; color: Uint32): SDL_Return {.importc, discardable.}
+                         vy: ptr int16; n: cint; color: uint32): SDL_Return {.importc, discardable.}
 proc filledPolygonRGBA*(renderer: PRenderer; vx: ptr int16; 
-                        vy: ptr int16; n: cint; r: Uint8; g: Uint8; b: Uint8; 
-                        a: Uint8): SDL_Return {.importc, discardable.}
+                        vy: ptr int16; n: cint; r: uint8; g: uint8; b: uint8; 
+                        a: uint8): SDL_Return {.importc, discardable.}
 # Textured Polygon 
 proc texturedPolygon*(renderer: PRenderer; vx: ptr int16; 
                       vy: ptr int16; n: cint; texture: PSurface; 
                       texture_dx: cint; texture_dy: cint): SDL_Return {.importc, discardable.}
 # Bezier 
 proc bezierColor*(renderer: PRenderer; vx,vy: ptr int16; 
-                  n: cint; s: cint; color: Uint32): SDL_Return {.importc, discardable.}
+                  n: cint; s: cint; color: uint32): SDL_Return {.importc, discardable.}
 proc bezierRGBA*(renderer: PRenderer; vx, vy: ptr int16; 
-                 n: cint; s: cint; r, g, b, a: Uint8): SDL_Return {.importc, discardable.}
+                 n: cint; s: cint; r, g, b, a: uint8): SDL_Return {.importc, discardable.}
 # Characters/Strings 
-proc gfxPrimitivesSetFont*(fontdata: pointer; cw: Uint32; ch: Uint32) {.importc.}
-proc gfxPrimitivesSetFontRotation*(rotation: Uint32) {.importc.}
+proc gfxPrimitivesSetFont*(fontdata: pointer; cw: uint32; ch: uint32) {.importc.}
+proc gfxPrimitivesSetFontRotation*(rotation: uint32) {.importc.}
 proc characterColor*(renderer: PRenderer; x: int16; y: int16; 
-                     c: char; color: Uint32): SDL_Return {.importc.}
+                     c: char; color: uint32): SDL_Return {.importc.}
 proc characterRGBA*(renderer: PRenderer; x: int16; y: int16; c: char; 
-                    r,g,b,a: Uint8): SDL_Return {.importc.}
+                    r,g,b,a: uint8): SDL_Return {.importc.}
 proc stringColor*(renderer: PRenderer; x: int16; y: int16; 
-                  s: cstring; color: Uint32): SDL_Return {.importc.}
+                  s: cstring; color: uint32): SDL_Return {.importc.}
 proc stringRGBA*(renderer: PRenderer; x: int16; y: int16; s: cstring; 
-                 r,g,b,a: Uint8): SDL_Return {.importc, discardable.}
+                 r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Ends C function definitions when using C++ 
 
 
@@ -240,11 +240,11 @@ proc mlStringRGBA*(renderer: PRenderer; x,y: int16, S: string, R,G,B,A: uint8, l
   ## Draw a multi-line string
   var ln = 0
   for L in splitLines(S): 
-    renderer.StringRGBA(x,(y + int16(ln * 8) + int16(ln * lineSpacing)),L, R,G,B,A)
+    renderer.stringRGBA(x,(y + int16(ln * 8) + int16(ln * lineSpacing)),L, R,G,B,A)
     inc ln
 proc mlStringRGBA*(renderer: PRenderer; x,y: int16; S: seq[string]; R,G,B,A: uint8; lineSpacing = 2'i16) =
   var ln = 0
   while ln < S.len:
-    renderer.StringRGBA(x, y + int16(ln * 8 + ln * lineSpacing), S[ln], R,G,B,A) 
+    renderer.stringRGBA(x, y + int16(ln * 8 + ln * lineSpacing), S[ln], R,G,B,A) 
     inc ln
 
