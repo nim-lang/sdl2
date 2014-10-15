@@ -18,7 +18,7 @@ let Volume = 0.1          # [0..1]
 var x = 0 
 
 # Generate a sine wave
-let c = 2000000000 / float(Frequence) / float(SampleRate)
+let c = float(SampleRate) / float(Frequence)
 proc SineAmplitude(): int16 = int16(round(sin(float(x mod int(c)) / c * 2 * PI) * 32767 * Volume))
 
 # 3 different callback procedures which do the same thing:
