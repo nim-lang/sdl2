@@ -25,7 +25,6 @@ proc SineAmplitude(): int16 = int16(round(sin(float(x mod int(c)) / c * 2 * PI) 
 
 # Write amplitude direct to hardware buffer
 proc AudioCallback_1(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} = 
-  var buffer: array[BufferSizeInSamples, int16]
   for i in 0..BufferSizeInSamples - 1:
       cast[ptr int16](cast[int](stream) + i * BytesPerSample)[] = SineAmplitude()
       Inc(x)
