@@ -277,6 +277,7 @@ type
     SDL_FLIP_NONE = 0x00000000, #*< Do not flip 
     SDL_FLIP_HORIZONTAL = 0x00000001, #*< flip horizontally 
     SDL_FLIP_VERTICAL = 0x00000002 #*< flip vertically 
+    SDL_FLIP_BOTH = 0x00000003 #*< flip both 
   
   TSysWMType* {.size: sizeof(cint).}=enum
     SysWM_Unknown, SysWM_Windows, SysWM_X11, SysWM_DirectFB,
