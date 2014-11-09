@@ -300,7 +300,6 @@ const ## WindowFlags
     SDL_FLIP_NONE*: cint = 0x00000000 # Do not flip 
     SDL_FLIP_HORIZONTAL*: cint = 0x00000001 # flip horizontally 
     SDL_FLIP_VERTICAL*: cint = 0x00000002 # flip vertically 
-    SDL_FLIP_BOTH*: cint = SDL_FLIP_HORIZONTAL or SDL_FLIP_VERTICAL
 
 converter toBool*(some: Bool32): bool = bool(some)
 converter toBool*(some: SDL_Return): bool = some == SdlSuccess
