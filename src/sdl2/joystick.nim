@@ -90,6 +90,7 @@ proc  JoystickOpen*(device_index: cint): PJoystick
 #   If no name can be found, this function returns NULL.
 # /
 proc JoystickName*(joystick: PJoystick): cstring
+proc Name* (joystick: PJoystick) {.inline.} = joystick.JoystickName
 
 ## 
 #   Return the GUID for the joystick at this index
@@ -100,6 +101,7 @@ proc JoystickGetDeviceGUID*(device_index: cint): TJoystickGUID
 #   Return the GUID for this opened joystick
 #   
 proc JoystickGetGUID*(joystick: PJoystick): TJoystickGUID
+proc GetGUID* (joystick: PJoystick) {.inline.} = joystick.JoystickGetGUID
 
 # *
 #   Return a string representation for this guid. pszGUID must point to at least 33 bytes
@@ -116,16 +118,19 @@ proc JoystickGetGUIDFromString*(pchGUID: cstring): TJoystickGUID
 #   Returns SDL_TRUE if the joystick has been opened and currently connected, or SDL_FALSE if it has not.
 #   
 proc JoystickGetAttached*(joystick: PJoystick): Bool32
+proc GetAttached* (joystick: PJoystick) {.inline.} = joystick.JoystickGetAttached
 
 # *
 #   Get the instance ID of an opened joystick or -1 if the joystick is invalid.
 #   
 proc JoystickInstanceID*(joystick: PJoystick): TJoystickID
+proc InstanceID* (joystick: PJoystick) {.inline.} = joystick.JoystickInstanceID
 
 # *
 #   Get the number of general axis controls on a joystick.
 #   
 proc JoystickNumAxes*(joystick: PJoystick): cint
+proc NumAxes* (joystick: PJoystick) {.inline.} = joystick.JoystickNumAxes
 
 # *
 #   Get the number of trackballs on a joystick.
@@ -135,16 +140,19 @@ proc JoystickNumAxes*(joystick: PJoystick): cint
 #   events are enabled.
 #   
 proc JoystickNumBalls*(joystick: PJoystick): cint
+proc NumBalls* (joystick: PJoystick) {.inline.} = joystick.JoystickNumBalls
 
 #  
 #   Get the number of POV hats on a joystick.
 #  
 proc JoystickNumHats*(joystick: PJoystick): cint
+proc NumHats* (joystick: PJoystick) {.inline.} = joystick.JoystickNumHats
 
 #  
 #   Get the number of buttons on a joystick.
 #  
 proc JoystickNumButtons*(joystick: PJoystick): cint
+proc NumButtons* (joystick: PJoystick) {.inline.} = joystick.JoystickNumButtons
 
 #  
 #   Update the current state of the open joysticks.
@@ -172,6 +180,7 @@ proc JoystickEventState*(state: cint): cint
 #   The axis indices start at index 0.
 #  
 proc JoystickGetAxis*(joystick: PJoystick, axis: cint): Int16
+proc GetAxis* (joystick: PJoystick) {.inline.} = joystick.JoystickGetAxis(axis)
 
 #
 #   \name Hat positions
@@ -206,6 +215,7 @@ const
 #            - ::SDL_HAT_LEFTDOWN
 #  
 proc JoystickGetHat*(joystick: PJoystick, hat: cint): Uint8
+proc GetHat* (joystick: PJoystick) {.inline.} = joystick.JoystickGetHat(hat)
 
 #  
 #   Get the ball axis change since the last poll.
@@ -215,6 +225,7 @@ proc JoystickGetHat*(joystick: PJoystick, hat: cint): Uint8
 #   The ball indices start at index 0.
 #  
 proc JoystickGetBall*(joystick: PJoystick, ball: cint, dx: ptr cint, dy: ptr cint): cint
+proc GetBall* (joystick: PJoystick) {.inline.} = joystick.JoystickGetBall(ball, dx, dy)
 
 #  
 #   Get the current state of a button on a joystick.
@@ -222,11 +233,13 @@ proc JoystickGetBall*(joystick: PJoystick, ball: cint, dx: ptr cint, dy: ptr cin
 #   The button indices start at index 0.
 #  
 proc JoystickGetButton*(joystick: PJoystick, button: cint): Uint8
+proc GetButton* (joystick: PJoystick) {.inline.} = joystick.JoystickGetButton(button)
 
 #  
 #   Close a joystick previously opened with SDL_JoystickOpen().
 #  
 proc JoystickClose*(joystick: PJoystick)
+proc Close* (joystick: PJoystick) {.inline.} = joystick.JoystickClose()
 
 # Ends C function definitions when using C++ 
 
