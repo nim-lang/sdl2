@@ -273,11 +273,7 @@ type
     SDL_TEXTUREACCESS_STATIC, SDL_TEXTUREACCESS_STREAMING, SDL_TEXTUREACCESS_TARGET
   TTextureModulate*{.size:sizeof(cint).} = enum
     SDL_TEXTUREMODULATE_NONE, SDL_TEXTUREMODULATE_COLOR, SDL_TEXTUREMODULATE_ALPHA
-  TRendererFlip* {.size: sizeof(cint).} = enum 
-    SDL_FLIP_NONE = 0x00000000, #*< Do not flip 
-    SDL_FLIP_HORIZONTAL = 0x00000001, #*< flip horizontally 
-    SDL_FLIP_VERTICAL = 0x00000002 #*< flip vertically 
-  
+  TRendererFlip* = cint  
   TSysWMType* {.size: sizeof(cint).}=enum
     SysWM_Unknown, SysWM_Windows, SysWM_X11, SysWM_DirectFB,
     SysWM_Cocoa, SysWM_UIkit
@@ -301,6 +297,9 @@ const ## WindowFlags
     SDL_WINDOW_MOUSE_FOCUS*:cuint = 0x00000400#        /**< window has mouse focus */
     SDL_WINDOW_FULLSCREEN_DESKTOP*:cuint = ( SDL_WINDOW_FULLSCREEN or 0x00001000 )
     SDL_WINDOW_FOREIGN*:cuint = 0x00000800#             /**< window not created by SDL */
+    SDL_FLIP_NONE*: cint = 0x00000000 # Do not flip 
+    SDL_FLIP_HORIZONTAL*: cint = 0x00000001 # flip horizontally 
+    SDL_FLIP_VERTICAL*: cint = 0x00000002 # flip vertically 
 
 converter toBool*(some: Bool32): bool = bool(some)
 converter toBool*(some: SDL_Return): bool = some == SdlSuccess
@@ -622,6 +621,24 @@ proc GetGammaRamp*(window: PWindow; red: ptr uint16;
 
 {.push importc: "SDL_$1".}
 proc Init*(flags: cint): SDL_Return {.discardable.}
+#
+#   This function initializes specific SDL subsystems
+# 
+proc InitSubSystem*(flags: Uint32):cint
+
+#
+#   This function cleans up specific SDL subsystems
+# 
+proc QuitSubSystem*(flags: Uint32)
+
+#
+#   This function returns a mask of the specified subsystems which have
+#   previously been initialized.
+# 
+#   If \c flags is 0, it returns a mask of all initialized subsystems.
+# 
+proc WasInit*(flags: Uint32): Uint32
+
 proc Quit*  
 
 proc GetPlatform*(): cstring 
