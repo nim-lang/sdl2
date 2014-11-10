@@ -621,6 +621,24 @@ proc GetGammaRamp*(window: PWindow; red: ptr uint16;
 
 {.push importc: "SDL_$1".}
 proc Init*(flags: cint): SDL_Return {.discardable.}
+#
+#   This function initializes specific SDL subsystems
+# 
+proc InitSubSystem*(flags: Uint32):cint
+
+#
+#   This function cleans up specific SDL subsystems
+# 
+proc QuitSubSystem*(flags: Uint32)
+
+#
+#   This function returns a mask of the specified subsystems which have
+#   previously been initialized.
+# 
+#   If \c flags is 0, it returns a mask of all initialized subsystems.
+# 
+proc WasInit*(flags: Uint32): Uint32
+
 proc Quit*  
 
 proc GetPlatform*(): cstring 
