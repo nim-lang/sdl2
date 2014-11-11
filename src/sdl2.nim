@@ -624,12 +624,12 @@ proc Init*(flags: cint): SDL_Return {.discardable.}
 #
 #   This function initializes specific SDL subsystems
 # 
-proc InitSubSystem*(flags: Uint32):cint
+proc InitSubSystem*(flags: uint32):cint
 
 #
 #   This function cleans up specific SDL subsystems
 # 
-proc QuitSubSystem*(flags: Uint32)
+proc QuitSubSystem*(flags: uint32)
 
 #
 #   This function returns a mask of the specified subsystems which have
@@ -637,7 +637,7 @@ proc QuitSubSystem*(flags: Uint32)
 # 
 #   If \c flags is 0, it returns a mask of all initialized subsystems.
 # 
-proc WasInit*(flags: Uint32): Uint32
+proc WasInit*(flags: uint32): uint32
 
 proc Quit*  
 

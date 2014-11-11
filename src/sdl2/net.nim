@@ -22,14 +22,52 @@
 # $Id$ 
 import sdl2
 
+when defined(Linux):
+  const LibName* = "libSDL2_net.so"
+else:
+  {.error: "Please fill out your platform in sdl2/net.nim".}
+
 type 
   TIPaddress* = object 
     host*: uint32           # 32-bit IPv4 host address 
     port*: uint16           # 16-bit protocol port 
   
+  TCPsocket* = pointer
+
+const 
+  INADDR_ANY* = 0x00000000
+  INADDR_NONE* = 0xFFFFFFFF
+  INADDR_LOOPBACK* = 0x7F000001
+  INADDR_BROADCAST* = 0xFFFFFFFF
+# The maximum channels on a a UDP socket 
+const 
+  SDLNET_MAX_UDPCHANNELS* = 32
+# The maximum addresses bound to a single UDP socket channel 
+const 
+  SDLNET_MAX_UDPADDRESSES* = 4
+type 
+  UDPsocket* = ptr object
+  UDPpacket* = object 
+    channel*: cint          # The src/dst channel of the packet 
+    data*: ptr uint8        # The packet data 
+    len*: cint              # The length of the packet data 
+    maxlen*: cint           # The size of the data buffer 
+    status*: cint           # packet status after sending 
+    address*: TIPaddress     # The source/dest address of an incoming/outgoing packet 
+
+#*********************************************************************
+# Hooks for checking sockets for available data                       
+#*********************************************************************
+type 
+  SocketSet* = pointer
+# Any network socket can be safely cast to this socket type 
+type 
+  GenericSocketObj* = object
+    ready*: cint
+  GenericSocket* = ptr GenericSocketObj
 
 {.push dynlib: LibName, callconv: cdecl.}
-{.push importc:"SDL$1".}
+{.push importc:"SDLNet_$1".}
 # This function gets the version of the dynamically linked SDL_net library.
 #   it should NOT be used to fill a version structure, instead you should
 #   use the SDL_NET_VERSION() macro.
@@ -52,11 +90,6 @@ proc Quit*()
 #   address will be INADDR_NONE, and the function will return -1.
 #   If 'host' is NULL, the resolved host will be set to INADDR_ANY.
 # 
-const 
-  INADDR_ANY* = 0x00000000
-  INADDR_NONE* = 0xFFFFFFFF
-  INADDR_LOOPBACK* = 0x7F000001
-  INADDR_BROADCAST* = 0xFFFFFFFF
 proc ResolveHost*(address: ptr TIPaddress; host: cstring; port: uint16): cint
 # Resolve an ip address to a host name in canonical form.
 #   If the ip couldn't be resolved, this function returns NULL,
@@ -71,8 +104,7 @@ proc GetLocalAddresses*(addresses: ptr TIPaddress; maxcount: cint): cint
 #*********************************************************************
 # TCP network API                                                     
 #*********************************************************************
-type 
-  TCPsocket* = pointer
+
 # Open a TCP network socket
 #   If ip.host is INADDR_NONE or INADDR_ANY, this creates a local server
 #   socket on the given port, otherwise a TCP connection to the remote
@@ -108,22 +140,7 @@ proc TCP_Close*(sock: TCPsocket)
 #*********************************************************************
 # UDP network API                                                     
 #*********************************************************************
-# The maximum channels on a a UDP socket 
-const 
-  SDLNET_MAX_UDPCHANNELS* = 32
-# The maximum addresses bound to a single UDP socket channel 
-const 
-  SDLNET_MAX_UDPADDRESSES* = 4
-type 
-  UDPsocket* = ptr object
-  UDPpacket* {.pure, final.} = object 
-    channel*: cint          # The src/dst channel of the packet 
-    data*: ptr uint8        # The packet data 
-    len*: cint              # The length of the packet data 
-    maxlen*: cint           # The size of the data buffer 
-    status*: cint           # packet status after sending 
-    address*: TIPaddress     # The source/dest address of an incoming/outgoing packet 
-  
+
 # Allocate/resize/free a single UDP packet 'size' bytes long.
 #   The new packet is returned, or NULL if the function ran out of memory.
 # 
@@ -213,37 +230,17 @@ proc UDP_RecvV*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint
 proc UDP_Recv*(sock: UDPsocket; packet: ptr UDPpacket): cint
 # Close a UDP network socket 
 proc UDP_Close*(sock: UDPsocket)
-#*********************************************************************
-# Hooks for checking sockets for available data                       
-#*********************************************************************
-type 
-  SDLNet_SocketSet* = ptr _SDLNet_SocketSet
-# Any network socket can be safely cast to this socket type 
-type 
-  _SDLNet_GenericSocket* {.pure, final.} = object 
-    ready*: cint
 
-  SDLNet_GenericSocket* = ptr _SDLNet_GenericSocket
 # Allocate a socket set for use with SDLNet_CheckSockets()
 #   This returns a socket set for up to 'maxsockets' sockets, or NULL if
 #   the function ran out of memory.
 # 
-proc AllocSocketSet*(maxsockets: cint): SDLNet_SocketSet
+proc AllocSocketSet*(maxsockets: cint): SocketSet
 # Add a socket to a set of sockets to be checked for available data 
-proc AddSocket*(set: SDLNet_SocketSet; sock: SDLNet_GenericSocket): cint
-proc TCP_AddSocket*(set: SDLNet_SocketSet; sock: TCPsocket): cint = 
-  #return SDLNet_AddSocket(set, (SDLNet_GenericSocket)sock);
-
-proc UDP_AddSocket*(set: SDLNet_SocketSet; sock: UDPsocket): cint = 
-  #return SDLNet_AddSocket(set, (SDLNet_GenericSocket)sock);
+proc AddSocket*(set: SocketSet; sock: GenericSocket): cint
 
 # Remove a socket from a set of sockets to be checked for available data 
-proc DelSocket*(set: SDLNet_SocketSet; sock: SDLNet_GenericSocket): cint
-proc TCP_DelSocket*(set: SDLNet_SocketSet; sock: TCPsocket): cint = 
-  #return SDLNet_DelSocket(set, (SDLNet_GenericSocket)sock);
-
-proc UDP_DelSocket*(set: SDLNet_SocketSet; sock: UDPsocket): cint = 
-  #return SDLNet_DelSocket(set, (SDLNet_GenericSocket)sock);
+proc DelSocket*(set: SocketSet; sock: GenericSocket): cint
 
 # This function checks to see if data is available for reading on the
 #   given set of sockets.  If 'timeout' is 0, it performs a quick poll,
@@ -252,86 +249,49 @@ proc UDP_DelSocket*(set: SDLNet_SocketSet; sock: UDPsocket): cint =
 #   first.  This function returns the number of sockets ready for reading,
 #   or -1 if there was an error with the select() system call.
 #
-proc CheckSockets*(set: SDLNet_SocketSet; timeout: uint32): cint
-# After calling SDLNet_CheckSockets(), you can use this function on a
+proc CheckSockets*(set: SocketSet; timeout: uint32): cint
+# After calling CheckSockets(), you can use this function on a
 #   socket that was in the socket set, to find out if data is available
 #   for reading.
 #
-##define SDLNet_SocketReady(sock) _SDLNet_SocketReady((SDLNet_GenericSocket)(sock))
-#proc _SDLNet_SocketReady*(sock: SDLNet_GenericSocket): cint = 
-#  #return (sock != NULL) && (sock->ready);
-proc SocketReady* (sock: SDLNet_GenericSocket): bool =
-  not(sock.isNil) and sock.ready > 0
 
 # Free a set of sockets allocated by SDL_NetAllocSocketSet() 
-proc FreeSocketSet*(set: SDLNet_SocketSet)
+proc FreeSocketSet*(set: SocketSet)
 #*********************************************************************
 # Error reporting functions                                           
 #*********************************************************************
-proc SDLNet_SetError*(fmt: cstring) {.varargs.}
-proc SDLNet_GetError*(): cstring
+proc SetError*(fmt: cstring) {.varargs.}
+proc GetError*(): cstring
 #*********************************************************************
 # Inline functions to read/write network data                         
 #*********************************************************************
 # Warning, some systems have data access alignment restrictions 
-when false:
-
-  when defined(sparc) or defined(mips) or defined(__arm__): 
-    const 
-      SDL_DATA_ALIGNED* = 1
-  when not(defined(SDL_DATA_ALIGNED)): 
-    const 
-      SDL_DATA_ALIGNED* = 0
-  # Write a 16/32-bit value to network packet buffer 
-  template SDLNet_Write16*(value, areap: expr): expr = 
-    _SDLNet_Write16(value, areap)
-
-  template SDLNet_Write32*(value, areap: expr): expr = 
-    _SDLNet_Write32(value, areap)
-
-  # Read a 16/32-bit value from network packet buffer 
-  template SDLNet_Read16*(areap: expr): expr = 
-    _SDLNet_Read16(areap)
-
-  template SDLNet_Read32*(areap: expr): expr = 
-    _SDLNet_Read32(areap)
-
-  when not defined(WITHOUT_SDL) and not SDL_DATA_ALIGNED: 
-    proc _SDLNet_Write16*(value: uint16; areap: pointer) = 
-      cast[ptr uint16](areap)[] = SDL_SwapBE16(value)
-
-    proc _SDLNet_Write32*(value: uint32; areap: pointer) = 
-      cast[ptr uint32](areap)[] = SDL_SwapBE32(value)
-
-    proc _SDLNet_Read16*(areap: pointer): uint16 = 
-      return SDL_SwapBE16(cast[ptr uint16](areap)[])
-
-    proc _SDLNet_Read32*(areap: pointer): uint32 = 
-      return SDL_SwapBE32(cast[ptr uint32](areap)[])
-
-  else: 
-    proc _SDLNet_Write16*(value: uint16; areap: pointer) = 
-      var area: ptr uint8 = cast[ptr uint8](areap)
-      area[0] = (value shr 8) and 0x000000FF
-      area[1] = value and 0x000000FF
-
-    proc _SDLNet_Write32*(value: uint32; areap: pointer) = 
-      var area: ptr uint8 = cast[ptr uint8](areap)
-      area[0] = (value shr 24) and 0x000000FF
-      area[1] = (value shr 16) and 0x000000FF
-      area[2] = (value shr 8) and 0x000000FF
-      area[3] = value and 0x000000FF
-
-    proc _SDLNet_Read16*(areap: pointer): uint16 = 
-      var area: ptr uint8 = cast[ptr uint8](areap)
-      #return ((uint16)area[0]) << 8 | ((uint16)area[1]);
-    
-    proc _SDLNet_Read32*(areap: pointer): uint32 = 
-      var area: ptr uint8 = cast[ptr uint8](areap)
-      #return ((uint32)area[0]) << 24 | ((uint32)area[1]) << 16 | ((uint32)area[2]) << 8 | ((uint32)area[3]);
 
 proc Write16* (value: uint16, dest: pointer)
 proc Write32* (value: uint32, dest: pointer)
 proc Read16* (src: pointer): uint16
 proc Read32* (src: pointer): uint32
+
+{.pop.}
+{.pop.}
+
+proc TCP_AddSocket*(set: SocketSet; sock: TCPsocket): cint = 
+  AddSocket(set, cast[GenericSocket](sock))
+
+proc UDP_AddSocket*(set: SocketSet; sock: UDPsocket): cint = 
+  AddSocket(set, cast[GenericSocket](sock))
+
+
+proc TCP_DelSocket*(set: SocketSet; sock: TCPsocket): cint {.inline.} = 
+  DelSocket(set, cast[GenericSocket](sock))
+
+proc UDP_DelSocket*(set: SocketSet; sock: UDPsocket): cint {.inline.} = 
+  DelSocket(set, cast[GenericSocket](sock))
+
+
+##define SDLNet_SocketReady(sock) _SDLNet_SocketReady((SDLNet_GenericSocket)(sock))
+#proc _SDLNet_SocketReady*(sock: SDLNet_GenericSocket): cint = 
+#  #return (sock != NULL) && (sock->ready);
+proc SocketReady* (sock: GenericSocket): bool =
+  not(sock.isNil) and sock.ready > 0
 
