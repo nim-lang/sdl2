@@ -17,17 +17,17 @@ var
 fpsman.init
 
 while runGame:
-  while pollEvent(evt):
+  while PollEvent(evt):
     if evt.kind == QuitEvent:
       runGame = false
       break
   
   let dt = fpsman.getFramerate() / 1000
   
-  render.setDrawColor 0,0,0,255
-  render.clear
+  render.SetDrawColor 0,0,0,255
+  render.Clear
   
-  render.present
+  render.Present
   fpsman.delay
 
 destroy render

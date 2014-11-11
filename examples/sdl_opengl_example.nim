@@ -103,7 +103,7 @@ var frametime: uint32
 proc limitFramerate() =
   var now = GetTicks()
   if frametime > now:
-    delay(frametime - now)
+    Delay(frametime - now)
   frametime = frametime + MAXFRAMERATE
 
 # Main loop
@@ -113,7 +113,7 @@ var
   runGame = true
       
 while runGame:
-  while pollEvent(evt):
+  while PollEvent(evt):
     if evt.kind == QuitEvent:
       runGame = false
       break

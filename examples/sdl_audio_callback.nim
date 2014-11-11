@@ -27,14 +27,14 @@ proc SineAmplitude(): int16 = int16(round(sin(float(x mod int(c)) / c * 2 * PI) 
 proc AudioCallback_1(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} = 
   for i in 0..BufferSizeInSamples - 1:
       cast[ptr int16](cast[int](stream) + i * BytesPerSample)[] = SineAmplitude()
-      Inc(x)
+      inc(x)
   
 # Write amplitude to own buffer, then copy buffer with copyMem()  
 proc AudioCallback_2(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} = 
   var buffer: array[BufferSizeInSamples, int16]
   for i in 0..BufferSizeInSamples - 1:
       buffer[i] = SineAmplitude()
-      Inc(x)
+      inc(x)
   copyMem(stream, addr(buffer[0]), BufferSizeInBytes)
 
 # Write amplitude to own buffer, reset hardware buffer with 0, then output buffer with MixAudio() 
@@ -42,7 +42,7 @@ proc AudioCallback_3(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} 
   var buffer: array[BufferSizeInSamples, int16]
   for i in 0..BufferSizeInSamples - 1:
       buffer[i] = SineAmplitude()
-      Inc(x)
+      inc(x)
   for i in 0..BufferSizeInBytes - 1:
     (cast[ptr uint8](cast[int](stream) + i))[] = 0
   MixAudio(stream, cast[ptr uint8](addr(buffer[0])), BufferSizeInBytes, SDL_MIX_MAXVOLUME)
