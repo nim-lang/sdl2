@@ -8,10 +8,11 @@ export unsigned, strutils.`%`
 {. deadCodeElim: on .}
 
 when defined(SDL_Static):
-  #static: echo "SDL2 will be statically linked."
+  static: echo "SDL2 will be statically linked. Please make sure you pass the correct compiler/linker flags "&
+    "(header search paths, library search paths, linked libraries)."
   #{.passl: gorge("pkg-config --libs sdl2").}
   #{.pragma: sdl_header, header: "<SDL2/SDL.h>".}
-  {.error: "Static linking SDL2 is disabled.".}
+  #{.error: "Static linking SDL2 is disabled.".}
   
 else:
   when defined(Windows):
