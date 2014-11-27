@@ -486,6 +486,11 @@ type
     here*: ptr byte
     stop*: ptr byte
 
+# SDL_system.h
+type TVoidCallback* = proc(arg:pointer):void{.cdecl.}
+const SDL_ANDROID_EXTERNAL_STORAGE_READ*  = cint(0x01)
+const SDL_ANDROID_EXTERNAL_STORAGE_WRITE* = cint(0x02)
+
 when defined(SDL_Static):
   {.push header: "<SDL2/SDL.h>".}
 else:
@@ -1312,6 +1317,66 @@ proc GetRGBA* (pixel: uint32; format: ptr TPixelFormat; r,g,b,a: var uint8)
 #extern DECLSPEC void SDLCALL SDL_CalculateGammaRamp(float gamma, uint16 * ramp);
 proc CalculateGammaRamp* (gamma: cfloat; ramp: ptr uint16)
   ##Calculate a 256 entry gamma ramp for a gamma value.
+
+
+
+# SDL_system.h
+when defined(windows):
+
+  proc Direct3D9GetAdapterIndex* (displayIndex: cint): cint
+    ## Returns the D3D9 adapter index that matches the specified display index.
+    ## This adapter index can be passed to IDirect3D9::CreateDevice and controls
+    ## on which monitor a full screen application will appear.
+
+  #extern DECLSPEC IDirect3DDevice9* SDLCALL SDL_RenderGetD3D9Device(SDL_Renderer * renderer);
+  proc GetD3D9Device* (renderer: PRenderer): pointer {.importc:"SDL_RenderGetD3D9Device".}
+    ## Returns the D3D device associated with a renderer, or NULL if it's not a D3D renderer.
+    ## Once you are done using the device, you should release it to avoid a resource leak.
+
+  #extern DECLSPEC void SDLCALL SDL_DXGIGetOutputInfo( int displayIndex, int *adapterIndex, int *outputIndex );
+  proc DXGIGetOutputInfo* (displayIndex: cint, adapterIndex,outputIndex: ptr cint): void
+    ## Returns the DXGI Adapter and Output indices for the specified display index. 
+    ## These can be passed to EnumAdapters and EnumOutputs respectively to get the objects
+    ## required to create a DX10 or DX11 device and swap chain.
+
+
+elif defined(iPhone):
+
+
+  #extern DECLSPEC int SDLCALL SDL_iPhoneSetAnimationCallback(
+  #    SDL_Window * window, int interval, 
+  #    void (*callback)(void*), void *callbackParam);
+  proc iPhoneSetAnimationCallback*(window: PWindow, interval:cint, callback: TVoidCallback, callbackParam: pointer): cint
+
+  #extern DECLSPEC void SDLCALL SDL_iPhoneSetEventPump(SDL_bool enabled);
+  proc SDL_iPhoneSetEventPump*(enabled: bool): void
+
+  #extern DECLSPEC int SDLCALL SDL_iPhoneKeyboardShow(SDL_Window * window);
+  proc iPhoneKeyboardShow*(window:PWindow): cint
+  #extern DECLSPEC int SDLCALL SDL_iPhoneKeyboardHide(SDL_Window * window);
+  proc iPhoneKeyboardHide*(window:PWindow): cint
+  #extern DECLSPEC SDL_bool SDLCALL SDL_iPhoneKeyboardIsShown(SDL_Window * window);
+  proc iPhoneKeyboardIsShown*(window:PWindow): bool
+  #extern DECLSPEC int SDLCALL SDL_iPhoneKeyboardToggle(SDL_Window * window);
+  proc iPhoneKeyboardToggle*(window:PWindow): cint
+
+elif defined(android):
+  
+  #extern DECLSPEC void * SDLCALL SDL_AndroidGetJNIEnv();
+  proc AndroidGetJNIEnv*(): pointer
+
+  #extern DECLSPEC void * SDLCALL SDL_AndroidGetActivity();
+  proc AndroidGetActivity*(): pointer
+
+  #extern DECLSPEC int SDLCALL SDL_AndroidGetExternalStorageState();
+  proc AndroidGetExternalStorageState*(): cint
+
+  #extern DECLSPEC const char * SDLCALL SDL_AndroidGetInternalStoragePath();
+  proc AndroidGetInternalStoragePath* (): cstring
+
+  #extern DECLSPEC const char * SDLCALL SDL_AndroidGetExternalStoragePath();
+  proc AndroidGetExternalStoragePath* (): cstring
+
 
 
 {.pop.}
