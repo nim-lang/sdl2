@@ -67,19 +67,18 @@ type
   GenericSocket* = ptr GenericSocketObj
 
 {.push dynlib: LibName, callconv: cdecl.}
-{.push importc:"SDLNet_$1".}
 # This function gets the version of the dynamically linked SDL_net library.
 #   it should NOT be used to fill a version structure, instead you should
 #   use the SDL_NET_VERSION() macro.
 #
 
-proc linked_Version*(): ptr SDL_Version
+proc linked_Version*(): ptr SDL_Version {.importc: "SDLNet_Linked_Version".}
 # Initialize/Cleanup the network API
 #   SDL must be initialized before calls to functions in this library,
 #   because this library uses utility functions from the SDL library.
 #
-proc init*(): cint
-proc quit*()
+proc init*(): cint {.importc: "SDLNet_Init".}
+proc quit*() {.importc: "SDLNet_Quit".}
 #*********************************************************************
 # IPv4 hostname resolution API
 #*********************************************************************
@@ -90,17 +89,17 @@ proc quit*()
 #   address will be INADDR_NONE, and the function will return -1.
 #   If 'host' is NULL, the resolved host will be set to INADDR_ANY.
 #
-proc resolveHost*(address: ptr IpAddress; host: cstring; port: uint16): cint
+proc resolveHost*(address: ptr IpAddress; host: cstring; port: uint16): cint {.importc: "SDLNet_ResolveHost".}
 # Resolve an ip address to a host name in canonical form.
 #   If the ip couldn't be resolved, this function returns NULL,
 #   otherwise a pointer to a static buffer containing the hostname
 #   is returned.  Note that this function is not thread-safe.
 #
-proc resolveIP*(ip: ptr IpAddress): cstring
+proc resolveIP*(ip: ptr IpAddress): cstring {.importc: "SDLNet_ResolveIP".}
 # Get the addresses of network interfaces on this system.
 #   This returns the number of addresses saved in 'addresses'
 #
-proc getLocalAddresses*(addresses: ptr IpAddress; maxcount: cint): cint
+proc getLocalAddresses*(addresses: ptr IpAddress; maxcount: cint): cint {.importc: "SDLNet_GetLocalAddresses".}
 #*********************************************************************
 # TCP network API
 #*********************************************************************
@@ -113,30 +112,30 @@ proc getLocalAddresses*(addresses: ptr IpAddress; maxcount: cint): cint
 #   SDLNet_ResolveHost() are already in the correct form).
 #   The newly created socket is returned, or NULL if there was an error.
 #
-proc tcpOpen*(ip: ptr IpAddress): TcpSocket
+proc tcpOpen*(ip: ptr IpAddress): TcpSocket {.importc: "SDLNet_TCP_Open".}
 # Accept an incoming connection on the given server socket.
 #   The newly created socket is returned, or NULL if there was an error.
 #
-proc tcpAccept*(server: TcpSocket): TcpSocket
+proc tcpAccept*(server: TcpSocket): TcpSocket {.importc: "SDLNet_TCP_Accept".}
 # Get the IP address of the remote system associated with the socket.
 #   If the socket is a server socket, this function returns NULL.
 #
-proc tcpGetPeerAddress*(sock: TcpSocket): ptr IpAddress
+proc tcpGetPeerAddress*(sock: TcpSocket): ptr IpAddress {.importc: "SDLNet_TCP_GetPeerAddress".}
 # Send 'len' bytes of 'data' over the non-server socket 'sock'
 #   This function returns the actual amount of data sent.  If the return value
 #   is less than the amount of data sent, then either the remote connection was
 #   closed, or an unknown socket error occurred.
 #
-proc tcpSend*(sock: TcpSocket; data: pointer; len: cint): cint
+proc tcpSend*(sock: TcpSocket; data: pointer; len: cint): cint {.importc: "SDLNet_TCP_Send".}
 # Receive up to 'maxlen' bytes of data over the non-server socket 'sock',
 #   and store them in the buffer pointed to by 'data'.
 #   This function returns the actual amount of data received.  If the return
 #   value is less than or equal to zero, then either the remote connection was
 #   closed, or an unknown socket error occurred.
 #
-proc tcpRecv*(sock: TcpSocket; data: pointer; maxlen: cint): cint
+proc tcpRecv*(sock: TcpSocket; data: pointer; maxlen: cint): cint {.importc: "SDLNet_TCP_Recv".}
 # Close a TCP network socket
-proc tcpClose*(sock: TcpSocket)
+proc tcpClose*(sock: TcpSocket) {.importc: "SDLNet_TCP_Close".}
 #*********************************************************************
 # UDP network API
 #*********************************************************************
@@ -144,26 +143,26 @@ proc tcpClose*(sock: TcpSocket)
 # Allocate/resize/free a single UDP packet 'size' bytes long.
 #   The new packet is returned, or NULL if the function ran out of memory.
 #
-proc allocPacket*(size: cint): ptr UDPpacket
-proc resizePacket*(packet: ptr UDPpacket; newsize: cint): cint
-proc freePacket*(packet: ptr UDPpacket)
+proc allocPacket*(size: cint): ptr UDPpacket {.importc: "SDLNet_AllocPacket".}
+proc resizePacket*(packet: ptr UDPpacket; newsize: cint): cint {.importc: "SDLNet_ResizePacket".}
+proc freePacket*(packet: ptr UDPpacket) {.importc: "SDLNet_FreePacket".}
 # Allocate/Free a UDP packet vector (array of packets) of 'howmany' packets,
 #   each 'size' bytes long.
 #   A pointer to the first packet in the array is returned, or NULL if the
 #   function ran out of memory.
 #
-proc allocPacketV*(howmany: cint; size: cint): ptr ptr UDPpacket
-proc freePacketV*(packetV: ptr ptr UDPpacket)
+proc allocPacketV*(howmany: cint; size: cint): ptr ptr UDPpacket {.importc: "SDLNet_AllocPacketV".}
+proc freePacketV*(packetV: ptr ptr UDPpacket) {.importc: "SDLNet_FreePacketV".}
 # Open a UDP network socket
 #   If 'port' is non-zero, the UDP socket is bound to a local port.
 #   The 'port' should be given in native byte order, but is used
 #   internally in network (big endian) byte order, in addresses, etc.
 #   This allows other systems to send to this socket via a known port.
 #
-proc uDP_Open*(port: uint16): UDPsocket
+proc udpOpen*(port: uint16): UDPsocket {.importc: "SDLNet_UDP_Open".}
 # Set the percentage of simulated packet loss for packets sent on the socket.
 #
-proc uDP_SetPacketLoss*(sock: UDPsocket; percent: cint)
+proc udpSetPacketLoss*(sock: UDPsocket; percent: cint) {.importc: "SDLNet_UDP_SetPacketLoss".}
 # Bind the address 'address' to the requested channel on the UDP socket.
 #   If the channel is -1, then the first unbound channel that has not yet
 #   been bound to the maximum number of addresses will be bound with
@@ -174,16 +173,16 @@ proc uDP_SetPacketLoss*(sock: UDPsocket; percent: cint)
 #   address, to which all outbound packets on the channel are sent.
 #   This function returns the channel which was bound, or -1 on error.
 #
-proc uDP_Bind*(sock: UDPsocket; channel: cint; address: ptr IpAddress): cint
+proc udpBind*(sock: UDPsocket; channel: cint; address: ptr IpAddress): cint {.importc: "SDLNet_UDP_Bind".}
 # Unbind all addresses from the given channel
-proc uDP_Unbind*(sock: UDPsocket; channel: cint)
+proc udpUnbind*(sock: UDPsocket; channel: cint) {.importc: "SDLNet_UDP_Unbind".}
 # Get the primary IP address of the remote system associated with the
 #   socket and channel.  If the channel is -1, then the primary IP port
 #   of the UDP socket is returned -- this is only meaningful for sockets
 #   opened with a specific port.
 #   If the channel is not bound and not -1, this function returns NULL.
 #
-proc uDP_GetPeerAddress*(sock: UDPsocket; channel: cint): ptr IpAddress
+proc udpGetPeerAddress*(sock: UDPsocket; channel: cint): ptr IpAddress {.importc: "SDLNet_UDP_GetPeerAddress".}
 # Send a vector of packets to the the channels specified within the packet.
 #   If the channel specified in the packet is -1, the packet will be sent to
 #   the address in the 'src' member of the packet.
@@ -191,8 +190,8 @@ proc uDP_GetPeerAddress*(sock: UDPsocket; channel: cint): ptr IpAddress
 #   been sent, -1 if the packet send failed.
 #   This function returns the number of packets sent.
 #
-proc uDP_SendV*(sock: UDPsocket; packets: ptr ptr UDPpacket;
-                       npackets: cint): cint
+proc udpSendV*(sock: UDPsocket; packets: ptr ptr UDPpacket;
+               npackets: cint): cint {.importc: "SDLNet_UDP_SendV".}
 # Send a single packet to the specified channel.
 #   If the channel specified in the packet is -1, the packet will be sent to
 #   the address in the 'src' member of the packet.
@@ -205,7 +204,7 @@ proc uDP_SendV*(sock: UDPsocket; packets: ptr ptr UDPpacket;
 #   of the transport medium.  It can be as low as 250 bytes for some PPP links,
 #   and as high as 1500 bytes for ethernet.
 #
-proc uDP_Send*(sock: UDPsocket; channel: cint; packet: ptr UDPpacket): cint
+proc udpSend*(sock: UDPsocket; channel: cint; packet: ptr UDPpacket): cint {.importc: "SDLNet_UDP_Send".}
 # Receive a vector of pending packets from the UDP socket.
 #   The returned packets contain the source address and the channel they arrived
 #   on.  If they did not arrive on a bound channel, the the channel will be set
@@ -216,7 +215,7 @@ proc uDP_Send*(sock: UDPsocket; channel: cint; packet: ptr UDPpacket): cint
 #   This function returns the number of packets read from the network, or -1
 #   on error.  This function does not block, so can return 0 packets pending.
 #
-proc uDP_RecvV*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint
+proc udpRecvV*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint {.importc: "SDLNet_UDP_RecvV".}
 # Receive a single packet from the UDP socket.
 #   The returned packet contains the source address and the channel it arrived
 #   on.  If it did not arrive on a bound channel, the the channel will be set
@@ -227,20 +226,20 @@ proc uDP_RecvV*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint
 #   This function returns the number of packets read from the network, or -1
 #   on error.  This function does not block, so can return 0 packets pending.
 #
-proc uDP_Recv*(sock: UDPsocket; packet: ptr UDPpacket): cint
+proc udpRecv*(sock: UDPsocket; packet: ptr UDPpacket): cint {.importc: "SDLNet_UDP_Recv".}
 # Close a UDP network socket
-proc uDP_Close*(sock: UDPsocket)
+proc udpClose*(sock: UDPsocket) {.importc: "SDLNet_UDP_Close".}
 
 # Allocate a socket set for use with SDLNet_CheckSockets()
 #   This returns a socket set for up to 'maxsockets' sockets, or NULL if
 #   the function ran out of memory.
 #
-proc allocSocketSet*(maxsockets: cint): SocketSet
+proc allocSocketSet*(maxsockets: cint): SocketSet {.importc: "SDLNet_AllocSocketSet".}
 # Add a socket to a set of sockets to be checked for available data
-proc addSocket*(set: SocketSet; sock: GenericSocket): cint
+proc addSocket*(set: SocketSet; sock: GenericSocket): cint {.importc: "SDLNet_AddSocket".}
 
 # Remove a socket from a set of sockets to be checked for available data
-proc delSocket*(set: SocketSet; sock: GenericSocket): cint
+proc delSocket*(set: SocketSet; sock: GenericSocket): cint {.importc: "SDLNet_DelSocket".}
 
 # This function checks to see if data is available for reading on the
 #   given set of sockets.  If 'timeout' is 0, it performs a quick poll,
@@ -249,44 +248,43 @@ proc delSocket*(set: SocketSet; sock: GenericSocket): cint
 #   first.  This function returns the number of sockets ready for reading,
 #   or -1 if there was an error with the select() system call.
 #
-proc checkSockets*(set: SocketSet; timeout: uint32): cint
+proc checkSockets*(set: SocketSet; timeout: uint32): cint {.importc: "SDLNet_CheckSockets".}
 # After calling CheckSockets(), you can use this function on a
 #   socket that was in the socket set, to find out if data is available
 #   for reading.
 #
 
 # Free a set of sockets allocated by SDL_NetAllocSocketSet()
-proc freeSocketSet*(set: SocketSet)
+proc freeSocketSet*(set: SocketSet) {.importc: "SDLNet_FreeSocketSet".}
 #*********************************************************************
 # Error reporting functions
 #*********************************************************************
-proc setError*(fmt: cstring) {.varargs.}
-proc getError*(): cstring
+proc setError*(fmt: cstring) {.varargs, importc: "SDLNet_SetError".}
+proc getError*(): cstring {.importc: "SDLNet_GetError".}
 #*********************************************************************
 # Inline functions to read/write network data
 #*********************************************************************
 # Warning, some systems have data access alignment restrictions
 
-proc write16* (value: uint16, dest: pointer)
-proc write32* (value: uint32, dest: pointer)
-proc read16* (src: pointer): uint16
-proc read32* (src: pointer): uint32
+proc write16* (value: uint16, dest: pointer) {.importc: "SDLNet_Write16".}
+proc write32* (value: uint32, dest: pointer) {.importc: "SDLNet_Write32".}
+proc read16* (src: pointer): uint16 {.importc: "SDLNet_Read16".}
+proc read32* (src: pointer): uint32 {.importc: "SDLNet_Read32".}
 
-{.pop.}
 {.pop.}
 
 proc tcpAddSocket*(set: SocketSet; sock: TcpSocket): cint =
-  AddSocket(set, cast[GenericSocket](sock))
+  addSocket(set, cast[GenericSocket](sock))
 
-proc uDP_AddSocket*(set: SocketSet; sock: UDPsocket): cint =
-  AddSocket(set, cast[GenericSocket](sock))
+proc udpAddSocket*(set: SocketSet; sock: UDPsocket): cint =
+  addSocket(set, cast[GenericSocket](sock))
 
 
 proc tcpDelSocket*(set: SocketSet; sock: TcpSocket): cint {.inline.} =
-  DelSocket(set, cast[GenericSocket](sock))
+  delSocket(set, cast[GenericSocket](sock))
 
-proc uDP_DelSocket*(set: SocketSet; sock: UDPsocket): cint {.inline.} =
-  DelSocket(set, cast[GenericSocket](sock))
+proc udpDelSocket*(set: SocketSet; sock: UDPsocket): cint {.inline.} =
+  delSocket(set, cast[GenericSocket](sock))
 
 
 ##define SDLNet_SocketReady(sock) _SDLNet_SocketReady((SDLNet_GenericSocket)(sock))

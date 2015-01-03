@@ -499,7 +499,7 @@ else:
   {.push callConv: cdecl, dynlib: LibName.}
 
 
-## functions that are not imported directly as SDL_$1  (usually they are prefixed witha type)
+## functions whose names have been shortened by elision of a type name
 proc getWMInfo*(window: WindowPtr; info: var WMInfo): Bool32 {.
   importc: "SDL_GetWindowWMInfo".}
 
@@ -787,9 +787,9 @@ proc present*(renderer: RendererPtr) {.importc: "SDL_RenderPresent".}
 
 
 
-proc gl_bindTexture*(texture: TexturePtr; texw, texh: var cfloat): cint {.
+proc glBindTexture*(texture: TexturePtr; texw, texh: var cfloat): cint {.
   importc: "SDL_GL_BindTexture".}
-proc gl_unbindTexture*(texture: TexturePtr) {.
+proc glUnbindTexture*(texture: TexturePtr) {.
   importc: "SDL_GL_UnbindTexture".}
 
 proc createRGBSurface*(flags: cint; width, height, depth: cint;
@@ -1046,51 +1046,51 @@ proc removeTimer*(id: TimerID): Bool32 {.importc: "SDL_RemoveTimer".}
 #   \sa SDL_GL_UnloadLibrary()
 #
 #extern DECLSPEC int SDLCALL SDL_GL_LoadLibrary(const char *path);
-proc gl_LoadLibrary* (path: cstring): SDL_Return {.discardable,
+proc glLoadLibrary* (path: cstring): SDL_Return {.discardable,
   importc: "SDL_GL_LoadLibrary".}
 #extern DECLSPEC void *SDLCALL SDL_GL_GetProcAddress(const char *proc);
-proc gl_GetProcAddress* (procedure: cstring): pointer {.
+proc glGetProcAddress* (procedure: cstring): pointer {.
   importc: "SDL_GL_GetProcAddress".}
 #extern DECLSPEC void SDLCALL SDL_GL_UnloadLibrary(void);
-proc gl_UnloadLibrary* {.
+proc glUnloadLibrary* {.
   importc: "SDL_GL_UnloadLibrary".}
 #extern DECLSPEC SDL_bool SDLCALL SDL_GL_ExtensionSupported(const char
 #                                                          *extension);
-proc gl_ExtensionSupported* (extension: cstring): bool {.
+proc glExtensionSupported* (extension: cstring): bool {.
   importc: "SDL_GL_ExtensionSupported".}
 
 #extern DECLSPEC int SDLCALL SDL_GL_SetAttribute(SDL_GLattr attr, int value);
-proc gl_SetAttribute* (attr: GLattr; value: cint): cint {.
+proc glSetAttribute* (attr: GLattr; value: cint): cint {.
   importc: "SDL_GL_SetAttribute".}
 #extern DECLSPEC int SDLCALL SDL_GL_GetAttribute(SDL_GLattr attr, int *value);
-proc gl_GetAttribute* (attr: GLattr; value: var cint): cint {.
+proc glGetAttribute* (attr: GLattr; value: var cint): cint {.
   importc: "SDL_GL_GetAttribute".}
 
 
-proc gl_CreateContext*(window: WindowPtr): GlContextPtr {.
+proc glCreateContext*(window: WindowPtr): GlContextPtr {.
   importc: "SDL_GL_CreateContext".}
   ## Create an OpenGL context for use with an OpenGL window, and make it current.
-proc gl_MakeCurrent* (window: WindowPtr; context: GlContextPtr): cint {.
+proc glMakeCurrent* (window: WindowPtr; context: GlContextPtr): cint {.
   importc: "SDL_GL_MakeCurrent".}
 
-proc gl_GetCurrentWindow* : WindowPtr {.
+proc glGetCurrentWindow* : WindowPtr {.
   importc: "SDL_GL_GetCurrentWindow".}
-proc gl_GetCurrentContext*: GlContextPtr {.
+proc glGetCurrentContext*: GlContextPtr {.
   importc: "SDL_GL_GetCurrentContext".}
 
-proc gl_GetDrawableSize* (window: WindowPtr; w,h: var cint) {.
+proc glGetDrawableSize* (window: WindowPtr; w,h: var cint) {.
   importc: "SDL_GL_GetDrawableSize".}
 
-proc gl_SetSwapInterval* (interval: cint): cint {.
+proc glSetSwapInterval* (interval: cint): cint {.
   importc: "SDL_GL_SetSwapInterval".}
-proc gl_GetSwapInterval* : cint {.
+proc glGetSwapInterval* : cint {.
   importc: "SDL_GL_GetSwapInterval".}
 
-proc gl_SwapWindow*(window: WindowPtr) {.
+proc glSwapWindow*(window: WindowPtr) {.
   importc: "SDL_GL_SwapWindow".}
   ## Swap the OpenGL buffers for a window, if double-buffering is supported.
 
-proc gl_DeleteContext* (context: GlContextPtr) {.
+proc glDeleteContext* (context: GlContextPtr) {.
   importc: "SDL_GL_DeleteContext".}
 
 
