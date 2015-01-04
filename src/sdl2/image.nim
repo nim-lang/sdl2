@@ -17,7 +17,7 @@ const
 
 {.push callconv:cdecl, dynlib: libName.}
 
-proc linked_Version*(): ptr SDL_version {.importc: "IMG_Linked_Version".}
+proc linkedVersion*(): ptr SDL_version {.importc: "IMG_Linked_Version".}
 
 proc init*(flags: cint = IMG_INIT_JPG or IMG_INIT_PNG): cint {.importc: "IMG_Init".}
   ## It returns the flags successfully initialized, or 0 on failure.
@@ -81,15 +81,42 @@ proc readXPMFromArray*(xpm: cstringArray): SurfacePtr {.importc: "IMG_ReadXPMFro
 
 {.pop.}
 
-
-
-
-
-
-
-
-
-
-
-
-
+{.deprecated: [IMG_Init: init].}
+{.deprecated: [IMG_Linked_Version: linkedVersion].}
+{.deprecated: [IMG_Load: load].}
+{.deprecated: [IMG_LoadBMP_RW: loadBMP_RW].}
+{.deprecated: [IMG_LoadCUR_RW: loadCUR_RW].}
+{.deprecated: [IMG_LoadGIF_RW: loadGIF_RW].}
+{.deprecated: [IMG_LoadICO_RW: loadICO_RW].}
+{.deprecated: [IMG_LoadJPG_RW: loadJPG_RW].}
+{.deprecated: [IMG_LoadLBM_RW: loadLBM_RW].}
+{.deprecated: [IMG_LoadPCX_RW: loadPCX_RW].}
+{.deprecated: [IMG_LoadPNG_RW: loadPNG_RW].}
+{.deprecated: [IMG_LoadPNM_RW: loadPNM_RW].}
+{.deprecated: [IMG_LoadTGA_RW: loadTGA_RW].}
+{.deprecated: [IMG_LoadTIF_RW: loadTIF_RW].}
+{.deprecated: [IMG_LoadTexture: loadTexture].}
+{.deprecated: [IMG_LoadTextureTyped_RW: loadTextureTyped_RW].}
+{.deprecated: [IMG_LoadTexture_RW: loadTexture_RW].}
+{.deprecated: [IMG_LoadTyped_RW: loadTyped_RW].}
+{.deprecated: [IMG_LoadWEBP_RW: loadWEBP_RW].}
+{.deprecated: [IMG_LoadXCF_RW: loadXCF_RW].}
+{.deprecated: [IMG_LoadXPM_RW: loadXPM_RW].}
+{.deprecated: [IMG_LoadXV_RW: loadXV_RW].}
+{.deprecated: [IMG_Load_RW: load_RW].}
+{.deprecated: [IMG_Quit: quit].}
+{.deprecated: [IMG_ReadXPMFromArray: readXPMFromArray].}
+{.deprecated: [IMG_isBMP: isBMP].}
+{.deprecated: [IMG_isCUR: isCUR].}
+{.deprecated: [IMG_isGIF: isGIF].}
+{.deprecated: [IMG_isICO: isICO].}
+{.deprecated: [IMG_isJPG: isJPG].}
+{.deprecated: [IMG_isLBM: isLBM].}
+{.deprecated: [IMG_isPCX: isPCX].}
+{.deprecated: [IMG_isPNG: isPNG].}
+{.deprecated: [IMG_isPNM: isPNM].}
+{.deprecated: [IMG_isTIF: isTIF].}
+{.deprecated: [IMG_isWEBP: isWEBP].}
+{.deprecated: [IMG_isXCF: isXCF].}
+{.deprecated: [IMG_isXPM: isXPM].}
+{.deprecated: [IMG_isXV: isXV].}

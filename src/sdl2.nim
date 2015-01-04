@@ -31,7 +31,7 @@ const
   SDL_TEXTINPUTEVENT_TEXT_SIZE* = 32
 type
 
-  WindowEventObjID* {.size: sizeof(byte).} = enum
+  WindowEventID* {.size: sizeof(byte).} = enum
     WindowEvent_None = 0, WindowEvent_Shown, WindowEvent_Hidden, WindowEvent_Exposed,
     WindowEvent_Moved, WindowEvent_Resized, WindowEvent_SizeChanged, WindowEvent_Minimized,
     WindowEvent_Maximized, WindowEvent_Restored, WindowEvent_Enter, WindowEvent_Leave,
@@ -64,7 +64,7 @@ type
     kind*: EventType
     timestamp*: uint32
     windowID*: uint32
-    event*: WindowEventObjID
+    event*: WindowEventID
     pad1,pad2,pad3: uint8
     data1*, data2*: cint
   KeyboardEventPtr* = ptr KeyboardEventObj
@@ -263,7 +263,7 @@ type
   SDL_Version* = object
     major*, minor*, patch*: uint8
 
-  RendererPtrInfo* = ptr RendererInfo
+  RendererInfoPtr* = ptr RendererInfo
   RendererInfo* {.pure, final.} = object
     name*: cstring          #*< The name of the renderer
     flags*: uint32          #*< Supported ::SDL_RendererFlags
@@ -399,7 +399,7 @@ const SDL_WINDOWPOS_CENTERED* = SDL_WINDOWPOS_CENTERED_DISPLAY(0)
 template SDL_WINDOWPOS_ISCENTERED*(X): expr = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_CENTERED_MASK)
 
 
-template EvConv(name, name2, ptype: expr; valid: set[EventType]): stmt {.immediate.}=
+template evConv(name, name2, ptype: expr; valid: set[EventType]): stmt {.immediate.}=
   proc `name`* (event: var Event): ptype =
     assert event.kind in valid
     return cast[ptype](addr event)
@@ -407,34 +407,34 @@ template EvConv(name, name2, ptype: expr; valid: set[EventType]): stmt {.immedia
     assert event.kind in valid
     return cast[ptype](addr event)
 
-EvConv(EvWindow, window, WindowEventPtr, {WindowEvent})
-EvConv(EvKeyboard, key, KeyboardEventPtr, {KeyDown, KeyUP})
-EvConv(EvTextEditing, edit, TextEditingEventPtr, {TextEditing})
-EvConv(EvTextInput, text, TextInputEventPtr, {TextInput})
+evConv(EvWindow, window, WindowEventPtr, {WindowEvent})
+evConv(EvKeyboard, key, KeyboardEventPtr, {KeyDown, KeyUP})
+evConv(EvTextEditing, edit, TextEditingEventPtr, {TextEditing})
+evConv(EvTextInput, text, TextInputEventPtr, {TextInput})
 
-EvConv(EvMouseMotion, motion, MouseMotionEventPtr, {MouseMotion})
-EvConv(EvMouseButton, button, MouseButtonEventPtr, {MouseButtonDown, MouseButtonUp})
-EvConv(EvMouseWheel, wheel, MouseWheelEventPtr, {MouseWheel})
+evConv(EvMouseMotion, motion, MouseMotionEventPtr, {MouseMotion})
+evConv(EvMouseButton, button, MouseButtonEventPtr, {MouseButtonDown, MouseButtonUp})
+evConv(EvMouseWheel, wheel, MouseWheelEventPtr, {MouseWheel})
 
-EvConv(EvJoyAxis, jaxis, JoyAxisEventPtr, {JoyAxisMotion})
-EvConv(EvJoyBall, jball, JoyBallEventPtr, {JoyBallMotion})
-EvConv(EvJoyHat, jhat, JoyHatEventPtr, {JoyHatMotion})
-EvConv(EvJoyButton, jbutton, JoyButtonEventPtr, {JoyButtonDown, JoyButtonUp})
-EvConv(EvJoyDevice, jdevice, JoyDeviceEventPtr, {JoyDeviceAdded, JoyDeviceRemoved})
+evConv(EvJoyAxis, jaxis, JoyAxisEventPtr, {JoyAxisMotion})
+evConv(EvJoyBall, jball, JoyBallEventPtr, {JoyBallMotion})
+evConv(EvJoyHat, jhat, JoyHatEventPtr, {JoyHatMotion})
+evConv(EvJoyButton, jbutton, JoyButtonEventPtr, {JoyButtonDown, JoyButtonUp})
+evConv(EvJoyDevice, jdevice, JoyDeviceEventPtr, {JoyDeviceAdded, JoyDeviceRemoved})
 
-EvConv(EvControllerAxis, caxis, ControllerAxisEventPtr, {ControllerAxisMotion})
-EvConv(EvControllerButton, cbutton, ControllerButtonEventPtr, {ControllerButtonDown, ControllerButtonUp})
-EvConv(EvControllerDevice, cdevice, ControllerDeviceEventPtr, {ControllerDeviceAdded, ControllerDeviceRemoved})
+evConv(EvControllerAxis, caxis, ControllerAxisEventPtr, {ControllerAxisMotion})
+evConv(EvControllerButton, cbutton, ControllerButtonEventPtr, {ControllerButtonDown, ControllerButtonUp})
+evConv(EvControllerDevice, cdevice, ControllerDeviceEventPtr, {ControllerDeviceAdded, ControllerDeviceRemoved})
 
-EvConv(EvTouchFinger, tfinger, TouchFingerEventPtr, {FingerMotion, FingerDown, FingerUp})
-EvConv(EvMultiGesture, mgesture, MultiGestureEventPtr, {MultiGesture})
-EvConv(EvDollarGesture, dgesture, DollarGestureEventPtr, {DollarGesture})
+evConv(EvTouchFinger, tfinger, TouchFingerEventPtr, {FingerMotion, FingerDown, FingerUp})
+evConv(EvMultiGesture, mgesture, MultiGestureEventPtr, {MultiGesture})
+evConv(EvDollarGesture, dgesture, DollarGestureEventPtr, {DollarGesture})
 
-EvConv(EvDropFile, drop, DropEventPtr, {DropFile})
-EvConv(EvQuit, quit, QuitEventPtr, {QuitEvent})
+evConv(EvDropFile, drop, DropEventPtr, {DropFile})
+evConv(EvQuit, quit, QuitEventPtr, {QuitEvent})
 
-EvConv(EvUser, user, UserEventPtr, {UserEvent, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5})
-#EvConv(EvSysWM, syswm, SysWMEventPtr, {SysWMEvent})
+evConv(EvUser, user, UserEventPtr, {UserEvent, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5})
+#evConv(EvSysWM, syswm, SysWMEventPtr, {SysWMEvent})
 
 const ## SDL_MessageBox flags. If supported will display warning icon, etc.
   SDL_MESSAGEBOX_ERROR* = 0x00000010 #*< error dialog
@@ -662,7 +662,7 @@ proc createSoftwareRenderer*(surface: SurfacePtr): RendererPtr {.
   importc: "SDL_CreateSoftwareRenderer".}
 proc getRenderer*(window: WindowPtr): RendererPtr {.
   importc: "SDL_GetRenderer".}
-proc getRendererInfo*(renderer: RendererPtr; info: RendererPtrInfo): cint {.
+proc getRendererInfo*(renderer: RendererPtr; info: RendererInfoPtr): cint {.
   importc: "SDL_GetRendererInfo".}
 
 proc createTexture*(renderer: RendererPtr; format: uint32;
@@ -852,7 +852,7 @@ proc rwFromConstMem*(mem: pointer; size: cint): RWopsPtr {.importc: "SDL_RWFromC
 #
 #*
 proc saveBMP_RW*(surface: SurfacePtr; dst: RWopsPtr;
-                     freedst: cint): SDL_Return {.importc: "SDL_SaveBMP_RW".}
+                 freedst: cint): SDL_Return {.importc: "SDL_SaveBMP_RW".}
 
 proc setSurfaceRLE*(surface: SurfacePtr; flag: cint): cint {.
   importc:"SDL_SetSurfaceRLE".}
@@ -1379,6 +1379,9 @@ when defined(windows):
     ## These can be passed to EnumAdapters and EnumOutputs respectively to get the objects
     ## required to create a DX10 or DX11 device and swap chain.
 
+  {.deprecated: [DXGIGetOutputInfo: dXGIGetOutputInfo].}
+  {.deprecated: [Direct3D9GetAdapterIndex: direct3D9GetAdapterIndex].}
+  {.deprecated: [GetD3D9Device: getD3D9Device].}
 
 elif defined(iPhone):
 
@@ -1417,6 +1420,11 @@ elif defined(android):
   #extern DECLSPEC const char * SDLCALL SDL_AndroidGetExternalStoragePath();
   proc androidGetExternalStoragePath* (): cstring
 
+  {.deprecated: [AndroidGetActivity: androidGetActivity].}
+  {.deprecated: [AndroidGetExternalStoragePath: androidGetExternalStoragePath].}
+  {.deprecated: [AndroidGetExternalStorageState: androidGetExternalStorageState].}
+  {.deprecated: [AndroidGetInternalStoragePath: androidGetInternalStoragePath].}
+  {.deprecated: [AndroidGetJNIEnv: androidGetJNIEnv].}
 
 
 const
@@ -1499,3 +1507,340 @@ proc setHintWithPriority*(name: cstring, value: cstring, priority: cint): bool {
 proc getHint*(name: cstring): cstring {.
   importc: "SDL_GetHint".}
 
+{.deprecated: [PBlitMap: BlitMapPtr].}
+{.deprecated: [PControllerAxisEvent: ControllerAxisEventPtr].}
+{.deprecated: [PControllerButtonEvent: ControllerButtonEventPtr].}
+{.deprecated: [PControllerDeviceEvent: ControllerDeviceEventPtr].}
+{.deprecated: [PCursor: CursorPtr].}
+{.deprecated: [PDollarGestureEvent: DollarGestureEventPtr].}
+{.deprecated: [PDropEvent: DropEventPtr].}
+{.deprecated: [PGLContext: GlContextPtr].}
+{.deprecated: [PJoyAxisEvent: JoyAxisEventPtr].}
+{.deprecated: [PJoyBallEvent: JoyBallEventPtr].}
+{.deprecated: [PJoyButtonEvent: JoyButtonEventPtr].}
+{.deprecated: [PJoyDeviceEvent: JoyDeviceEventPtr].}
+{.deprecated: [PJoyHatEvent: JoyHatEventPtr].}
+{.deprecated: [PKeyboardEvent: KeyboardEventPtr].}
+{.deprecated: [PMouseButtonEvent: MouseButtonEventPtr].}
+{.deprecated: [PMouseMotionEvent: MouseMotionEventPtr].}
+{.deprecated: [PMouseWheelEvent: MouseWheelEventPtr].}
+{.deprecated: [PMultiGestureEvent: MultiGestureEventPtr].}
+{.deprecated: [PQuitEvent: QuitEventPtr].}
+{.deprecated: [PRWops: RWopsPtr].}
+{.deprecated: [PRenderer: RendererPtr].}
+{.deprecated: [PRendererInfo: RendererInfoPtr].}
+{.deprecated: [PSurface: SurfacePtr].}
+{.deprecated: [PTextEditingEvent: TextEditingEventPtr].}
+{.deprecated: [PTextInputEvent: TextInputEventPtr].}
+{.deprecated: [PTexture: TexturePtr].}
+{.deprecated: [PTouchFingerEvent: TouchFingerEventPtr].}
+{.deprecated: [PUserEvent: UserEventPtr].}
+{.deprecated: [PWindow: WindowPtr].}
+{.deprecated: [PWindowEvent: WindowEventPtr].}
+{.deprecated: [TBlendMode: BlendMode].}
+{.deprecated: [TBlitFunction: BlitFunction].}
+{.deprecated: [TColor: Color].}
+{.deprecated: [TControllerAxisEvent: ControllerAxisEventObj].}
+{.deprecated: [TControllerButtonEvent: ControllerButtonEventObj].}
+{.deprecated: [TControllerDeviceEvent: ControllerDeviceEventObj].}
+{.deprecated: [TDisplayMode: DisplayMode].}
+{.deprecated: [TDollarGestureEvent: DollarGestureEventObj].}
+{.deprecated: [TDropEvent: DropEventObj].}
+{.deprecated: [TEvent: Event].}
+{.deprecated: [TEventFilter: EventFilter].}
+{.deprecated: [TEventType: EventType].}
+{.deprecated: [TEventaction: Eventaction].}
+{.deprecated: [TFingerID: FingerID].}
+{.deprecated: [TGestureID: GestureID].}
+{.deprecated: [TJoyAxisEvent: JoyAxisEventObj].}
+{.deprecated: [TJoyBallEvent: JoyBallEventObj].}
+{.deprecated: [TJoyButtonEvent: JoyButtonEventObj].}
+{.deprecated: [TJoyDeviceEvent: JoyDeviceEventObj].}
+{.deprecated: [TJoyHatEvent: JoyHatEventObj].}
+{.deprecated: [TKeyState: KeyState].}
+{.deprecated: [TKeySym: KeySym].}
+{.deprecated: [TKeyboardEvent: KeyboardEventObj].}
+{.deprecated: [TMem: Mem].}
+{.deprecated: [TMessageBoxButtonData: MessageBoxButtonData].}
+{.deprecated: [TMessageBoxColor: MessageBoxColor].}
+{.deprecated: [TMessageBoxColorScheme: MessageBoxColorScheme].}
+{.deprecated: [TMessageBoxColorType: MessageBoxColorType].}
+{.deprecated: [TMessageBoxData: MessageBoxData].}
+{.deprecated: [TMouseButtonEvent: MouseButtonEventObj].}
+{.deprecated: [TMouseMotionEvent: MouseMotionEventObj].}
+{.deprecated: [TMouseWheelEvent: MouseWheelEventObj].}
+{.deprecated: [TMultiGestureEvent: MultiGestureEventObj].}
+{.deprecated: [TPalette: Palette].}
+{.deprecated: [TPixelFormat: PixelFormat].}
+{.deprecated: [TPoint: Point].}
+{.deprecated: [TQuitEvent: QuitEventObj].}
+{.deprecated: [TRWops: RWops].}
+{.deprecated: [TRect: Rect].}
+{.deprecated: [TRendererFlip: RendererFlip].}
+{.deprecated: [TRendererInfo: RendererInfo].}
+{.deprecated: [TSurface: Surface].}
+{.deprecated: [TSysWMType: SysWMType].}
+{.deprecated: [TTextEditingEvent: TextEditingEventObj].}
+{.deprecated: [TTextInputEvent: TextInputEventObj].}
+{.deprecated: [TTextureAccess: TextureAccess].}
+{.deprecated: [TTextureModulate: TextureModulate].}
+{.deprecated: [TTimerCallback: TimerCallback].}
+{.deprecated: [TTimerID: TimerID].}
+{.deprecated: [TTouchFingerEvent: TouchFingerEventObj].}
+{.deprecated: [TTouchID: TouchID].}
+{.deprecated: [TUserEvent: UserEventObj].}
+{.deprecated: [TVoidCallback: VoidCallback].}
+{.deprecated: [TWMinfo: WMinfo].}
+{.deprecated: [TWindowEvent: WindowEventObj].}
+{.deprecated: [TWindowEventID: WindowEventID].}
+
+{.deprecated: [AddEventWatch: addEventWatch].}
+{.deprecated: [AddTimer: addTimer].}
+{.deprecated: [AllocFormat: allocFormat].}
+{.deprecated: [AllocPalette: allocPalette].}
+{.deprecated: [BlitScaled: blitScaled].}
+{.deprecated: [BlitSurface: blitSurface].}
+{.deprecated: [CalculateGammaRamp: calculateGammaRamp].}
+{.deprecated: [Clear: clear].}
+{.deprecated: [ClearError: clearError].}
+{.deprecated: [Contains: contains].}
+{.deprecated: [ConvertPixels: convertPixels].}
+{.deprecated: [ConvertSurface: convertSurface].}
+{.deprecated: [ConvertSurfaceFormat: convertSurfaceFormat].}
+{.deprecated: [Copy: copy].}
+{.deprecated: [CopyEx: copyEx].}
+{.deprecated: [CreateColorCursor: createColorCursor].}
+{.deprecated: [CreateCursor: createCursor].}
+{.deprecated: [CreateRGBSurface: createRGBSurface].}
+{.deprecated: [CreateRGBSurfaceFrom: createRGBSurfaceFrom].}
+{.deprecated: [CreateRenderer: createRenderer].}
+{.deprecated: [CreateSoftwareRenderer: createSoftwareRenderer].}
+{.deprecated: [CreateTexture: createTexture].}
+{.deprecated: [CreateTextureFromSurface: createTextureFromSurface].}
+{.deprecated: [CreateWindow: createWindow].}
+{.deprecated: [CreateWindowAndRenderer: createWindowAndRenderer].}
+{.deprecated: [CreateWindowFrom: createWindowFrom].}
+{.deprecated: [DelEventWatch: delEventWatch].}
+{.deprecated: [Delay: delay].}
+{.deprecated: [DestroyRenderer: destroyRenderer].}
+{.deprecated: [DestroyTexture: destroyTexture].}
+{.deprecated: [DestroyWindow: destroyWindow].}
+{.deprecated: [DisableScreenSaver: disableScreenSaver].}
+{.deprecated: [DrawLine: drawLine].}
+{.deprecated: [DrawLines: drawLines].}
+{.deprecated: [DrawPoint: drawPoint].}
+{.deprecated: [DrawPoints: drawPoints].}
+{.deprecated: [DrawRect: drawRect].}
+{.deprecated: [DrawRects: drawRects].}
+{.deprecated: [EnableScreenSaver: enableScreenSaver].}
+{.deprecated: [EventState: eventState].}
+{.deprecated: [FillRect: fillRect].}
+{.deprecated: [FillRects: fillRects].}
+{.deprecated: [FilterEvents: filterEvents].}
+{.deprecated: [FlushEvent: flushEvent].}
+{.deprecated: [FlushEvents: flushEvents].}
+{.deprecated: [FreeCursor: freeCursor].}
+{.deprecated: [FreeFormat: freeFormat].}
+{.deprecated: [FreePalette: freePalette].}
+{.deprecated: [FreeSurface: freeSurface].}
+{.deprecated: [GL_BindTexture: glBindTexture].}
+{.deprecated: [GL_CreateContext: glCreateContext].}
+{.deprecated: [GL_DeleteContext: glDeleteContext].}
+{.deprecated: [GL_ExtensionSupported: glExtensionSupported].}
+{.deprecated: [GL_GetAttribute: glGetAttribute].}
+{.deprecated: [GL_GetCurrentContext: glGetCurrentContext].}
+{.deprecated: [GL_GetCurrentWindow: glGetCurrentWindow].}
+{.deprecated: [GL_GetDrawableSize: glGetDrawableSize].}
+{.deprecated: [GL_GetProcAddress: glGetProcAddress].}
+{.deprecated: [GL_GetSwapInterval: glGetSwapInterval].}
+{.deprecated: [GL_LoadLibrary: glLoadLibrary].}
+{.deprecated: [GL_MakeCurrent: glMakeCurrent].}
+{.deprecated: [GL_SetAttribute: glSetAttribute].}
+{.deprecated: [GL_SetSwapInterval: glSetSwapInterval].}
+{.deprecated: [GL_SwapWindow: glSwapWindow].}
+{.deprecated: [GL_UnbindTexture: glUnbindTexture].}
+{.deprecated: [GL_UnloadLibrary: glUnloadLibrary].}
+{.deprecated: [GetBrightness: getBrightness].}
+{.deprecated: [GetClipRect: getClipRect].}
+{.deprecated: [GetClosestDisplayMode: getClosestDisplayMode].}
+{.deprecated: [GetColorKey: getColorKey].}
+{.deprecated: [GetCurrentDisplayMode: getCurrentDisplayMode].}
+{.deprecated: [GetCurrentVideoDriver: getCurrentVideoDriver].}
+{.deprecated: [GetCursor: getCursor].}
+{.deprecated: [GetData: getData].}
+{.deprecated: [GetDesktopDisplayMode: getDesktopDisplayMode].}
+{.deprecated: [GetDisplayBounds: getDisplayBounds].}
+{.deprecated: [GetDisplayIndex: getDisplayIndex].}
+{.deprecated: [GetDisplayMode: getDisplayMode].}
+{.deprecated: [GetDrawBlendMode: getDrawBlendMode].}
+{.deprecated: [GetDrawColor: getDrawColor].}
+{.deprecated: [GetError: getError].}
+{.deprecated: [GetEventFilter: getEventFilter].}
+{.deprecated: [GetEventState: getEventState].}
+{.deprecated: [GetFlags: getFlags].}
+{.deprecated: [GetGammaRamp: getGammaRamp].}
+{.deprecated: [GetGrab: getGrab].}
+{.deprecated: [GetHint: getHint].}
+{.deprecated: [GetID: getID].}
+{.deprecated: [GetKeyFromName: getKeyFromName].}
+{.deprecated: [GetKeyFromScancode: getKeyFromScancode].}
+{.deprecated: [GetKeyName: getKeyName].}
+{.deprecated: [GetKeyboardFocus: getKeyboardFocus].}
+{.deprecated: [GetKeyboardState: getKeyboardState].}
+{.deprecated: [GetLogicalSize: getLogicalSize].}
+{.deprecated: [GetModState: getModState].}
+{.deprecated: [GetMouseFocus: getMouseFocus].}
+{.deprecated: [GetMouseState: getMouseState].}
+{.deprecated: [GetNumDisplayModes: getNumDisplayModes].}
+{.deprecated: [GetNumRenderDrivers: getNumRenderDrivers].}
+{.deprecated: [GetNumVideoDisplays: getNumVideoDisplays].}
+{.deprecated: [GetNumVideoDrivers: getNumVideoDrivers].}
+{.deprecated: [GetPerformanceCounter: getPerformanceCounter].}
+{.deprecated: [GetPerformanceFrequency: getPerformanceFrequency].}
+{.deprecated: [GetPixelFormat: getPixelFormat].}
+{.deprecated: [GetPixelFormatName: getPixelFormatName].}
+{.deprecated: [GetPlatform: getPlatform].}
+{.deprecated: [GetPosition: getPosition].}
+{.deprecated: [GetRGB: getRGB].}
+{.deprecated: [GetRGBA: getRGBA].}
+{.deprecated: [GetRelativeMouseMode: getRelativeMouseMode].}
+{.deprecated: [GetRelativeMouseState: getRelativeMouseState].}
+{.deprecated: [GetRenderDriverInfo: getRenderDriverInfo].}
+{.deprecated: [GetRenderTarget: getRenderTarget].}
+{.deprecated: [GetRenderer: getRenderer].}
+{.deprecated: [GetRendererInfo: getRendererInfo].}
+{.deprecated: [GetRevision: getRevision].}
+{.deprecated: [GetRevisionNumber: getRevisionNumber].}
+{.deprecated: [GetScale: getScale].}
+{.deprecated: [GetScancodeFromKey: getScancodeFromKey].}
+{.deprecated: [GetScancodeFromName: getScancodeFromName].}
+{.deprecated: [GetScancodeName: getScancodeName].}
+{.deprecated: [GetSize: getSize].}
+{.deprecated: [GetSurface: getSurface].}
+{.deprecated: [GetSurfaceAlphaMod: getSurfaceAlphaMod].}
+{.deprecated: [GetSurfaceBlendMode: getSurfaceBlendMode].}
+{.deprecated: [GetSurfaceColorMod: getSurfaceColorMod].}
+{.deprecated: [GetTextureAlphaMod: getTextureAlphaMod].}
+{.deprecated: [GetTextureBlendMode: getTextureBlendMode].}
+{.deprecated: [GetTextureColorMod: getTextureColorMod].}
+{.deprecated: [GetTicks: getTicks].}
+{.deprecated: [GetTitle: getTitle].}
+{.deprecated: [GetVersion: getVersion].}
+{.deprecated: [GetVideoDriver: getVideoDriver].}
+{.deprecated: [GetViewport: getViewport].}
+{.deprecated: [GetWMInfo: getWMInfo].}
+{.deprecated: [GetWindowFromID: getWindowFromID].}
+{.deprecated: [HasEvent: hasEvent].}
+{.deprecated: [HasEvents: hasEvents].}
+{.deprecated: [HasScreenKeyboardSupport: hasScreenKeyboardSupport].}
+{.deprecated: [HideWindow: hideWindow].}
+{.deprecated: [Init: init].}
+{.deprecated: [InitSubSystem: initSubSystem].}
+{.deprecated: [IsScreenKeyboardShown: isScreenKeyboardShown].}
+{.deprecated: [IsScreenSaverEnabled: isScreenSaverEnabled].}
+{.deprecated: [IsTextInputActive: isTextInputActive].}
+{.deprecated: [LoadBMP: loadBMP].}
+{.deprecated: [LoadBMP_RW: loadBMP_RW].}
+{.deprecated: [LockSurface: lockSurface].}
+{.deprecated: [LockTexture: lockTexture].}
+{.deprecated: [LowerBlit: lowerBlit].}
+{.deprecated: [LowerBlitScaled: lowerBlitScaled].}
+{.deprecated: [MapRGB: mapRGB].}
+{.deprecated: [MapRGBA: mapRGBA].}
+{.deprecated: [MasksToPixelFormatEnum: masksToPixelFormatEnum].}
+{.deprecated: [MaximizeWindow: maximizeWindow].}
+{.deprecated: [MinimizeWindow: minimizeWindow].}
+{.deprecated: [PeepEvents: peepEvents].}
+{.deprecated: [PixelFormatEnumToMasks: pixelFormatEnumToMasks].}
+{.deprecated: [PollEvent: pollEvent].}
+{.deprecated: [Present: present].}
+{.deprecated: [PumpEvents: pumpEvents].}
+{.deprecated: [PushEvent: pushEvent].}
+{.deprecated: [QueryTexture: queryTexture].}
+{.deprecated: [Quit: quit].}
+{.deprecated: [QuitSubSystem: quitSubSystem].}
+{.deprecated: [RWFromConstMem: rWFromConstMem].}
+{.deprecated: [RWFromFP: rWFromFP].}
+{.deprecated: [RWFromFile: rWFromFile].}
+{.deprecated: [RWFromMem: rWFromMem].}
+{.deprecated: [RaiseWindow: raiseWindow].}
+{.deprecated: [ReadBE16: readBE16].}
+{.deprecated: [ReadBE32: readBE32].}
+{.deprecated: [ReadBE64: readBE64].}
+{.deprecated: [ReadLE16: readLE16].}
+{.deprecated: [ReadLE32: readLE32].}
+{.deprecated: [ReadLE64: readLE64].}
+{.deprecated: [ReadPixels: readPixels].}
+{.deprecated: [ReadU8: readU8].}
+{.deprecated: [RegisterEvents: registerEvents].}
+{.deprecated: [RemoveTimer: removeTimer].}
+{.deprecated: [RenderTargetSupported: renderTargetSupported].}
+{.deprecated: [RestoreWindow: restoreWindow].}
+{.deprecated: [SDL_Init: init].}
+{.deprecated: [SDL_Quit: quit].}
+{.deprecated: [SaveBMP: saveBMP].}
+{.deprecated: [SaveBMP_RW: saveBMP_RW].}
+{.deprecated: [SetBordered: setBordered].}
+{.deprecated: [SetBrightness: setBrightness].}
+{.deprecated: [SetClipRect: setClipRect].}
+{.deprecated: [SetColorKey: setColorKey].}
+{.deprecated: [SetCursor: setCursor].}
+{.deprecated: [SetData: setData].}
+{.deprecated: [SetDisplayMode: setDisplayMode].}
+{.deprecated: [SetDrawBlendMode: setDrawBlendMode].}
+{.deprecated: [SetDrawColor: setDrawColor].}
+{.deprecated: [SetError: setError].}
+{.deprecated: [SetEventFilter: setEventFilter].}
+{.deprecated: [SetFullscreen: setFullscreen].}
+{.deprecated: [SetGammaRamp: setGammaRamp].}
+{.deprecated: [SetGrab: setGrab].}
+{.deprecated: [SetHint: setHint].}
+{.deprecated: [SetHintWithPriority: setHintWithPriority].}
+{.deprecated: [SetIcon: setIcon].}
+{.deprecated: [SetLogicalSize: setLogicalSize].}
+{.deprecated: [SetModState: setModState].}
+{.deprecated: [SetPaletteColors: setPaletteColors].}
+{.deprecated: [SetPixelFormatPalette: setPixelFormatPalette].}
+{.deprecated: [SetPosition: setPosition].}
+{.deprecated: [SetRelativeMouseMode: setRelativeMouseMode].}
+{.deprecated: [SetRenderTarget: setRenderTarget].}
+{.deprecated: [SetScale: setScale].}
+{.deprecated: [SetSize: setSize].}
+{.deprecated: [SetSurfaceAlphaMod: setSurfaceAlphaMod].}
+{.deprecated: [SetSurfaceBlendMode: setSurfaceBlendMode].}
+{.deprecated: [SetSurfaceColorMod: setSurfaceColorMod].}
+{.deprecated: [SetSurfacePalette: setSurfacePalette].}
+{.deprecated: [SetSurfaceRLE: setSurfaceRLE].}
+{.deprecated: [SetTextInputRect: setTextInputRect].}
+{.deprecated: [SetTextureAlphaMod: setTextureAlphaMod].}
+{.deprecated: [SetTextureBlendMode: setTextureBlendMode].}
+{.deprecated: [SetTextureColorMod: setTextureColorMod].}
+{.deprecated: [SetTitle: setTitle].}
+{.deprecated: [SetViewport: setViewport].}
+{.deprecated: [ShowCursor: showCursor].}
+{.deprecated: [ShowMessageBox: showMessageBox].}
+{.deprecated: [ShowSimpleMessageBox: showSimpleMessageBox].}
+{.deprecated: [ShowWindow: showWindow].}
+{.deprecated: [SoftStretch: softStretch].}
+{.deprecated: [StartTextInput: startTextInput].}
+{.deprecated: [StopTextInput: stopTextInput].}
+{.deprecated: [UnlockSurface: unlockSurface].}
+{.deprecated: [UnlockTexture: unlockTexture].}
+{.deprecated: [UpdateSurface: updateSurface].}
+{.deprecated: [UpdateSurfaceRects: updateSurfaceRects].}
+{.deprecated: [UpdateTexture: updateTexture].}
+{.deprecated: [UpperBlit: upperBlit].}
+{.deprecated: [UpperBlitScaled: upperBlitScaled].}
+{.deprecated: [VideoInit: videoInit].}
+{.deprecated: [VideoQuit: videoQuit].}
+{.deprecated: [WaitEvent: waitEvent].}
+{.deprecated: [WaitEventTimeout: waitEventTimeout].}
+{.deprecated: [WarpMouseInWindow: warpMouseInWindow].}
+{.deprecated: [WasInit: wasInit].}
+{.deprecated: [WriteBE16: writeBE16].}
+{.deprecated: [WriteBE32: writeBE32].}
+{.deprecated: [WriteBE64: writeBE64].}
+{.deprecated: [WriteLE16: writeLE16].}
+{.deprecated: [WriteLE32: writeLE32].}
+{.deprecated: [WriteLE64: writeLE64].}
+{.deprecated: [WriteU8: writeU8].}

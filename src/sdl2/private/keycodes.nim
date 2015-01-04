@@ -395,4 +395,7 @@ template KMOD_SHIFT*:expr = (KMOD_LSHIFT or KMOD_RSHIFT)
 template KMOD_ALT*: expr = (KMOD_LALT or KMOD_RALT)
 template KMOD_GUI*: expr = (KMOD_LGUI or KMOD_RGUI)
 
+{.deprecated: [TScancode: Scancode].}
+{.deprecated: [TKeymod: Keymod].}
+
 

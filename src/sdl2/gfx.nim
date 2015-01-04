@@ -248,3 +248,4 @@ proc mlStringRGBA*(renderer: RendererPtr; x,y: int16; S: seq[string]; R,G,B,A: u
     renderer.stringRGBA(x, y + int16(ln * 8 + ln * lineSpacing), S[ln], R,G,B,A)
     inc ln
 
+{.deprecated: [TFPSmanager: FpsManager].}

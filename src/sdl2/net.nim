@@ -72,7 +72,7 @@ type
 #   use the SDL_NET_VERSION() macro.
 #
 
-proc linked_Version*(): ptr SDL_Version {.importc: "SDLNet_Linked_Version".}
+proc linkedVersion*(): ptr SDL_Version {.importc: "SDLNet_Linked_Version".}
 # Initialize/Cleanup the network API
 #   SDL must be initialized before calls to functions in this library,
 #   because this library uses utility functions from the SDL library.
@@ -293,3 +293,49 @@ proc udpDelSocket*(set: SocketSet; sock: UDPsocket): cint {.inline.} =
 proc socketReady* (sock: GenericSocket): bool =
   not(sock.isNil) and sock.ready > 0
 
+{.deprecated: [TIPaddress: IpAddress].}
+{.deprecated: [TCPsocket: TcpSocket].}
+
+{.deprecated: [AddSocket: addSocket].}
+{.deprecated: [AllocPacket: allocPacket].}
+{.deprecated: [AllocPacketV: allocPacketV].}
+{.deprecated: [AllocSocketSet: allocSocketSet].}
+{.deprecated: [CheckSockets: checkSockets].}
+{.deprecated: [DelSocket: delSocket].}
+{.deprecated: [FreePacket: freePacket].}
+{.deprecated: [FreePacketV: freePacketV].}
+{.deprecated: [FreeSocketSet: freeSocketSet].}
+{.deprecated: [GetError: getError].}
+{.deprecated: [GetLocalAddresses: getLocalAddresses].}
+{.deprecated: [Init: init].}
+{.deprecated: [Linked_Version: linkedVersion].}
+{.deprecated: [Quit: quit].}
+{.deprecated: [Read16: read16].}
+{.deprecated: [Read32: read32].}
+{.deprecated: [ResizePacket: resizePacket].}
+{.deprecated: [ResolveHost: resolveHost].}
+{.deprecated: [ResolveIP: resolveIP].}
+{.deprecated: [SetError: setError].}
+{.deprecated: [SocketReady: socketReady].}
+{.deprecated: [TCP_Accept: tcpAccept].}
+{.deprecated: [TCP_AddSocket: tcpAddSocket].}
+{.deprecated: [TCP_Close: tcpClose].}
+{.deprecated: [TCP_DelSocket: tcpDelSocket].}
+{.deprecated: [TCP_GetPeerAddress: tcpGetPeerAddress].}
+{.deprecated: [TCP_Open: tcpOpen].}
+{.deprecated: [TCP_Recv: tcpRecv].}
+{.deprecated: [TCP_Send: tcpSend].}
+{.deprecated: [UDP_AddSocket: udpAddSocket].}
+{.deprecated: [UDP_Bind: udpBind].}
+{.deprecated: [UDP_Close: udpClose].}
+{.deprecated: [UDP_DelSocket: udpDelSocket].}
+{.deprecated: [UDP_GetPeerAddress: udpGetPeerAddress].}
+{.deprecated: [UDP_Open: udpOpen].}
+{.deprecated: [UDP_Recv: udpRecv].}
+{.deprecated: [UDP_RecvV: udpRecvV].}
+{.deprecated: [UDP_Send: udpSend].}
+{.deprecated: [UDP_SendV: udpSendV].}
+{.deprecated: [UDP_SetPacketLoss: udpSetPacketLoss].}
+{.deprecated: [UDP_Unbind: udpUnbind].}
+{.deprecated: [Write16: write16].}
+{.deprecated: [Write32: write32].}

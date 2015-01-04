@@ -7,6 +7,7 @@ import sdl2
 
 type
   FontPtr* = ptr object{.pure.}
+
 # Set up for C function definitions, even when using C++
 # Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
 #/*
@@ -31,7 +32,7 @@ type
 #
 {.push callConv:cdecl, dynlib:LibName.}
 
-proc ttfLinked_Version*(): ptr SDL_version {.importc: "TTF_Linked_Version".}
+proc ttfLinkedVersion*(): ptr SDL_version {.importc: "TTF_Linked_Version".}
 # ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark)
 const
   UNICODE_BOM_NATIVE* = 0x0000FEFF
@@ -40,7 +41,7 @@ const
 #   byteswapped.  A UNICODE BOM character in a string will override
 #   this setting for the remainder of that string.
 #
-proc ttfByteSwappedUNICODE*(swapped: cint) {.importc: "TTF_ByteSwappedUNICODE".}
+proc ttfByteSwappedUnicode*(swapped: cint) {.importc: "TTF_ByteSwappedUNICODE".}
 
 # Initialize the TTF engine - returns 0 if successful, -1 on error
 proc ttfInit*(): SDL_Return  {.importc: "TTF_Init".}
@@ -106,9 +107,9 @@ proc glyphMetrics*(font: FontPtr; ch: Uint16; minx: ptr cint;
 # Get the dimensions of a rendered string of text
 proc sizeText*(font: FontPtr; text: cstring; w: ptr cint; h: ptr cint): cint{.
   importc: "TTF_SizeText".}
-proc sizeUTF8*(font: FontPtr; text: cstring; w: ptr cint; h: ptr cint): cint{.
+proc sizeUtf8*(font: FontPtr; text: cstring; w: ptr cint; h: ptr cint): cint{.
   importc: "TTF_SizeUTF8".}
-proc sizeUNICODE*(font: FontPtr; text: ptr Uint16; w, h: ptr cint): cint{.
+proc sizeUnicode*(font: FontPtr; text: ptr Uint16; w, h: ptr cint): cint{.
   importc: "TTF_SizeUNICODE".}
 # Create an 8-bit palettized surface and render the given text at
 #   fast quality with the given font and color.  The 0 pixel is the
@@ -116,11 +117,11 @@ proc sizeUNICODE*(font: FontPtr; text: ptr Uint16; w, h: ptr cint): cint{.
 #   to the text color.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc renderText_Solid*(font: FontPtr; text: cstring; fg: Color): SurfacePtr{.
+proc renderTextSolid*(font: FontPtr; text: cstring; fg: Color): SurfacePtr{.
   importc: "TTF_RenderText_Solid".}
-proc renderUTF8_Solid*(font: FontPtr; text: cstring; fg: Color): SurfacePtr{.
+proc renderUtf8Solid*(font: FontPtr; text: cstring; fg: Color): SurfacePtr{.
   importc: "TTF_RenderUTF8_Solid".}
-proc renderUNICODE_Solid*(font: FontPtr; text: ptr Uint16;
+proc renderUnicodeSolid*(font: FontPtr; text: ptr Uint16;
   fg: Color): SurfacePtr {.importc: "TTF_RenderUNICODE_Solid".}
 # Create an 8-bit palettized surface and render the given glyph at
 #   fast quality with the given font and color.  The 0 pixel is the
@@ -129,14 +130,14 @@ proc renderUNICODE_Solid*(font: FontPtr; text: ptr Uint16;
 #   centering in the X direction, and aligned normally in the Y direction.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc renderGlyph_Solid*(font: FontPtr; ch: Uint16; fg: Color): SurfacePtr {.
+proc renderGlyphSolid*(font: FontPtr; ch: Uint16; fg: Color): SurfacePtr {.
   importc: "TTF_RenderGlyph_Solid".}
 
-proc renderText_Shaded*(font: FontPtr; text: cstring; fg, bg: Color): SurfacePtr {.
+proc renderTextShaded*(font: FontPtr; text: cstring; fg, bg: Color): SurfacePtr {.
   importc: "TTF_RenderText_Shaded".}
-proc renderUTF8_Shaded*(font: FontPtr; text: cstring; fg, bg: Color): SurfacePtr {.
+proc renderUtf8Shaded*(font: FontPtr; text: cstring; fg, bg: Color): SurfacePtr {.
   importc: "TTF_RenderUTF8_Shaded".}
-proc renderUNICODE_Shaded*(font: FontPtr; text: ptr Uint16;
+proc renderUnicodeShaded*(font: FontPtr; text: ptr Uint16;
   fg, bg: Color): SurfacePtr {.importc: "TTF_RenderUNICODE_Shaded".}
 # Create an 8-bit palettized surface and render the given glyph at
 #   high quality with the given font and colors.  The 0 pixel is background,
@@ -145,17 +146,17 @@ proc renderUNICODE_Shaded*(font: FontPtr; text: ptr Uint16;
 #   direction, and aligned normally in the Y direction.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc renderGlyph_Shaded*(font: FontPtr; ch: Uint16; fg, bg: Color): SurfacePtr {.
+proc renderGlyphShaded*(font: FontPtr; ch: Uint16; fg, bg: Color): SurfacePtr {.
   importc: "TTF_RenderGlyph_Shaded".}
 # Create a 32-bit ARGB surface and render the given text at high quality,
 #   using alpha blending to dither the font with the given color.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc renderText_Blended*(font: FontPtr; text: cstring; fg: Color): SurfacePtr {.
+proc renderTextBlended*(font: FontPtr; text: cstring; fg: Color): SurfacePtr {.
   importc: "TTF_RenderText_Blended".}
-proc renderUTF8_Blended*(font: FontPtr; text: cstring; fg: Color): SurfacePtr {.
+proc renderUtf8Blended*(font: FontPtr; text: cstring; fg: Color): SurfacePtr {.
   importc: "TTF_RenderUTF8_Blended".}
-proc renderUNICODE_Blended*(font: FontPtr; text: ptr Uint16;
+proc renderUnicodeBlended*(font: FontPtr; text: ptr Uint16;
   fg: Color): SurfacePtr {.importc: "TTF_RenderUNICODE_Blended".}
 # Create a 32-bit ARGB surface and render the given text at high quality,
 #   using alpha blending to dither the font with the given color.
@@ -163,11 +164,11 @@ proc renderUNICODE_Blended*(font: FontPtr; text: ptr Uint16;
 #   if it extends beyond wrapLength in pixels.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc renderText_Blended_Wrapped*(font: FontPtr; text: cstring; fg: Color;
-  wrapLength: Uint32): SurfacePtr {.importc: "TTF_RenderText_Blended_Wrapped".}
-proc renderUTF8_Blended_Wrapped*(font: FontPtr; text: cstring; fg: Color;
+proc renderTextBlendedWrapped*(font: FontPtr; text: cstring; fg: Color; wrapLength: Uint32):
+  SurfacePtr {.importc: "TTF_RenderText_Blended_Wrapped".}
+proc renderUtf8BlendedWrapped*(font: FontPtr; text: cstring; fg: Color;
   wrapLength: Uint32): SurfacePtr {.importc: "TTF_RenderUTF8_Blended_Wrapped".}
-proc renderUNICODE_Blended_Wrapped*(font: FontPtr; text: ptr Uint16; fg: Color;
+proc renderUnicodeBlendedWrapped*(font: FontPtr; text: ptr Uint16; fg: Color;
   wrapLength: Uint32): SurfacePtr  {.importc: "TTF_RenderUNICODE_Blended_Wrapped".}
 # Create a 32-bit ARGB surface and render the given glyph at high quality,
 #   using alpha blending to dither the font with the given color.
@@ -175,7 +176,7 @@ proc renderUNICODE_Blended_Wrapped*(font: FontPtr; text: ptr Uint16; fg: Color;
 #   direction, and aligned normally in the Y direction.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc renderGlyph_Blended*(font: FontPtr; ch: Uint16; fg: Color): SurfacePtr {.
+proc renderGlyphBlended*(font: FontPtr; ch: Uint16; fg: Color): SurfacePtr {.
   importc: "TTF_RenderGlyph_Blended".}
 
 
@@ -185,7 +186,7 @@ proc close*(font: FontPtr) {.importc: "TTF_CloseFont".}
 # De-initialize the TTF engine
 proc ttfQuit*() {.importc: "TTF_Quit".}
 # Check if the TTF engine is initialized
-proc ttfWasInit*(): bool32 {.importc: "TTF_WasInit".}
+proc ttfWasInit*(): Bool32 {.importc: "TTF_WasInit".}
 # Get the kerning size of two glyphs
 proc getFontKerningSize*(font: FontPtr; prev_index, indx: cint): cint {.
   importc: "TTF_GetFontKerningSize".}
@@ -202,5 +203,55 @@ proc getFontKerningSize*(font: FontPtr; prev_index, indx: cint): cint {.
 # TTF_RenderUNICODE_Shaded(font, text, fg, bg)
 
 proc renderText*(font: FontPtr; text: cstring;
-  fg, bg: Color): SurfacePtr = RenderText_Shaded(font, text, fg, bg)
+  fg, bg: Color): SurfacePtr = renderTextShaded(font, text, fg, bg)
 
+{.deprecated: [PFont: FontPtr].}
+
+{.deprecated: [Close: close].}
+{.deprecated: [FontAscent: fontAscent].}
+{.deprecated: [FontDescent: fontDescent].}
+{.deprecated: [FontFaceFamilyName: fontFaceFamilyName].}
+{.deprecated: [FontFaceIsFixedWidth: fontFaceIsFixedWidth].}
+{.deprecated: [FontFaceStyleName: fontFaceStyleName].}
+{.deprecated: [FontFaces: fontFaces].}
+{.deprecated: [FontHeight: fontHeight].}
+{.deprecated: [FontLineSkip: fontLineSkip].}
+{.deprecated: [GetFontHinting: getFontHinting].}
+{.deprecated: [GetFontKerning: getFontKerning].}
+{.deprecated: [GetFontKerningSize: getFontKerningSize].}
+{.deprecated: [GetFontOutline: getFontOutline].}
+{.deprecated: [GetFontStyle: getFontStyle].}
+{.deprecated: [GlyphIsProvided: glyphIsProvided].}
+{.deprecated: [GlyphMetrics: glyphMetrics].}
+{.deprecated: [OpenFont: openFont].}
+{.deprecated: [OpenFontIndex: openFontIndex].}
+{.deprecated: [OpenFontIndexRW: openFontIndexRW].}
+{.deprecated: [OpenFontRW: openFontRW].}
+{.deprecated: [RenderGlyph_Blended: renderGlyphBlended].}
+{.deprecated: [RenderGlyph_Shaded: renderGlyphShaded].}
+{.deprecated: [RenderGlyph_Solid: renderGlyphSolid].}
+{.deprecated: [RenderText: renderText].}
+{.deprecated: [RenderText_Blended: renderTextBlended].}
+{.deprecated: [RenderText_Blended_Wrapped: renderTextBlendedWrapped].}
+{.deprecated: [RenderText_Shaded: renderTextShaded].}
+{.deprecated: [RenderText_Solid: renderTextSolid].}
+{.deprecated: [RenderUNICODE_Blended: renderUnicodeBlended].}
+{.deprecated: [RenderUNICODE_Blended_Wrapped: renderUnicodeBlendedWrapped].}
+{.deprecated: [RenderUNICODE_Shaded: renderUnicodeShaded].}
+{.deprecated: [RenderUNICODE_Solid: renderUnicodeSolid].}
+{.deprecated: [RenderUTF8_Blended: renderUtf8Blended].}
+{.deprecated: [RenderUTF8_Blended_Wrapped: renderUtf8BlendedWrapped].}
+{.deprecated: [RenderUTF8_Shaded: renderUtf8Shaded].}
+{.deprecated: [RenderUTF8_Solid: renderUtf8Solid].}
+{.deprecated: [SetFontHinting: setFontHinting].}
+{.deprecated: [SetFontKerning: setFontKerning].}
+{.deprecated: [SetFontOutline: setFontOutline].}
+{.deprecated: [SetFontStyle: setFontStyle].}
+{.deprecated: [SizeText: sizeText].}
+{.deprecated: [SizeUNICODE: sizeUnicode].}
+{.deprecated: [SizeUTF8: sizeUtf8].}
+{.deprecated: [TTF_ByteSwappedUNICODE: ttfByteSwappedUnicode].}
+{.deprecated: [TTF_Init: ttfInit].}
+{.deprecated: [TTF_Linked_Version: ttfLinkedVersion].}
+{.deprecated: [TTF_Quit: ttfQuit].}
+{.deprecated: [TTF_WasInit: ttfWasInit].}

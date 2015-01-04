@@ -204,6 +204,7 @@ when false:
   else:
     const
       AudioCVT_PACKED* = true
+  {.deprecated: [TAudioCVT_PACKED: AudioCVT_PACKED].}
 
 
 #*
@@ -404,7 +405,7 @@ proc loadWAV_RW*(src: ptr RWops; freesrc: cint;
 #   Loads a WAV from a file.
 #   Compatibility convenience function.
 #
-template LoadWAV*(file, spec, audio_buf, audio_len: expr): expr =
+template loadWAV*(file, spec, audio_buf, audio_len: expr): expr =
   SDL_LoadWAV_RW(RWFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
 
 #*
@@ -486,3 +487,38 @@ proc closeAudioDevice*(dev: AudioDeviceID) {.
 
 # vi: set ts=4 sw=4 expandtab:
 {.pop.}
+
+{.deprecated: [TAudioCVT: AudioCVT].}
+{.deprecated: [TAudioCallback: AudioCallback].}
+{.deprecated: [TAudioDeviceID: AudioDeviceID].}
+{.deprecated: [TAudioFilter: AudioFilter].}
+{.deprecated: [TAudioFormat: AudioFormat].}
+{.deprecated: [TAudioSpec: AudioSpec].}
+{.deprecated: [TAudioStatus: AudioStatus].}
+
+{.deprecated: [AudioInit: audioInit].}
+{.deprecated: [AudioQuit: audioQuit].}
+{.deprecated: [BuildAudioCVT: buildAudioCVT].}
+{.deprecated: [CloseAudio: closeAudio].}
+{.deprecated: [CloseAudioDevice: closeAudioDevice].}
+{.deprecated: [ConvertAudio: convertAudio].}
+{.deprecated: [FreeWAV: freeWAV].}
+{.deprecated: [GetAudioDeviceName: getAudioDeviceName].}
+{.deprecated: [GetAudioDeviceStatus: getAudioDeviceStatus].}
+{.deprecated: [GetAudioDriver: getAudioDriver].}
+{.deprecated: [GetAudioStatus: getAudioStatus].}
+{.deprecated: [GetCurrentAudioDriver: getCurrentAudioDriver].}
+{.deprecated: [GetNumAudioDevices: getNumAudioDevices].}
+{.deprecated: [GetNumAudioDrivers: getNumAudioDrivers].}
+{.deprecated: [LoadWAV: loadWAV].}
+{.deprecated: [LoadWAV_RW: loadWAV_RW].}
+{.deprecated: [LockAudio: lockAudio].}
+{.deprecated: [LockAudioDevice: lockAudioDevice].}
+{.deprecated: [MixAudio: mixAudio].}
+{.deprecated: [MixAudioFormat: mixAudioFormat].}
+{.deprecated: [OpenAudio: openAudio].}
+{.deprecated: [OpenAudioDevice: openAudioDevice].}
+{.deprecated: [PauseAudio: pauseAudio].}
+{.deprecated: [PauseAudioDevice: pauseAudioDevice].}
+{.deprecated: [UnlockAudio: unlockAudio].}
+{.deprecated: [UnlockAudioDevice: unlockAudioDevice].}

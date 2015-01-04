@@ -85,7 +85,7 @@ proc joystickNameForIndex*(device_index: cint): cstring {.
 #
 #   \return A joystick identifier, or NULL if an error occurred.
 # /
-proc  JoystickOpen*(device_index: cint): JoystickPtr {.
+proc joystickOpen*(device_index: cint): JoystickPtr {.
   importc: "SDL_JoystickOpen".}
 
 ##
@@ -261,3 +261,43 @@ proc close* (joystick: JoystickPtr) {.inline.} = joystick.JoystickClose()
 
 # vi: set ts=4 sw=4 expandtab:
 {.pop.}
+
+{.deprecated: [PJoystick: JoystickPtr].}
+{.deprecated: [TJoystick: Joystick].}
+{.deprecated: [TJoystickGuid: JoystickGuid].}
+{.deprecated: [TJoystickID: JoystickID].}
+
+{.deprecated: [Close: close].}
+{.deprecated: [GetAttached: getAttached].}
+{.deprecated: [GetAxis: getAxis].}
+{.deprecated: [GetBall: getBall].}
+{.deprecated: [GetButton: getButton].}
+{.deprecated: [GetGUID: getGUID].}
+{.deprecated: [GetHat: getHat].}
+{.deprecated: [InstanceID: instanceID].}
+{.deprecated: [JoystickClose: joystickClose].}
+{.deprecated: [JoystickEventState: joystickEventState].}
+{.deprecated: [JoystickGetAttached: joystickGetAttached].}
+{.deprecated: [JoystickGetAxis: joystickGetAxis].}
+{.deprecated: [JoystickGetBall: joystickGetBall].}
+{.deprecated: [JoystickGetButton: joystickGetButton].}
+{.deprecated: [JoystickGetDeviceGUID: joystickGetDeviceGUID].}
+{.deprecated: [JoystickGetGUID: joystickGetGUID].}
+{.deprecated: [JoystickGetGUIDFromString: joystickGetGUIDFromString].}
+{.deprecated: [JoystickGetGUIDString: joystickGetGUIDString].}
+{.deprecated: [JoystickGetHat: joystickGetHat].}
+{.deprecated: [JoystickInstanceID: joystickInstanceID].}
+{.deprecated: [JoystickName: joystickName].}
+{.deprecated: [JoystickNameForIndex: joystickNameForIndex].}
+{.deprecated: [JoystickNumAxes: joystickNumAxes].}
+{.deprecated: [JoystickNumBalls: joystickNumBalls].}
+{.deprecated: [JoystickNumButtons: joystickNumButtons].}
+{.deprecated: [JoystickNumHats: joystickNumHats].}
+{.deprecated: [JoystickOpen: joystickOpen].}
+{.deprecated: [JoystickUpdate: joystickUpdate].}
+{.deprecated: [Name: name].}
+{.deprecated: [NumAxes: numAxes].}
+{.deprecated: [NumBalls: numBalls].}
+{.deprecated: [NumButtons: numButtons].}
+{.deprecated: [NumHats: numHats].}
+{.deprecated: [NumJoysticks: numJoysticks].}
