@@ -187,7 +187,7 @@ proc Close*(font: PFont) {.importc: "TTF_CloseFont".}
 # De-initialize the TTF engine 
 proc TTF_Quit*() {.importc: "TTF_Quit".}
 # Check if the TTF engine is initialized 
-proc TTF_WasInit*(): bool {.importc: "TTF_WasInit".}
+proc TTF_WasInit*(): Bool32 {.importc: "TTF_WasInit".}
 # Get the kerning size of two glyphs 
 proc GetFontKerningSize*(font: PFont; prev_index, indx: cint): cint {.
   importc: "TTF_GetFontKerningSize".}
