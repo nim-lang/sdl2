@@ -95,12 +95,12 @@ proc FontFaceIsFixedWidth*(font: PFont): cint {.importc: "TTF_FontFaceIsFixedWid
 proc FontFaceFamilyName*(font: PFont): cstring {.importc: "TTF_FontFaceFamilyName".}
 proc FontFaceStyleName*(font: PFont): cstring {.importc: "TTF_FontFaceStyleName".}
 # Check wether a glyph is provided by the font or not 
-proc GlyphIsProvided*(font: PFont; ch: Uint16): cint {.importc: "TTF_GlyphIsProvided".}
+proc GlyphIsProvided*(font: PFont; ch: uint16): cint {.importc: "TTF_GlyphIsProvided".}
 # Get the metrics (dimensions) of a glyph
 #   To understand what these metrics mean, here is a useful link:
 #    http://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
 # 
-proc GlyphMetrics*(font: PFont; ch: Uint16; minx: ptr cint; 
+proc GlyphMetrics*(font: PFont; ch: uint16; minx: ptr cint; 
                        maxx: ptr cint; miny: ptr cint; maxy: ptr cint; 
                        advance: ptr cint): cint {.importc: "TTF_GlyphMetrics".}
 # Get the dimensions of a rendered string of text 
@@ -108,7 +108,7 @@ proc SizeText*(font: PFont; text: cstring; w: ptr cint; h: ptr cint): cint{.
   importc: "TTF_SizeText".}
 proc SizeUTF8*(font: PFont; text: cstring; w: ptr cint; h: ptr cint): cint{.
   importc: "TTF_SizeUTF8".}
-proc SizeUNICODE*(font: PFont; text: ptr Uint16; w, h: ptr cint): cint{.
+proc SizeUNICODE*(font: PFont; text: ptr uint16; w, h: ptr cint): cint{.
   importc: "TTF_SizeUNICODE".}
 # Create an 8-bit palettized surface and render the given text at
 #   fast quality with the given font and color.  The 0 pixel is the
@@ -120,7 +120,7 @@ proc RenderText_Solid*(font: PFont; text: cstring; fg: TColor): PSurface{.
   importc: "TTF_RenderText_Solid".}
 proc RenderUTF8_Solid*(font: PFont; text: cstring; fg: TColor): PSurface{.
   importc: "TTF_RenderUTF8_Solid".}
-proc RenderUNICODE_Solid*(font: PFont; text: ptr Uint16; 
+proc RenderUNICODE_Solid*(font: PFont; text: ptr uint16; 
   fg: TColor): PSurface {.importc: "TTF_RenderUNICODE_Solid".}
 # Create an 8-bit palettized surface and render the given glyph at
 #   fast quality with the given font and color.  The 0 pixel is the
@@ -129,14 +129,14 @@ proc RenderUNICODE_Solid*(font: PFont; text: ptr Uint16;
 #   centering in the X direction, and aligned normally in the Y direction.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc RenderGlyph_Solid*(font: PFont; ch: Uint16; fg: TColor): PSurface {.
+proc RenderGlyph_Solid*(font: PFont; ch: uint16; fg: TColor): PSurface {.
   importc: "TTF_RenderGlyph_Solid".}
 
 proc RenderText_Shaded*(font: PFont; text: cstring; fg, bg: TColor): PSurface {.
   importc: "TTF_RenderText_Shaded".}
 proc RenderUTF8_Shaded*(font: PFont; text: cstring; fg, bg: TColor): PSurface {.
   importc: "TTF_RenderUTF8_Shaded".}
-proc RenderUNICODE_Shaded*(font: PFont; text: ptr Uint16; 
+proc RenderUNICODE_Shaded*(font: PFont; text: ptr uint16; 
   fg, bg: TColor): PSurface {.importc: "TTF_RenderUNICODE_Shaded".}
 # Create an 8-bit palettized surface and render the given glyph at
 #   high quality with the given font and colors.  The 0 pixel is background,
@@ -145,7 +145,7 @@ proc RenderUNICODE_Shaded*(font: PFont; text: ptr Uint16;
 #   direction, and aligned normally in the Y direction.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc RenderGlyph_Shaded*(font: PFont; ch: Uint16; fg, bg: TColor): PSurface {.
+proc RenderGlyph_Shaded*(font: PFont; ch: uint16; fg, bg: TColor): PSurface {.
   importc: "TTF_RenderGlyph_Shaded".}
 # Create a 32-bit ARGB surface and render the given text at high quality,
 #   using alpha blending to dither the font with the given color.
@@ -155,7 +155,7 @@ proc RenderText_Blended*(font: PFont; text: cstring; fg: TColor): PSurface {.
   importc: "TTF_RenderText_Blended".}
 proc RenderUTF8_Blended*(font: PFont; text: cstring; fg: TColor): PSurface {.
   importc: "TTF_RenderUTF8_Blended".}
-proc RenderUNICODE_Blended*(font: PFont; text: ptr Uint16; 
+proc RenderUNICODE_Blended*(font: PFont; text: ptr uint16; 
   fg: TColor): PSurface {.importc: "TTF_RenderUNICODE_Blended".}
 # Create a 32-bit ARGB surface and render the given text at high quality,
 #   using alpha blending to dither the font with the given color.
@@ -164,18 +164,18 @@ proc RenderUNICODE_Blended*(font: PFont; text: ptr Uint16;
 #   This function returns the new surface, or NULL if there was an error.
 #
 proc RenderText_Blended_Wrapped*(font: PFont; text: cstring; fg: TColor; 
-  wrapLength: Uint32): PSurface {.importc: "TTF_RenderText_Blended_Wrapped".}
+  wrapLength: uint32): PSurface {.importc: "TTF_RenderText_Blended_Wrapped".}
 proc RenderUTF8_Blended_Wrapped*(font: PFont; text: cstring; fg: TColor; 
-  wrapLength: Uint32): PSurface {.importc: "TTF_RenderUTF8_Blended_Wrapped".}
-proc RenderUNICODE_Blended_Wrapped*(font: PFont; text: ptr Uint16; fg: TColor;
-  wrapLength: Uint32): PSurface  {.importc: "TTF_RenderUNICODE_Blended_Wrapped".}
+  wrapLength: uint32): PSurface {.importc: "TTF_RenderUTF8_Blended_Wrapped".}
+proc RenderUNICODE_Blended_Wrapped*(font: PFont; text: ptr uint16; fg: TColor;
+  wrapLength: uint32): PSurface  {.importc: "TTF_RenderUNICODE_Blended_Wrapped".}
 # Create a 32-bit ARGB surface and render the given glyph at high quality,
 #   using alpha blending to dither the font with the given color.
 #   The glyph is rendered without any padding or centering in the X
 #   direction, and aligned normally in the Y direction.
 #   This function returns the new surface, or NULL if there was an error.
 #
-proc RenderGlyph_Blended*(font: PFont; ch: Uint16; fg: TColor): PSurface {.
+proc RenderGlyph_Blended*(font: PFont; ch: uint16; fg: TColor): PSurface {.
   importc: "TTF_RenderGlyph_Blended".}
 
 
@@ -185,7 +185,7 @@ proc Close*(font: PFont) {.importc: "TTF_CloseFont".}
 # De-initialize the TTF engine 
 proc TTF_Quit*() {.importc: "TTF_Quit".}
 # Check if the TTF engine is initialized 
-proc TTF_WasInit*(): bool32 {.importc: "TTF_WasInit".}
+proc TTF_WasInit*(): bool {.importc: "TTF_WasInit".}
 # Get the kerning size of two glyphs 
 proc GetFontKerningSize*(font: PFont; prev_index, indx: cint): cint {.
   importc: "TTF_GetFontKerningSize".}
