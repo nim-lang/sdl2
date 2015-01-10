@@ -2,6 +2,8 @@ when defined(Linux):
   const LibName = "libSDL2_ttf.so"
 elif defined(macosx):
   const LibName = "libSDL2_ttf.dylib"
+elif defined(Windows):
+  const LibName* = "SDL2_ttf.dll"
 
 import sdl2
 
