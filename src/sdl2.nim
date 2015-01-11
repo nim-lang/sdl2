@@ -988,7 +988,7 @@ proc MinimizeWindow*(window: PWindow) {.importc: "SDL_MinimizeWindow".}
 # 
 proc RestoreWindow*(window: PWindow) {.importc: "SDL_RestoreWindow".}
                                
-proc DestroyWindow*(window: PWindow) 
+proc DestroyWindow*(window: PWindow) {.importc: "SDL_DestroyWindow".}
 
 proc IsScreenSaverEnabled*(): Bool32 {.importc: "SDL_IsScreenSaverEnabled".}
 proc EnableScreenSaver*() {.importc: "SDL_EnableScreenSaver".}
