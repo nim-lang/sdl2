@@ -797,7 +797,7 @@ proc createRGBSurface*(flags: cint; width, height, depth: cint;
   importc: "SDL_CreateRGBSurface".}
 proc createRGBSurfaceFrom*(pixels: pointer; width, height, depth, pitch: cint;
   Rmask, Gmask, Bmask, Amask: uint32): SurfacePtr {.
-  importc: "SDL_createRGBSurfaceFrom".}
+  importc: "SDL_CreateRGBSurfaceFrom".}
 
 proc freeSurface*(surface: SurfacePtr) {.
   importc: "SDL_FreeSurface".}

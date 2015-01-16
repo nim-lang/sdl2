@@ -159,9 +159,11 @@ proc trigonRGBA*(renderer: RendererPtr; x1, y1, x2, y2, x3, y3: int16;
                   r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # AA-Trigon
 proc aaTrigonColor*(renderer: RendererPtr; x1, y1, x2, y2, x3, y3: int16;
-                    color: uint32): SDL_Return {.importc, discardable.}
+                    color: uint32): SDL_Return {.importc: "aatrigonColor",
+                    discardable.}
 proc aaTrigonRGBA*(renderer: RendererPtr; x1, y1, x2, y2, x3, y3: int16;
-                    r,g,b,a: uint8): SDL_Return {.importc, discardable.}
+                    r,g,b,a: uint8): SDL_Return {.importc: "aatrigonRGBA",
+                    discardable.}
 # Filled Trigon
 proc filledTrigonColor*(renderer: RendererPtr; x1: int16; y1: int16;
                         x2: int16; y2: int16; x3: int16; y3: int16;
@@ -175,10 +177,12 @@ proc polygonColor*(renderer: RendererPtr; vx: ptr int16; vy: ptr int16;
 proc polygonRGBA*(renderer: RendererPtr; vx: ptr int16; vy: ptr int16;
                   n: cint; r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # AA-Polygon
-proc aaPolygonColor*(renderer: RendererPtr; vx: ptr int16;
-                     vy: ptr int16; n: cint; color: uint32): SDL_Return {.importc, discardable.}
-proc aaPolygonRGBA*(renderer: RendererPtr; vx: ptr int16;
-                    vy: ptr int16; n: cint; r,g,b,a: uint8): SDL_Return {.importc, discardable.}
+proc aaPolygonColor*(renderer: RendererPtr; vx: ptr int16; vy: ptr int16;
+                     n: cint; color: uint32): SDL_Return {.importc: "aapolygonColor",
+                     discardable.}
+proc aaPolygonRGBA*(renderer: RendererPtr; vx: ptr int16; vy: ptr int16;
+                    n: cint; r,g,b,a: uint8): SDL_Return {.importc: "aapolygonRGBA",
+                    discardable.}
 # Filled Polygon
 proc filledPolygonColor*(renderer: RendererPtr; vx: ptr int16;
                          vy: ptr int16; n: cint; color: uint32): SDL_Return {.importc, discardable.}
