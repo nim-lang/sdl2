@@ -15,7 +15,7 @@ const
   IMG_INIT_TIF* = 0x00000004
   IMG_INIT_WEBP* = 0x00000008
 
-{.push callconv:cdecl, dynlib: libName.}
+{.push callconv:cdecl, dynlib: LibName.}
 
 proc linkedVersion*(): ptr SDL_version {.importc: "IMG_Linked_Version".}
 
