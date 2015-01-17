@@ -294,8 +294,6 @@ proc socketReady* (sock: GenericSocket): bool =
   not(sock.isNil) and sock.ready > 0
 
 {.deprecated: [TIPaddress: IpAddress].}
-{.deprecated: [TCPsocket: TcpSocket].}
-
 {.deprecated: [AddSocket: addSocket].}
 {.deprecated: [AllocPacket: allocPacket].}
 {.deprecated: [AllocPacketV: allocPacketV].}
