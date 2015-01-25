@@ -1374,7 +1374,7 @@ when defined(windows):
     ## Once you are done using the device, you should release it to avoid a resource leak.
 
   #extern DECLSPEC void SDLCALL SDL_DXGIGetOutputInfo( int displayIndex, int *adapterIndex, int *outputIndex );
-  proc dXGIGetOutputInfo* (displayIndex: cint, adapterIndex,outputIndex: ptr cint): void
+  sdl2.dXGIGetOutputInfo(displayIndex: cint, adapterIndex: ptr cint, outputIndex: ptr cint)
     ## Returns the DXGI Adapter and Output indices for the specified display index.
     ## These can be passed to EnumAdapters and EnumOutputs respectively to get the objects
     ## required to create a DX10 or DX11 device and swap chain.
