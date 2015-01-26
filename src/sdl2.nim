@@ -1363,18 +1363,20 @@ proc calculateGammaRamp* (gamma: cfloat; ramp: ptr uint16) {.
 # SDL_system.h
 when defined(windows):
 
-  proc direct3D9GetAdapterIndex* (displayIndex: cint): cint
+  proc direct3D9GetAdapterIndex* (displayIndex: cint): cint {.
+    importc: "SDL_Direct3D9GetAdapterIndex".}
     ## Returns the D3D9 adapter index that matches the specified display index.
     ## This adapter index can be passed to IDirect3D9::CreateDevice and controls
     ## on which monitor a full screen application will appear.
 
   #extern DECLSPEC IDirect3DDevice9* SDLCALL SDL_RenderGetD3D9Device(SDL_Renderer * renderer);
-  proc getD3D9Device* (renderer: RendererPtr): pointer {.importc:"SDL_RenderGetD3D9Device".}
+  proc getD3D9Device* (renderer: RendererPtr): pointer {.
+    importc:"SDL_RenderGetD3D9Device".}
     ## Returns the D3D device associated with a renderer, or NULL if it's not a D3D renderer.
     ## Once you are done using the device, you should release it to avoid a resource leak.
 
   #extern DECLSPEC void SDLCALL SDL_DXGIGetOutputInfo( int displayIndex, int *adapterIndex, int *outputIndex );
-  proc dXGIGetOutputInfo* (displayIndex: cint, adapterIndex,outputIndex: ptr cint): void
+  proc dXGIGetOutputInfo* (displayIndex: cint, adapterIndex,outputIndex: ptr cint) {.importc: "SDL_DXGIGetOutputInfo".}
     ## Returns the DXGI Adapter and Output indices for the specified display index.
     ## These can be passed to EnumAdapters and EnumOutputs respectively to get the objects
     ## required to create a DX10 or DX11 device and swap chain.
@@ -1389,36 +1391,45 @@ elif defined(iPhone):
   #extern DECLSPEC int SDLCALL SDL_iPhoneSetAnimationCallback(
   #    SDL_Window * window, int interval,
   #    void (*callback)(void*), void *callbackParam);
-  proc iPhoneSetAnimationCallback*(window: WindowPtr, interval:cint, callback: VoidCallback, callbackParam: pointer): cint
+  proc iPhoneSetAnimationCallback*(window: WindowPtr, interval:cint, callback: VoidCallback, callbackParam: pointer): cint {.
+    importc: "SDL_iPhoneSetAnimationCallBack".}
 
   #extern DECLSPEC void SDLCALL SDL_iPhoneSetEventPump(SDL_bool enabled);
-  proc SDL_iPhoneSetEventPump*(enabled: bool): void
+  proc iPhoneSetEventPump*(enabled: bool) {.
+    importc: "SDL_iPhoneSetEventPump".}
 
   #extern DECLSPEC int SDLCALL SDL_iPhoneKeyboardShow(SDL_Window * window);
-  proc iPhoneKeyboardShow*(window:WindowPtr): cint
+  proc iPhoneKeyboardShow*(window:WindowPtr): cint {.
+    importc: "SDL_iPhoneKeyboardShow".}
   #extern DECLSPEC int SDLCALL SDL_iPhoneKeyboardHide(SDL_Window * window);
-  proc iPhoneKeyboardHide*(window:WindowPtr): cint
+  proc iPhoneKeyboardHide*(window:WindowPtr): cint {.
+    importc: "SDL_iPhoneKeyboardHide".}
   #extern DECLSPEC SDL_bool SDLCALL SDL_iPhoneKeyboardIsShown(SDL_Window * window);
-  proc iPhoneKeyboardIsShown*(window:WindowPtr): bool
+  proc iPhoneKeyboardIsShown*(window:WindowPtr): bool {.
+    importc: "SDL_iPhoneKeyboardIsShown".}
   #extern DECLSPEC int SDLCALL SDL_iPhoneKeyboardToggle(SDL_Window * window);
-  proc iPhoneKeyboardToggle*(window:WindowPtr): cint
+  proc iPhoneKeyboardToggle*(window:WindowPtr): cint {.
+    importc: "SDL_iPhoneKeyboardToggle".}
 
 elif defined(android):
 
   #extern DECLSPEC void * SDLCALL SDL_AndroidGetJNIEnv();
-  proc androidGetJNIEnv*(): pointer
+  proc androidGetJNIEnv*(): pointer {.importc: "SDL_AndroidGetJNIEnv".}
 
   #extern DECLSPEC void * SDLCALL SDL_AndroidGetActivity();
-  proc androidGetActivity*(): pointer
+  proc androidGetActivity*(): pointer {.importc: "SDL_AndroidGetActivity".}
 
   #extern DECLSPEC int SDLCALL SDL_AndroidGetExternalStorageState();
-  proc androidGetExternalStorageState*(): cint
+  proc androidGetExternalStorageState*(): cint {.
+    importc: "SDL_AndroidGetExternalStorageState".}
 
   #extern DECLSPEC const char * SDLCALL SDL_AndroidGetInternalStoragePath();
-  proc androidGetInternalStoragePath* (): cstring
+  proc androidGetInternalStoragePath* (): cstring {.
+    importc: "SDL_AndroidGetInternalStoragePath".}
 
   #extern DECLSPEC const char * SDLCALL SDL_AndroidGetExternalStoragePath();
-  proc androidGetExternalStoragePath* (): cstring
+  proc androidGetExternalStoragePath* (): cstring {.
+    importc: "SDL_AndroidGetExternalStoragePath".}
 
   {.deprecated: [AndroidGetActivity: androidGetActivity].}
   {.deprecated: [AndroidGetExternalStoragePath: androidGetExternalStoragePath].}
