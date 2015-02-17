@@ -56,19 +56,17 @@ type
 
 type
   GameControllerButtonBind* = object
-    bindType*: GameControllerBindType
-    value, hatMask*: cint
+    case bindType*: GameControllerBindType
+      of SDL_CONTROLLER_BINDTYPE_NONE:
+        pad1, pad2: cint
+      of SDL_CONTROLLER_BINDTYPE_BUTTON:
+        button*, pad3: cint
+      of SDL_CONTROLLER_BINDTYPE_AXIS:
+        axis*, pad4: cint
+      of SDL_CONTROLLER_BINDTYPE_HAT:
+        hat*, hatMask*: cint
 
 {.push callconv: cdecl, dynlib: sdl2.LibName.}
-
-proc button* (self: GameControllerButtonBind): cint =
-  result = self.value
-
-proc axis* (self: GameControllerButtonBind): cint =
-  result = self.value
-
-proc hat* (self: GameControllerButtonBind): cint =
-  result = self.value
 
 ##
 #  To count the number of game controllers in the system for the following:
