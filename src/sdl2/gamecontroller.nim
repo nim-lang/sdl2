@@ -26,6 +26,7 @@ discard """
 \file SDL_gamecontroller.h
 
 Include file for SDL game controller event handling
+
 """
 
 ##
@@ -57,6 +58,8 @@ type
   GameControllerButtonBind* = object
     bindType*: GameControllerBindType
     value, hatMask*: cint
+
+{.push callconv: cdecl, dynlib: sdl2.LibName.}
 
 proc button* (self: GameControllerButtonBind): cint =
   result = self.value
@@ -210,13 +213,13 @@ proc gameControllerGetAxisFromString* (pchString: cstring): GameControllerAxis {
 #   turn this axis enum into a string mapping
 # /
 proc gameControllerGetStringForAxis* (axis: GameControllerAxis): cstring {.
-  importc: "GameControllerGetStringForAxis".}
+  importc: "SDL_GameControllerGetStringForAxis".}
 
 ##
 #   Get the SDL joystick layer binding for this controller button mapping
 # /
 proc getBindForAxis* (gameController: GameControllerPtr, axis: GameControllerAxis): GameControllerButtonBind {.
-  importc: "GameControllerGetBindForAxis".}
+  importc: "SDL_GameControllerGetBindForAxis".}
 
 ##
 #   Get the current state of an axis control on a game controller.
@@ -269,7 +272,7 @@ proc gameControllerGetStringForButton* (button: GameControllerButton): cstring {
 #   Get the SDL joystick layer binding for this controller button mapping
 # /
 proc getBindForButton* (gameController: GameControllerPtr, button: GameControllerButton): GameControllerButtonBind {.
-  importc: "SDL_GameControllerButtonBind".}
+  importc: "SDL_GameControllerGetBindForButton".}
 
 
 ##
@@ -286,3 +289,4 @@ proc getButton* (gameController: GameControllerPtr, button: GameControllerButton
 proc close* (gameController: GameControllerPtr) {.
   importc: "SDL_GameControllerClose".}
 
+{.pop.}
