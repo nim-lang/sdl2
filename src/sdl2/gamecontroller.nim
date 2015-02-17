@@ -120,7 +120,7 @@ proc mapping* (gameController: GameControllerPtr): cstring {.
 ##
 #   Is the joystick on this index supported by the game controller interface?
 # /
-proc isGameControler* (joystickIndex: cint): Bool32 {.
+proc isGameController* (joystickIndex: cint): Bool32 {.
   importc: "SDL_IsGameController".}
 
 
@@ -140,7 +140,7 @@ proc gameControllerNameForIndex* (joystickIndex: cint): cstring {.
 #
 #   \return A controller identifier, or NULL if an error occurred.
 # /
-proc gameControlerOpen* (joystickIndex: cint): GameControllerPtr {.
+proc gameControllerOpen* (joystickIndex: cint): GameControllerPtr {.
   importc: "SDL_GameControllerOpen".}
 
 ##
