@@ -58,11 +58,11 @@ type
   GameControllerButtonBind* = object
     case bindType*: GameControllerBindType
       of SDL_CONTROLLER_BINDTYPE_NONE:
-        pad1, pad2: cint
+        nil
       of SDL_CONTROLLER_BINDTYPE_BUTTON:
-        button*, pad3: cint
+        button*: cint
       of SDL_CONTROLLER_BINDTYPE_AXIS:
-        axis*, pad4: cint
+        axis*: cint
       of SDL_CONTROLLER_BINDTYPE_HAT:
         hat*, hatMask*: cint
 
