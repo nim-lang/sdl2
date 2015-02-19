@@ -1703,6 +1703,11 @@ proc setHintWithPriority*(name: cstring, value: cstring, priority: cint): bool {
 proc getHint*(name: cstring): cstring {.
   importc: "SDL_GetHint".}
 
+{.pop.}
+
+let defaultEvent* = Event(kind: QuitEvent)
+  ## a default "initialized" Event
+
 {.deprecated: [PBlitMap: BlitMapPtr].}
 {.deprecated: [PControllerAxisEvent: ControllerAxisEventPtr].}
 {.deprecated: [PControllerButtonEvent: ControllerButtonEventPtr].}

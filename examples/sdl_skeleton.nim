@@ -11,7 +11,7 @@ window = createWindow("SDL Skeleton", 100, 100, 640,480, SDL_WINDOW_SHOWN)
 render = createRenderer(window, -1, Renderer_Accelerated or Renderer_PresentVsync or Renderer_TargetTexture)
 
 var
-  evt = Event(kind: QuitEvent)
+  evt = sdl2.defaultEvent
   runGame = true
   fpsman: FpsManager
 fpsman.init
