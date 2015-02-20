@@ -4,6 +4,8 @@ when defined(Linux):
   const LibName = "libSDL2_image.so"
 elif defined(macosx):
   const LibName = "libSDL2_image.dylib"
+elif defined(Windows):
+  const LibName = "SDL2_image.dll"
 else:
   {.fatal: "Please fill out the library name for your platform at the top of sdl2/image.nim".}
 
