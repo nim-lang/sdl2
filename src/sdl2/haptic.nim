@@ -952,7 +952,7 @@ proc numEffectsPlaying*(haptic: HapticPtr):cint {.importc: "SDL_HapticNumEffects
 #  \sa SDL_HapticNumEffects
 #  \sa SDL_HapticEffectSupported
  
-proc query*(haptic: HapticPt):uint {.importc: "SDL_HapticQuery".}
+proc query*(haptic: HapticPtr):uint {.importc: "SDL_HapticQuery".}
 
 
 #  
@@ -960,7 +960,7 @@ proc query*(haptic: HapticPt):uint {.importc: "SDL_HapticQuery".}
 # 
 #  \sa HapticDirection
  
-proc numAxes*(haptic: HapticPt):cint {.importc: "SDL_HapticNumAxes".}
+proc numAxes*(haptic: HapticPtr):cint {.importc: "SDL_HapticNumAxes".}
 
 #  
 #  \brief Checks to see if effect is supported by haptic.
@@ -972,7 +972,7 @@ proc numAxes*(haptic: HapticPt):cint {.importc: "SDL_HapticNumAxes".}
 #  \sa SDL_HapticQuery
 #  \sa SDL_HapticNewEffect
  
-proc effectSupported*(haptic: HapticPt, effect: ptr HapticEffect):cint {.importc: "SDL_HapticEffectSupported".}
+proc effectSupported*(haptic: HapticPtr, effect: ptr HapticEffect):cint {.importc: "SDL_HapticEffectSupported".}
 
 #  
 #  \brief Creates a new haptic effect on the device.
@@ -985,7 +985,7 @@ proc effectSupported*(haptic: HapticPt, effect: ptr HapticEffect):cint {.importc
 #  \sa SDL_HapticRunEffect
 #  \sa SDL_HapticDestroyEffect
  
-proc newEffect*(haptic: HapticPt, effect: ptr HapticEffect):cint {.importc: "SDL_HapticNewEffect".}
+proc newEffect*(haptic: HapticPtr, effect: ptr HapticEffect):cint {.importc: "SDL_HapticNewEffect".}
 
 #  
 #  \brief Updates the properties of an effect.
@@ -1004,7 +1004,7 @@ proc newEffect*(haptic: HapticPt, effect: ptr HapticEffect):cint {.importc: "SDL
 #  \sa SDL_HapticRunEffect
 #  \sa SDL_HapticDestroyEffect
  
-proc updateEffect*(haptic: HapticPt, effect: cint, data: ptr HapticEffect):cint {.importc: "SDL_HapticUpdateEffect".}
+proc updateEffect*(haptic: HapticPtr, effect: cint, data: ptr HapticEffect):cint {.importc: "SDL_HapticUpdateEffect".}
 
 #  
 #  \brief Runs the haptic effect on its associated haptic device.
@@ -1024,7 +1024,7 @@ proc updateEffect*(haptic: HapticPt, effect: cint, data: ptr HapticEffect):cint 
 #  \sa SDL_HapticDestroyEffect
 #  \sa SDL_HapticGetEffectStatus
  
-proc runEffect*(haptic: HapticPt, effect: cint, iterations: uint32):cint {.importc: "SDL_HapticRunEffect".}
+proc runEffect*(haptic: HapticPtr, effect: cint, iterations: uint32):cint {.importc: "SDL_HapticRunEffect".}
 
 #  
 #  \brief Stops the haptic effect on its associated haptic device.
@@ -1036,7 +1036,7 @@ proc runEffect*(haptic: HapticPt, effect: cint, iterations: uint32):cint {.impor
 #  \sa SDL_HapticRunEffect
 #  \sa SDL_HapticDestroyEffect
  
-proc stopEffect*(haptic: HapticPt, effect: cint):cint {.importc: "SDL_HapticStopEffect".}
+proc stopEffect*(haptic: HapticPtr, effect: cint):cint {.importc: "SDL_HapticStopEffect".}
 
 #  
 #  \brief Destroys a haptic effect on the device.
@@ -1049,7 +1049,7 @@ proc stopEffect*(haptic: HapticPt, effect: cint):cint {.importc: "SDL_HapticStop
 # 
 #  \sa SDL_HapticNewEffect
  
-proc destroyEffect*(haptic: HapticPt, effect: cint) {.importc: "SDL_HapticDestroyEffect".}
+proc destroyEffect*(haptic: HapticPtr, effect: cint) {.importc: "SDL_HapticDestroyEffect".}
 
 #  
 #  \brief Gets the status of the current effect on the haptic device.
@@ -1063,7 +1063,7 @@ proc destroyEffect*(haptic: HapticPt, effect: cint) {.importc: "SDL_HapticDestro
 #  \sa SDL_HapticRunEffect
 #  \sa SDL_HapticStopEffect
  
-proc getEffectStatus*(haptic: HapticPt, effect: cint):cint {.importc: "SDL_HapticGetEffectStatus".}
+proc getEffectStatus*(haptic: HapticPtr, effect: cint):cint {.importc: "SDL_HapticGetEffectStatus".}
 
 #  
 #  \brief Sets the global gain of the device.
@@ -1081,7 +1081,7 @@ proc getEffectStatus*(haptic: HapticPt, effect: cint):cint {.importc: "SDL_Hapti
 # 
 #  \sa SDL_HapticQuery
  
-proc setGain*(haptic: HapticPt, gain: int ):cint {.importc: "SDL_HapticSetGain".}
+proc setGain*(haptic: HapticPtr, gain: int ):cint {.importc: "SDL_HapticSetGain".}
 
 #  
 #  \brief Sets the global autocenter of the device.
@@ -1097,7 +1097,7 @@ proc setGain*(haptic: HapticPt, gain: int ):cint {.importc: "SDL_HapticSetGain".
 # 
 #  \sa SDL_HapticQuery
  
-proc setAutocenter*(haptic: HapticPt, autocenter: int ):cint {.importc: "SDL_HapticSetAutocenter".}
+proc setAutocenter*(haptic: HapticPtr, autocenter: int ):cint {.importc: "SDL_HapticSetAutocenter".}
 
 #  
 #  \brief Pauses a haptic device.
@@ -1113,7 +1113,7 @@ proc setAutocenter*(haptic: HapticPt, autocenter: int ):cint {.importc: "SDL_Hap
 # 
 #  \sa SDL_HapticUnpause
  
-proc pause*(haptic: HapticPt):cint {.importc: "SDL_HapticPause".}
+proc pause*(haptic: HapticPtr):cint {.importc: "SDL_HapticPause".}
 
 #  
 #  \brief Unpauses a haptic device.
@@ -1125,7 +1125,7 @@ proc pause*(haptic: HapticPt):cint {.importc: "SDL_HapticPause".}
 # 
 #  \sa SDL_HapticPause
  
-proc unpause*(haptic: HapticPt):cint {.importc: "SDL_HapticUnpause".}
+proc unpause*(haptic: HapticPtr):cint {.importc: "SDL_HapticUnpause".}
 
 #  
 #  \brief Stops all the currently playing effects on a haptic device.
@@ -1133,7 +1133,7 @@ proc unpause*(haptic: HapticPt):cint {.importc: "SDL_HapticUnpause".}
 #  \param haptic Haptic device to stop.
 #  \return 0 on success or -1 on error.
  
-proc stopAll*(haptic: HapticPt):cint {.importc: "SDL_HapticStopAll".}
+proc stopAll*(haptic: HapticPtr):cint {.importc: "SDL_HapticStopAll".}
 
 #  
 #  \brief Checks to see if rumble is supported on a haptic device.
@@ -1145,7 +1145,7 @@ proc stopAll*(haptic: HapticPt):cint {.importc: "SDL_HapticStopAll".}
 #  \sa SDL_HapticRumblePlay
 #  \sa SDL_HapticRumbleStop
  
-proc rumbleSupported*(haptic: HapticPt):cint {.importc: "SDL_HapticRumbleSupported".}
+proc rumbleSupported*(haptic: HapticPtr):cint {.importc: "SDL_HapticRumbleSupported".}
 
 #  
 #  \brief Initializes the haptic device for simple rumble playback.
@@ -1158,7 +1158,7 @@ proc rumbleSupported*(haptic: HapticPt):cint {.importc: "SDL_HapticRumbleSupport
 #  \sa SDL_HapticRumblePlay
 #  \sa SDL_HapticRumbleStop
  
-proc rumbleInit*(haptic: HapticPt):cint {.importc: "SDL_HapticRumbleInit".}
+proc rumbleInit*(haptic: HapticPtr):cint {.importc: "SDL_HapticRumbleInit".}
 
 #  
 #  \brief Runs simple rumble on a haptic device
@@ -1172,7 +1172,7 @@ proc rumbleInit*(haptic: HapticPt):cint {.importc: "SDL_HapticRumbleInit".}
 #  \sa SDL_HapticRumbleInit
 #  \sa SDL_HapticRumbleStop
  
-proc rumblePlay*(haptic: HapticPt, strength: float, length: uint32 ):cint {.importc: "SDL_HapticRumblePlay".}
+proc rumblePlay*(haptic: HapticPtr, strength: float, length: uint32 ):cint {.importc: "SDL_HapticRumblePlay".}
 
 #  
 #  \brief Stops the simple rumble on a haptic device.
@@ -1184,6 +1184,6 @@ proc rumblePlay*(haptic: HapticPt, strength: float, length: uint32 ):cint {.impo
 #  \sa SDL_HapticRumbleInit
 #  \sa SDL_HapticRumblePlay
  
-proc rumbleStop*(haptic: HapticPt):cint {.importc: "SDL_HapticRumbleStop".}
+proc rumbleStop*(haptic: HapticPtr):cint {.importc: "SDL_HapticRumbleStop".}
 
 {.pop.}
