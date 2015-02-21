@@ -427,7 +427,7 @@ const SDL_HAPTIC_INFINITY* = 4294967295'u
  
 type
   HapticDirection* = object
-    `type`: uint8         #  < The type of encoding. 
+    kind: uint8         #  < The type of encoding. 
     dir: array[3, int32]      #  < The encoded direction. 
 
 
@@ -445,7 +445,7 @@ type
 type
   HapticConstant* = object
     #  Header 
-    `type`: uint16            #  < ::SDL_HAPTIC_CONSTANT 
+    kind: uint16            #  < ::SDL_HAPTIC_CONSTANT 
     direction: HapticDirection  #  < Direction of the effect. 
 
     #  Replay 
@@ -525,7 +525,7 @@ type
 type
   HapticPeriodic* = object
     #  Header 
-    `type`: uint16        #  < ::SDL_HAPTIC_SINE, ::SDL_HAPTIC_LEFTRIGHT,
+    kind: uint16        #  < ::SDL_HAPTIC_SINE, ::SDL_HAPTIC_LEFTRIGHT,
                         #    ::SDL_HAPTIC_TRIANGLE, ::SDL_HAPTIC_SAWTOOTHUP or
                         #    ::SDL_HAPTIC_SAWTOOTHDOWN 
     direction: HapticDirection  #  < Direction of the effect. 
@@ -577,7 +577,7 @@ type
 type
   HapticCondition* = object
     #  Header 
-    `type`: uint16            #  < ::SDL_HAPTIC_SPRING, ::SDL_HAPTIC_DAMPER,
+    kind: uint16            #  < ::SDL_HAPTIC_SPRING, ::SDL_HAPTIC_DAMPER,
                             #     ::SDL_HAPTIC_INERTIA or ::SDL_HAPTIC_FRICTION 
     direction: HapticDirection  #  < Direction of the effect - Not used ATM. 
 
@@ -613,7 +613,7 @@ type
 type
   HapticRamp* = object
     #  Header 
-    `type`: uint16            #  < ::SDL_HAPTIC_RAMP 
+    kind: uint16            #  < ::SDL_HAPTIC_RAMP 
     direction: HapticDirection  #  < Direction of the effect. 
 
     #  Replay 
@@ -649,7 +649,7 @@ type
 type
   HapticLeftRight* = object
     #  Header 
-    `type`: uint16            #  < ::SDL_HAPTIC_LEFTRIGHT 
+    kind: uint16            #  < ::SDL_HAPTIC_LEFTRIGHT 
 
     #  Replay 
     length: uint32          #  < Duration of the effect. 
@@ -674,7 +674,7 @@ type
 type
   HapticCustom* = object
     #  Header 
-    `type`: uint16            #  < ::SDL_HAPTIC_CUSTOM 
+    kind: uint16            #  < ::SDL_HAPTIC_CUSTOM 
     direction: HapticDirection  #  < Direction of the effect. 
 
     #  Replay 
@@ -769,7 +769,7 @@ type
 type
   HapticEffect* = object {.union.}
     #  Common for all force feedback effects 
-    `type`: uint16                    #  < Effect type. 
+    kind: uint16                    #  < Effect type. 
     constant: HapticConstant    #  < Constant effect. 
     periodic: HapticPeriodic    #  < Periodic effect. 
     condition: HapticCondition  #  < Condition effect. 
