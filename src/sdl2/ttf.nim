@@ -46,7 +46,7 @@ const
 proc ttfByteSwappedUnicode*(swapped: cint) {.importc: "TTF_ByteSwappedUNICODE".}
 
 # Initialize the TTF engine - returns 0 if successful, -1 on error
-proc ttfInit*(): SDL_Return  {.importc: "TTF_Init".}
+proc ttfInit*(): SDL_Return  {.importc: "TTF_Init", discardable.}
 # Open a font file and create a font of the specified point size.
 #  Some .fon fonts will have several sizes embedded in the file, so the
 #  point size becomes the index of choosing which size.  If the value
