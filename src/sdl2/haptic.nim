@@ -626,7 +626,7 @@ type
 
     #  Ramp 
     start: int16           #  < Beginning strength level. 
-    `end`: int16             #  < Ending strength level. 
+    last: int16             #  < Ending strength level. 
 
     #  Envelope 
     attack_length: uint16   #  < Duration of the attack. 
