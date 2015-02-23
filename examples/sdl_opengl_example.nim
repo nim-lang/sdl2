@@ -4,10 +4,13 @@ import sdl2
 import opengl
 import glu
 
-# Initialize SDL
-discard SDL_Init(INIT_EVERYTHING)
-var window = CreateWindow("SDL Skeleton", 100, 100, 640, 480, SDL_WINDOW_OPENGL or SDL_WINDOW_RESIZABLE)
-var context = window.GL_CreateContext()
+discard sdl2.init(INIT_EVERYTHING)
+
+var screenWidth: cint = 640
+var screenHeight: cint = 480
+
+var window = createWindow("SDL/OpenGL Skeleton", 100, 100, screenWidth, screenHeight, SDL_WINDOW_OPENGL or SDL_WINDOW_RESIZABLE)
+var context = window.glCreateContext()
 
 # Initialize OpenGL
 loadExtensions()
@@ -18,25 +21,24 @@ glDepthFunc(GL_LEQUAL)                            # Set the type of depth-test
 glShadeModel(GL_SMOOTH)                           # Enable smooth shading
 glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST) # Nice perspective corrections
 
-proc reshape() =
-  # TODO: use real width and height instead of constant values
-  glViewport(0, 0, 640, 480)                        # Set the viewport to cover the new window
-  glMatrixMode(GL_PROJECTION)                       # To operate on the Projection matrix
-  glLoadIdentity()                                  # Reset
-  gluPerspective(45.0, 640 / 480, 0.1, 100.0)       # Enable perspective projection with fovy, aspect, zNear and zFar
+proc reshape(newWidth: cint, newHeight: cint) =
+  glViewport(0, 0, newWidth, newHeight)   # Set the viewport to cover the new window
+  glMatrixMode(GL_PROJECTION)             # To operate on the projection matrix
+  glLoadIdentity()                        # Reset
+  gluPerspective(45.0, newWidth / newHeight, 0.1, 100.0)  # Enable perspective projection with fovy, aspect, zNear and zFar
 
 proc render() =
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) # Clear color and depth buffers
   glMatrixMode(GL_MODELVIEW)                          # To operate on model-view matrix
   glLoadIdentity()                 # Reset the model-view matrix
   glTranslatef(1.5, 0.0, -7.0)     # Move right and into the screen
-   
+
   # Render a cube consisting of 6 quads
   # Each quad consists of 2 triangles
   # Each triangle consists of 3 vertices
-  
+
   glBegin(GL_TRIANGLES)        # Begin drawing of triangles
-  
+
   # Top face (y = 1.0f)
   glColor3f(0.0, 1.0, 0.0)     # Green
   glVertex3f( 1.0, 1.0, -1.0)
@@ -72,7 +74,7 @@ proc render() =
   glVertex3f( 1.0,  1.0, -1.0)
   glVertex3f( 1.0, -1.0, -1.0)
   glVertex3f(-1.0,  1.0, -1.0)
-  
+
   # Left face (x = -1.0f)
   glColor3f(0.0, 0.0, 1.0)     # Blue
   glVertex3f(-1.0,  1.0,  1.0)
@@ -90,38 +92,44 @@ proc render() =
   glVertex3f(1.0, -1.0, -1.0)
   glVertex3f(1.0,  1.0, -1.0)
   glVertex3f(1.0, -1.0,  1.0)
-  
+
   glEnd()  # End of drawing
-  
-  window.GL_SwapWindow() # Swap the front and back frame buffers (double buffering)
 
-# Framerate limiter
+  window.glSwapWindow() # Swap the front and back frame buffers (double buffering)
 
-let MAXFRAMERATE: uint32 = 20 # milli seconds
-var frametime: uint32 
+# Frame rate limiter
 
-proc limitFramerate() =
-  var now = GetTicks()
-  if frametime > now:
-    Delay(frametime - now)
-  frametime = frametime + MAXFRAMERATE
+let targetFramePeriod: uint32 = 20 # 20 milliseconds corresponds to 50 fps
+var frameTime: uint32 = 0
+
+proc limitFrameRate() =
+  let now = getTicks()
+  if frameTime > now:
+    delay(frameTime - now) # Delay to maintain steady frame rate
+  frameTime += targetFramePeriod
 
 # Main loop
 
 var
-  evt: TEvent
+  evt = sdl2.defaultEvent
   runGame = true
-      
+
+reshape(screenWidth, screenHeight) # Set up initial viewport and projection
+
 while runGame:
-  while PollEvent(evt):
+  while pollEvent(evt):
     if evt.kind == QuitEvent:
       runGame = false
       break
     if evt.kind == WindowEvent:
-      reshape()
-  
+      var windowEvent = cast[WindowEventPtr](addr(evt))
+      if windowEvent.event == WindowEvent_Resized:
+        let newWidth = windowEvent.data1
+        let newHeight = windowEvent.data2
+        reshape(newWidth, newHeight)
+
   render()
-  
-  limitFramerate()
+
+  limitFrameRate()
 
 destroy window
