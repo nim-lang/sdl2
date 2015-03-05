@@ -1577,7 +1577,7 @@ elif defined(iPhone):
   #    SDL_Window * window, int interval,
   #    void (*callback)(void*), void *callbackParam);
   proc iPhoneSetAnimationCallback*(window: WindowPtr, interval:cint, callback: VoidCallback, callbackParam: pointer): cint {.
-    importc: "SDL_iPhoneSetAnimationCallBack".}
+    importc: "SDL_iPhoneSetAnimationCallback".}
 
   #extern DECLSPEC void SDLCALL SDL_iPhoneSetEventPump(SDL_bool enabled);
   proc iPhoneSetEventPump*(enabled: bool) {.
