@@ -210,7 +210,7 @@ type
     ## should also be discardable
   Bool32* {.size: sizeof(cint).} = enum False32 = 0, True32 = 1 ##\
     ## SDL_bool
-  KeyState* {.size: sizeof(byte).} = enum KeyPressed = 0, KeyReleased
+  KeyState* {.size: sizeof(byte).} = enum KeyReleased = 0, KeyPressed
 
   KeySym* {.pure.} = object
     scancode*: cint ##Scancode
