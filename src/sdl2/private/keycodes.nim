@@ -191,7 +191,7 @@ const
   K_y*: cint =  'y'.cint
   K_z*: cint =  'z'.cint
 
-  K_DELETE*: cint =  '\177'.cint
+  K_DELETE*: cint =  '\127'.cint
   K_CAPSLOCK*: cint =  SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CAPSLOCK)
 
   K_F1*: cint =  SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_F1)
