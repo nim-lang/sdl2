@@ -55,7 +55,7 @@ type
 {.push callConv:cdecl, dynlib: LibName.}
 
 # ---- Function Prototypes
-# Note: all ___Color routines expect the color to be in format 0xRRGGBBAA
+# Note: all ___Color routines expect the color to be in format 0xAABBGGRR
 # Pixel
 proc pixelColor*(renderer: RendererPtr; x, y: int16; color: uint32): SDL_Return {.importc, discardable.}
 proc pixelRGBA*(renderer: RendererPtr; x: int16; y: int16; r: uint8;
