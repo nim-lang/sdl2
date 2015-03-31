@@ -660,12 +660,12 @@ type
 
   RWopsPtr* = ptr RWops
   RWops* {.pure, final.} = object
-    size*: proc (context: RWopsPtr): int64
-    seek*: proc (context: RWopsPtr; offset: int64; whence: cint): int64
-    read*: proc (context: RWopsPtr; destination: pointer; size, maxnum: csize): csize
+    size*: proc (context: RWopsPtr): int64 {.cdecl.}
+    seek*: proc (context: RWopsPtr; offset: int64; whence: cint): int64 {.cdecl.}
+    read*: proc (context: RWopsPtr; destination: pointer; size, maxnum: csize): csize {.cdecl.}
     write*: proc (context: RWopsPtr; source: pointer; size: csize;
-                  num: csize): csize
-    close*: proc (context: RWopsPtr): cint
+                  num: csize): csize {.cdecl.}
+    close*: proc (context: RWopsPtr): cint {.cdecl.}
     kind*: cint
     mem*: Mem
   Mem*{.final.} = object
