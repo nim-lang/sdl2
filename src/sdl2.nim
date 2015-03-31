@@ -543,9 +543,9 @@ type
       BlendMode_Add  = 0x00000002, #*< dst = (src * A) + dst
       BlendMode_Mod  = 0x00000004 #*< dst = src * dst
   BlitFunction* = proc(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
-    dstrect: ptr Rect): cint
+    dstrect: ptr Rect): cint{.cdecl.}
 
-  TimerCallback* = proc (interval: uint32; param: pointer): uint32
+  TimerCallback* = proc (interval: uint32; param: pointer): uint32{.cdecl.}
   TimerID* = cint
 
 const ##RendererFlags
