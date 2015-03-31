@@ -893,11 +893,11 @@ proc renderTargetSupported*(renderer: RendererPtr): Bool32 {.
   importc: "SDL_RenderTargetSupported".}
 
 proc setRenderTarget*(renderer: RendererPtr; texture: TexturePtr): SDL_Return {.discardable,
-  importc: "SDL_SetRendererTarget".}
+  importc: "SDL_SetRenderTarget".}
 #*
 #
 proc getRenderTarget*(renderer: RendererPtr): TexturePtr {.
-  importc: "SDL_GetRendererTarget".}
+  importc: "SDL_GetRenderTarget".}
 
 
 
