@@ -1030,6 +1030,10 @@ proc rwFromFP*(fp: File; autoclose: Bool32): RWopsPtr {.importc: "SDL_RWFromFP".
 proc rwFromMem*(mem: pointer; size: cint): RWopsPtr {.importc: "SDL_RWFromMem".}
 proc rwFromConstMem*(mem: pointer; size: cint): RWopsPtr {.importc: "SDL_RWFromConstMem".}
 
+proc allocRW* : RWopsPtr {.importc: "SDL_AllocRW".}
+proc freeRW* (area: RWopsPtr) {.importc: "SDL_FreeRW".}
+
+
 #*
 #   Load a surface from a file.
 #
@@ -1702,6 +1706,17 @@ proc setHintWithPriority*(name: cstring, value: cstring, priority: cint): bool {
 
 proc getHint*(name: cstring): cstring {.
   importc: "SDL_GetHint".}
+
+proc size* (ctx:RWopsPtr): int64 {.inline.} = 
+  ctx.size(ctx)
+proc seek* (ctx:RWopsPtr; offset:int64; whence:cint): int64 {.inline.} = 
+  ctx.seek(ctx,offset,whence)
+proc read* (ctx:RWopsPtr; `ptr`: pointer; size,maxnum:csize): csize{.inline.} =
+  ctx.read(ctx, `ptr`, size, maxnum)
+proc write* (ctx:RWopsPtr; `ptr`:pointer; size,num:csize): csize{.inline.} =
+  ctx.write(ctx, `ptr`, size, num)
+proc close* (ctx:RWopsPtr): cint {.inline.} =
+  ctx.close(ctx)
 
 {.pop.}
 
