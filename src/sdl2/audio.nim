@@ -406,7 +406,7 @@ proc loadWAV_RW*(src: ptr RWops; freesrc: cint;
 #   Compatibility convenience function.
 #
 template loadWAV*(file, spec, audio_buf, audio_len: expr): expr =
-  SDL_LoadWAV_RW(RWFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
+  SDL_LoadWAV_RW(rwFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
 
 #*
 #   This function frees data previously allocated with SDL_LoadWAV_RW()
