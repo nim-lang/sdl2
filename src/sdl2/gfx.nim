@@ -29,14 +29,14 @@
 
 import sdl2
 
-when defined(Linux):
-  const LibName = "libSDL2_gfx.so"
-elif defined(macosx):
-  const LibName = "libSDL2_gfx.dylib"
-elif defined(Windows):
-  const LibName = "SDL2_gfx.dll"
-else: {.error.}
-
+when not defined(SDL_Static):
+  when defined(Linux):
+    const LibName = "libSDL2_gfx.so"
+  elif defined(macosx):
+    const LibName = "libSDL2_gfx.dylib"
+  elif defined(Windows):
+    const LibName = "SDL2_gfx.dll"
+  else: {.error.}
 
 const
   FPS_UPPER_LIMIT* = 200
@@ -52,7 +52,11 @@ type
     rate*: cint
 
 {.pragma: i, importc, discardable.}
-{.push callConv:cdecl, dynlib: LibName.}
+
+when defined(SDL_STATIC):
+  {.push header: "<SDL2/SDL2_gfxPrimitives.h>".}
+else:
+  {.push callConv:cdecl, dynlib: LibName.}
 
 # ---- Function Prototypes
 # Note: all ___Color routines expect the color to be in format 0xAABBGGRR
@@ -211,6 +215,9 @@ proc stringRGBA*(renderer: RendererPtr; x: int16; y: int16; s: cstring;
                  r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Ends C function definitions when using C++
 
+when defined(SDL_STATIC):
+  {.pop.}
+  {.push header: "<SDL2/SDL2_rotozoom.h>".}
 
 proc rotozoomSurface*(src: SurfacePtr; angle, zoom: cdouble;
   smooth: cint): SurfacePtr {.importc.}
@@ -229,6 +236,9 @@ proc shrinkSurface*(src: SurfacePtr; factorx, factorY: cint): SurfacePtr {.impor
 proc rotateSurface90Degrees*(src: SurfacePtr;
   numClockwiseTurns: cint): SurfacePtr {.importc.}
 
+when defined(SDL_STATIC):
+  {.pop.}
+  {.push header: "<SDL2/SDL2_framerate.h>".}
 
 proc init*(manager: var FpsManager) {.importc: "SDL_initFramerate".}
 proc setFramerate*(manager: var FpsManager; rate: cint): SDL_Return {.

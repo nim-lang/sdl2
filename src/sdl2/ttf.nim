@@ -1,9 +1,10 @@
-when defined(Linux):
-  const LibName = "libSDL2_ttf.so"
-elif defined(macosx):
-  const LibName = "libSDL2_ttf.dylib"
-elif defined(Windows):
-  const LibName* = "SDL2_ttf.dll"
+when defined(SDL_Static):
+  when defined(Linux):
+    const LibName = "libSDL2_ttf.so"
+  elif defined(macosx):
+    const LibName = "libSDL2_ttf.dylib"
+  elif defined(Windows):
+    const LibName* = "SDL2_ttf.dll"
 
 import sdl2
 
@@ -31,8 +32,11 @@ type
 ##define TTF_MINOR_VERSION	SDL_TTF_MINOR_VERSION
 #//#define TTF_PATCHLEVEL		SDL_TTF_PATCHLEVEL
 ##define TTF_VERSION(X)		SDL_TTF_VERSION(X)
-#
-{.push callConv:cdecl, dynlib:LibName.}
+
+when defined(SDL_STATIC):
+  {.push header: "<SDL2/SDL_ttf.h>".}
+else:
+  {.push callConv:cdecl, dynlib:LibName.}
 
 proc ttfLinkedVersion*(): ptr SDL_version {.importc: "TTF_Linked_Version".}
 # ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark)

@@ -66,7 +66,10 @@ type
       of SDL_CONTROLLER_BINDTYPE_HAT:
         hat*, hatMask*: cint
 
-{.push callconv: cdecl, dynlib: sdl2.LibName.}
+when defined(SDL_Static):
+  {.push header: "<SDL2/SDL.h>".}
+else:
+  {.push callConv: cdecl, dynlib: LibName.}
 
 ##
 #  To count the number of game controllers in the system for the following:

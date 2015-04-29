@@ -22,10 +22,11 @@
 # $Id$
 import sdl2
 
-when defined(Linux):
-  const LibName* = "libSDL2_net.so"
-else:
-  {.error: "Please fill out your platform in sdl2/net.nim".}
+when not defined(SDL_Static):
+  when defined(Linux):
+    const LibName* = "libSDL2_net.so"
+  else:
+    {.error: "Please fill out your platform in sdl2/net.nim".}
 
 type
   IpAddress* = object
@@ -66,7 +67,10 @@ type
     ready*: cint
   GenericSocket* = ptr GenericSocketObj
 
-{.push dynlib: LibName, callconv: cdecl.}
+when defined(SDL_STATIC):
+  {.push header: "<SDL2/SDL2_net.h>".}
+else:
+  {.push dynlib: LibName, callconv: cdecl.}
 # This function gets the version of the dynamically linked SDL_net library.
 #   it should NOT be used to fill a version structure, instead you should
 #   use the SDL_NET_VERSION() macro.

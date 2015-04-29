@@ -60,7 +60,10 @@ type
     data: array[16, uint8]
   JoystickID* = int32
 
-{.push callconv: cdecl, dynlib: sdl2.LibName.}
+when defined(SDL_Static):
+  {.push header: "<SDL2/SDL.h>".}
+else:
+  {.push callConv: cdecl, dynlib: LibName.}
 
 #  Function prototypes# /
 ##

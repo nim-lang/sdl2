@@ -1,15 +1,14 @@
 import sdl2
 
-when defined(Linux):
-  const LibName = "libSDL2_image.so"
-elif defined(macosx):
-  const LibName = "libSDL2_image.dylib"
-elif defined(Windows):
-  const LibName = "SDL2_image.dll"
-else:
-  {.fatal: "Please fill out the library name for your platform at the top of sdl2/image.nim".}
-
-
+when not defined(SDL_Static):
+  when defined(Linux):
+    const LibName = "libSDL2_image.so"
+  elif defined(macosx):
+    const LibName = "libSDL2_image.dylib"
+  elif defined(Windows):
+    const LibName = "SDL2_image.dll"
+  else:
+    {.fatal: "Please fill out the library name for your platform at the top of sdl2/image.nim".}
 
 const
   IMG_INIT_JPG* = 0x00000001
@@ -17,7 +16,10 @@ const
   IMG_INIT_TIF* = 0x00000004
   IMG_INIT_WEBP* = 0x00000008
 
-{.push callconv:cdecl, dynlib: LibName.}
+when defined(SDL_STATIC):
+  {.push header: "<SDL2/SDL_image.h>".}
+else:
+  {.push callConv:cdecl, dynlib: LibName.}
 
 proc linkedVersion*(): ptr SDL_version {.importc: "IMG_Linked_Version".}
 

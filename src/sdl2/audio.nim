@@ -230,7 +230,11 @@ type
     SDL_AUDIO_STOPPED = 0, SDL_AUDIO_PLAYING, SDL_AUDIO_PAUSED
 const
   SDL_MIX_MAXVOLUME* = 128
-{.push callconv: cdecl, dynlib: sdl2.LibName.}
+
+when defined(SDL_Static):
+  {.push header: "<SDL2/SDL.h>".}
+else:
+  {.push callConv: cdecl, dynlib: LibName.}
 
 # Function prototypes
 #*
