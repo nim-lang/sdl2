@@ -241,7 +241,7 @@ const
 #
 # @{
 proc getNumAudioDrivers*(): cint {.
-  importc: "SDL_GetNumAudioDevices".}
+  importc: "SDL_GetNumAudioDrivers".}
 proc getAudioDriver*(index: cint): cstring {.
   importc: "SDL_GetAudioDriver".}
 # @}
