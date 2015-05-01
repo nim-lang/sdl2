@@ -22,7 +22,7 @@
 {.deadCodeElim: on.}
 # Dynamically link to the correct library for our system: 
 
-when not defined(SDL_STATIC):
+when not defined(SDL_Static):
   when defined(Windows): 
     const LibName* = "SDL2_mixer.dll"
   elif defined(macosx): 
@@ -32,7 +32,7 @@ when not defined(SDL_STATIC):
   else: 
     {.error.}
 
-when defined(SDL_STATIC):
+when defined(SDL_Static):
   {.push header: "<SDL2/SDL_mixer.h>".}
 else:
   {.push callConv:cdecl, dynlib: LibName.}
