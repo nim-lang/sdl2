@@ -35,14 +35,15 @@ render = createRenderer(window, -1, Renderer_Accelerated or Renderer_PresentVsyn
 #let the sound finish
 while Mix_Playing(channel) != 0:
     discard
-
-# Mix_FreeChunk(sound) #clear wav
-Mix_FreeMusic(sound2) #clear ogg
-Mix_CloseAudio()
-sdl2.quit()
-
+    
 # keep window open enough to hear sound, testing purposes
 Delay(1000)
 
 destroy render
 destroy window
+
+# Mix_FreeChunk(sound) #clear wav
+Mix_FreeMusic(sound2) #clear ogg
+Mix_CloseAudio()
+
+sdl2.quit()
