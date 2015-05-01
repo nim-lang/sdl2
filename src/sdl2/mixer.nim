@@ -56,9 +56,10 @@ when false:
 #   use the SDL_MIXER_VERSION() macro.
 # 
 
-proc Mix_Linked_Version*(): ptr SDL_version {.importc: "Mix_Linked_Version".}
+proc linkedVersion*(): ptr SDL_version {.importc: "Mix_Linked_Version".}
+
 type 
-  MIX_InitFlags* {.size: sizeof(cint).} = enum 
+  initFlags* {.size: sizeof(cint).} = enum 
     MIX_INIT_FLAC = 0x00000001, MIX_INIT_MOD = 0x00000002, 
     MIX_INIT_MODPLUG = 0x00000004, MIX_INIT_MP3 = 0x00000008, 
     MIX_INIT_OGG = 0x00000010, MIX_INIT_FLUIDSYNTH = 0x00000020
@@ -69,10 +70,10 @@ type
 #   It returns the flags successfully initialized, or 0 on failure.
 # 
 
-proc Mix_Init*(flags: cint): cint {.importc: "Mix_Init".}
+proc init*(flags: cint): cint {.importc: "Mix_Init".}
 # Unloads libraries loaded with Mix_Init 
 
-proc Mix_Quit*() {.importc: "Mix_Quit".}
+proc quit*() {.importc: "Mix_Quit".}
 # The default mixer has 8 simultaneous mixing channels 
 
 const 
@@ -92,8 +93,8 @@ const
 # The internal format for an audio chunk 
 
 type 
-  Mix_ChunkPtr* = ptr Mix_Chunk
-  Mix_Chunk* = object 
+  ChunkPtr* = ptr Chunk
+  Chunk* = object 
     allocated*: cint
     abuf*: ptr uint8
     alen*: uint32
@@ -103,9 +104,9 @@ type
 # The different fading types supported 
 
 type 
-  Mix_Fading* {.size: sizeof(cint).} = enum 
+  Fading* {.size: sizeof(cint).} = enum 
     MIX_NO_FADING, MIX_FADING_OUT, MIX_FADING_IN
-  Mix_MusicType* {.size: sizeof(cint).} = enum 
+  MusicType* {.size: sizeof(cint).} = enum 
     MUS_NONE, MUS_CMD, MUS_WAV, MUS_MOD, MUS_MID, MUS_OGG, MUS_MP3, MUS_MP3_MAD, 
     MUS_FLAC, MUS_MODPLUG
 
@@ -114,13 +115,13 @@ type
 # The internal format for a music chunk interpreted via mikmod 
 
 type 
-  Mix_MusicPtr* = ptr Mix_Music
-  Mix_Music* = object 
+  MusicPtr* = ptr Music
+  Music* = object 
   
 
 # Open the mixer with a certain audio format 
 
-proc Mix_OpenAudio*(frequency: cint; format: uint16; channels: cint; 
+proc openAudio*(frequency: cint; format: uint16; channels: cint; 
                     chunksize: cint): cint {.importc: "Mix_OpenAudio".}
 # Dynamically change the number of channels managed by the mixer.
 #   If decreasing the number of channels, the upper channels are
@@ -128,41 +129,41 @@ proc Mix_OpenAudio*(frequency: cint; format: uint16; channels: cint;
 #   This function returns the new number of allocated channels.
 # 
 
-proc Mix_AllocateChannels*(numchans: cint): cint {.
+proc allocateChannels*(numchans: cint): cint {.
     importc: "Mix_AllocateChannels".}
 # Find out what the actual audio device parameters are.
 #   This function returns 1 if the audio has been opened, 0 otherwise.
 # 
 
-proc Mix_QuerySpec*(frequency: ptr cint; format: ptr uint16; channels: ptr cint): cint {.
+proc querySpec*(frequency: ptr cint; format: ptr uint16; channels: ptr cint): cint {.
     importc: "Mix_QuerySpec".}
 # Load a wave file or a music (.mod .s3m .it .xm) file 
 
-proc Mix_LoadWAV_RW*(src: RWopsPtr; freesrc: cint): ptr Mix_Chunk {.importc: "Mix_LoadWAV_RW".}
+proc loadWAV_RW*(src: RWopsPtr; freesrc: cint): ptr Chunk {.importc: "Mix_LoadWAV_RW".}
 
-template Mix_LoadWAV*(file: expr): expr = 
-  Mix_LoadWAV_RW(rwFromFile(file, "rb"), 1)
+template loadWAV*(file: expr): expr = 
+  loadWAV_RW(rwFromFile(file, "rb"), 1)
 
-proc Mix_LoadMUS*(file: cstring): ptr Mix_Music {.importc: "Mix_LoadMUS".}
+proc loadMUS*(file: cstring): ptr Music {.importc: "Mix_LoadMUS".}
 # Load a music file from an SDL_RWop object (Ogg and MikMod specific currently)
 #   Matt Campbell (matt@campbellhome.dhs.org) April 2000 
 
-proc Mix_LoadMUS_RW*(src: ptr RWopsPtr; freesrc: cint): ptr Mix_Music {.
+proc loadMUS_RW*(src: ptr RWopsPtr; freesrc: cint): ptr Music {.
     importc: "Mix_LoadMUS_RW".}
 # Load a music file from an SDL_RWop object assuming a specific format 
 
-proc Mix_LoadMUSType_RW*(src: ptr RWopsPtr; `type`: Mix_MusicType; freesrc: cint): ptr Mix_Music {.
+proc loadMUSType_RW*(src: ptr RWopsPtr; `type`: MusicType; freesrc: cint): ptr Music {.
     importc: "Mix_LoadMUSType_RW".}
 # Load a wave file of the mixer format from a memory buffer 
 
-proc Mix_QuickLoad_WAV*(mem: ptr uint8): ptr Mix_Chunk {.importc: "Mix_QuickLoad_WAV".}
+proc quickLoad_WAV*(mem: ptr uint8): ptr Chunk {.importc: "Mix_QuickLoad_WAV".}
 # Load raw audio data of the mixer format from a memory buffer 
 
-proc Mix_QuickLoad_RAW*(mem: ptr uint8; len: uint32): ptr Mix_Chunk {.importc: "Mix_QuickLoad_RAW".}
+proc quickLoad_RAW*(mem: ptr uint8; len: uint32): ptr Chunk {.importc: "Mix_QuickLoad_RAW".}
 # Free an audio chunk previously loaded 
 
-proc Mix_FreeChunk*(chunk: ptr Mix_Chunk) {.importc: "Mix_FreeChunk".}
-proc Mix_FreeMusic*(music: ptr Mix_Music) {.importc: "Mix_FreeMusic".}
+proc freeChunk*(chunk: ptr Chunk) {.importc: "Mix_FreeChunk".}
+proc freeMusic*(music: ptr Music) {.importc: "Mix_FreeMusic".}
 # Get a list of chunk/music decoders that this build of SDL_mixer provides.
 #   This list can change between builds AND runs of the program, if external
 #   libraries that add functionality become available.
@@ -183,36 +184,36 @@ proc Mix_FreeMusic*(music: ptr Mix_Music) {.importc: "Mix_FreeMusic".}
 #   The pointers remain valid until you call Mix_CloseAudio().
 #
 
-proc Mix_GetNumChunkDecoders*(): cint {.importc: "Mix_GetNumChunkDecoders".}
-proc Mix_GetChunkDecoder*(index: cint): cstring {.importc: "Mix_GetChunkDecoder".}
-proc Mix_GetNumMusicDecoders*(): cint {.importc: "Mix_GetNumMusicDecoders".}
-proc Mix_GetMusicDecoder*(index: cint): cstring {.importc: "Mix_GetMusicDecoder".}
+proc getNumChunkDecoders*(): cint {.importc: "Mix_GetNumChunkDecoders".}
+proc getChunkDecoder*(index: cint): cstring {.importc: "Mix_GetChunkDecoder".}
+proc getNumMusicDecoders*(): cint {.importc: "Mix_GetNumMusicDecoders".}
+proc getMusicDecoder*(index: cint): cstring {.importc: "Mix_GetMusicDecoder".}
 # Find out the music format of a mixer music, or the currently playing
 #   music, if 'music' is NULL.
 #
 
-proc Mix_GetMusicType*(music: ptr Mix_Music): Mix_MusicType {.importc: "Mix_GetMusicType".}
+proc getMusicType*(music: ptr Music): MusicType {.importc: "Mix_GetMusicType".}
 # Set a function that is called after all mixing is performed.
 #   This can be used to provide real-time visual display of the audio stream
 #   or add a custom mixer filter for the stream data.
 #
 
-proc Mix_SetPostMix*(mix_func: proc (udata: pointer; stream: ptr uint8; 
+proc setPostMix*(mix_func: proc (udata: pointer; stream: ptr uint8; 
                                      len: cint) {.cdecl.}; arg: pointer) {.importc: "Mix_SetPostMix".}
 # Add your own music player or additional mixer function.
 #   If 'mix_func' is NULL, the default music player is re-enabled.
 # 
 
-proc Mix_HookMusic*(mix_func: proc (udata: pointer; stream: ptr uint8; len: cint) {.
+proc hookMusic*(mix_func: proc (udata: pointer; stream: ptr uint8; len: cint) {.
     cdecl.}; arg: pointer) {.importc: "Mix_HookMusic".}
 # Add your own callback when the music has finished playing.
 #   This callback is only called if the music finishes naturally.
 # 
 
-proc Mix_HookMusicFinished*(music_finished: proc () {.cdecl.}) {.importc: "Mix_HookMusicFinished".}
+proc hookMusicFinished*(music_finished: proc () {.cdecl.}) {.importc: "Mix_HookMusicFinished".}
 # Get a pointer to the user data for the current music hook 
 
-proc Mix_GetMusicHookData*(): pointer {.importc: "Mix_GetMusicHookData".}
+proc getMusicHookData*(): pointer {.importc: "Mix_GetMusicHookData".}
 #
 #  Add your own callback when a channel has finished playing. NULL
 #   to disable callback. The callback may be called from the mixer's audio
@@ -222,7 +223,7 @@ proc Mix_GetMusicHookData*(): pointer {.importc: "Mix_GetMusicHookData".}
 #   before calling your callback.
 # 
 
-proc Mix_ChannelFinished*(channel_finished: proc (channel: cint) {.cdecl.}) {.importc: "Mix_ChannelFinished".}
+proc channelFinished*(channel_finished: proc (channel: cint) {.cdecl.}) {.importc: "Mix_ChannelFinished".}
 # Special Effects API by ryan c. gordon. (icculus@icculus.org) 
 
 const 
@@ -310,7 +311,7 @@ type
 #   Error messages can be retrieved from Mix_GetError().
 # 
 
-proc Mix_RegisterEffect*(chan: cint; f: Mix_EffectFunc_t; d: Mix_EffectDone_t; 
+proc registerEffect*(chan: cint; f: Mix_EffectFunc_t; d: Mix_EffectDone_t; 
                          arg: pointer): cint {.importc: "Mix_RegisterEffect".}
 # You may not need to call this explicitly, unless you need to stop an
 #   effect from processing in the middle of a chunk's playback.
@@ -321,7 +322,7 @@ proc Mix_RegisterEffect*(chan: cint; f: Mix_EffectFunc_t; d: Mix_EffectDone_t;
 #   Error messages can be retrieved from Mix_GetError().
 # 
 
-proc Mix_UnregisterEffect*(channel: cint; f: Mix_EffectFunc_t): cint {.importc: "Mix_UnregisterEffect".}
+proc unregisterEffect*(channel: cint; f: Mix_EffectFunc_t): cint {.importc: "Mix_UnregisterEffect".}
 # You may not need to call this explicitly, unless you need to stop all
 #   effects from processing in the middle of a chunk's playback. Note that
 #   this will also shut off some internal effect processing, since
@@ -334,7 +335,7 @@ proc Mix_UnregisterEffect*(channel: cint; f: Mix_EffectFunc_t): cint {.importc: 
 #   Error messages can be retrieved from Mix_GetError().
 # 
 
-proc Mix_UnregisterAllEffects*(channel: cint): cint {.importc: "Mix_UnregisterAllEffects".}
+proc unregisterAllEffects*(channel: cint): cint {.importc: "Mix_UnregisterAllEffects".}
 
 const 
   MIX_EFFECTSMAXSPEED* = "MIX_EFFECTSMAXSPEED"
@@ -373,7 +374,7 @@ const
 #   Error messages can be retrieved from Mix_GetError().
 # 
 
-proc Mix_SetPanning*(channel: cint; left: uint8; right: uint8): cint {.importc: "Mix_SetPanning".}
+proc setPanning*(channel: cint; left: uint8; right: uint8): cint {.importc: "Mix_SetPanning".}
 # Set the position of a channel. (angle) is an integer from 0 to 360, that
 #   specifies the location of the sound in relation to the listener. (angle)
 #   will be reduced as neccesary (540 becomes 180 degrees, -100 becomes 260).
@@ -412,7 +413,7 @@ proc Mix_SetPanning*(channel: cint; left: uint8; right: uint8): cint {.importc: 
 #   Error messages can be retrieved from Mix_GetError().
 # 
 
-proc Mix_SetPosition*(channel: cint; angle: int16; distance: uint8): cint {.importc: "Mix_SetPosition".}
+proc setPosition*(channel: cint; angle: int16; distance: uint8): cint {.importc: "Mix_SetPosition".}
 # Set the "distance" of a channel. (distance) is an integer from 0 to 255
 #   that specifies the location of the sound in relation to the listener.
 #   Distance 0 is overlapping the listener, and 255 is as far away as possible
@@ -441,7 +442,7 @@ proc Mix_SetPosition*(channel: cint; angle: int16; distance: uint8): cint {.impo
 #   Error messages can be retrieved from Mix_GetError().
 # 
 
-proc Mix_SetDistance*(channel: cint; distance: uint8): cint {.importc: "Mix_SetDistance".}
+proc setDistance*(channel: cint; distance: uint8): cint {.importc: "Mix_SetDistance".}
 #
 #  !!! FIXME : Haven't implemented, since the effect goes past the
 #               end of the sound buffer. Will have to think about this.
@@ -464,7 +465,7 @@ when 0:
   #   nonzero if reversing effect is enabled.
   #   Error messages can be retrieved from Mix_GetError().
   # 
-  proc Mix_SetReverb*(channel: cint; echo: uint8): cint {.importc: "Mix_SetReverb".}
+  proc setReverb*(channel: cint; echo: uint8): cint {.importc: "Mix_SetReverb".}
 # Causes a channel to reverse its stereo. This is handy if the user has his
 #   speakers hooked up backwards, or you would like to have a minor bit of
 #   psychedelia in your sound code.  :)  Calling this function with (flip)
@@ -486,14 +487,14 @@ when 0:
 #   Error messages can be retrieved from Mix_GetError().
 # 
 
-proc Mix_SetReverseStereo*(channel: cint; flip: cint): cint {.importc: "Mix_SetReverseStereo".}
+proc setReverseStereo*(channel: cint; flip: cint): cint {.importc: "Mix_SetReverseStereo".}
 # end of effects API. --ryan. 
 # Reserve the first channels (0 -> n-1) for the application, i.e. don't allocate
 #   them dynamically to the next sample if requested with a -1 value below.
 #   Returns the number of reserved channels.
 # 
 
-proc Mix_ReserveChannels*(num: cint): cint {.importc: "Mix_ReserveChannels".}
+proc reserveChannels*(num: cint): cint {.importc: "Mix_ReserveChannels".}
 # Channel grouping functions 
 # Attach a tag to a channel. A tag can be assigned to several mixer
 #   channels, to form groups of channels.
@@ -502,26 +503,26 @@ proc Mix_ReserveChannels*(num: cint): cint {.importc: "Mix_ReserveChannels".}
 #   Returns true if everything was OK.
 # 
 
-proc Mix_GroupChannel*(which: cint; tag: cint): cint {.importc: "Mix_GroupChannel".}
+proc groupChannel*(which: cint; tag: cint): cint {.importc: "Mix_GroupChannel".}
 # Assign several consecutive channels to a group 
 
-proc Mix_GroupChannels*(`from`: cint; to: cint; tag: cint): cint {.importc: "Mix_GroupChannels".}
+proc groupChannels*(`from`: cint; to: cint; tag: cint): cint {.importc: "Mix_GroupChannels".}
 # Finds the first available channel in a group of channels,
 #   returning -1 if none are available.
 # 
 
-proc Mix_GroupAvailable*(tag: cint): cint {.importc: "Mix_GroupAvailable".}
+proc groupAvailable*(tag: cint): cint {.importc: "Mix_GroupAvailable".}
 # Returns the number of channels in a group. This is also a subtle
 #   way to get the total number of channels when 'tag' is -1
 # 
 
-proc Mix_GroupCount*(tag: cint): cint {.importc: "Mix_GroupCount".}
+proc groupCount*(tag: cint): cint {.importc: "Mix_GroupCount".}
 # Finds the "oldest" sample playing in a group of channels 
 
-proc Mix_GroupOldest*(tag: cint): cint {.importc: "Mix_GroupOldest".}
+proc groupOldest*(tag: cint): cint {.importc: "Mix_GroupOldest".}
 # Finds the "most recent" (i.e. last) sample playing in a group of channels 
 
-proc Mix_GroupNewer*(tag: cint): cint {.importc: "Mix_GroupNewer".}
+proc groupNewer*(tag: cint): cint {.importc: "Mix_GroupNewer".}
 # Play an audio chunk on a specific channel.
 #   If the specified channel is -1, play on the first free channel.
 #   If 'loops' is greater than zero, loop the sound that many times.
@@ -529,23 +530,23 @@ proc Mix_GroupNewer*(tag: cint): cint {.importc: "Mix_GroupNewer".}
 #   Returns which channel was used to play the sound.
 #
 
-template Mix_PlayChannel*(channel, chunk, loops: expr): expr = 
-  Mix_PlayChannelTimed(channel, chunk, loops, - 1)
+template playChannel*(channel, chunk, loops: expr): expr = 
+  playChannelTimed(channel, chunk, loops, - 1)
 
 # The same as above, but the sound is played at most 'ticks' milliseconds 
 
-proc Mix_PlayChannelTimed*(channel: cint; chunk: ptr Mix_Chunk; loops: cint; 
+proc playChannelTimed*(channel: cint; chunk: ptr Chunk; loops: cint; 
                            ticks: cint): cint {.importc: "Mix_PlayChannelTimed".}
-proc Mix_PlayMusic*(music: ptr Mix_Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
+proc playMusic*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
 # Fade in music or a channel over "ms" milliseconds, same semantics as the "Play" functions 
 
-proc Mix_FadeInMusic*(music: ptr Mix_Music; loops: cint; ms: cint): cint {.importc: "Mix_FadeInMusic".}
-proc Mix_FadeInMusicPos*(music: ptr Mix_Music; loops: cint; ms: cint; 
+proc fadeInMusic*(music: ptr Music; loops: cint; ms: cint): cint {.importc: "Mix_FadeInMusic".}
+proc fadeInMusicPos*(music: ptr Music; loops: cint; ms: cint; 
                          position: cdouble): cint {.importc: "Mix_FadeInMusicPos".}
-template Mix_FadeInChannel*(channel, chunk, loops, ms: expr): expr = 
-  Mix_FadeInChannelTimed(channel, chunk, loops, ms, - 1)
+template fadeInChannel*(channel, chunk, loops, ms: expr): expr = 
+  fadeInChannelTimed(channel, chunk, loops, ms, - 1)
 
-proc Mix_FadeInChannelTimed*(channel: cint; chunk: ptr Mix_Chunk; loops: cint; 
+proc fadeInChannelTimed*(channel: cint; chunk: ptr Chunk; loops: cint; 
                              ms: cint; ticks: cint): cint {.importc: "Mix_FadeInChannelTimed".}
 # Set the volume in the range of 0-128 of a specific channel or chunk.
 #   If the specified channel is -1, set volume for all channels.
@@ -553,43 +554,43 @@ proc Mix_FadeInChannelTimed*(channel: cint; chunk: ptr Mix_Chunk; loops: cint;
 #   If the specified volume is -1, just return the current volume.
 #
 
-proc Mix_Volume*(channel: cint; volume: cint): cint {.importc: "Mix_Volume".}
-proc Mix_VolumeChunk*(chunk: ptr Mix_Chunk; volume: cint): cint {.importc: "Mix_VolumeChunk".}
-proc Mix_VolumeMusic*(volume: cint): cint {.importc: "Mix_VolumeMusic".}
+proc volume*(channel: cint; volume: cint): cint {.importc: "Mix_Volume".}
+proc volumeChunk*(chunk: ptr Chunk; volume: cint): cint {.importc: "Mix_VolumeChunk".}
+proc volumeMusic*(volume: cint): cint {.importc: "Mix_VolumeMusic".}
 # Halt playing of a particular channel 
 
-proc Mix_HaltChannel*(channel: cint): cint {.importc: "Mix_HaltChannel".}
-proc Mix_HaltGroup*(tag: cint): cint {.importc: "Mix_HaltGroup".}
-proc Mix_HaltMusic*(): cint {.importc: "Mix_HaltMusic".}
+proc haltChannel*(channel: cint): cint {.importc: "Mix_HaltChannel".}
+proc haltGroup*(tag: cint): cint {.importc: "Mix_HaltGroup".}
+proc haltMusic*(): cint {.importc: "Mix_HaltMusic".}
 # Change the expiration delay for a particular channel.
 #   The sample will stop playing after the 'ticks' milliseconds have elapsed,
 #   or remove the expiration if 'ticks' is -1
 #
 
-proc Mix_ExpireChannel*(channel: cint; ticks: cint): cint {.importc: "Mix_ExpireChannel".}
+proc expireChannel*(channel: cint; ticks: cint): cint {.importc: "Mix_ExpireChannel".}
 # Halt a channel, fading it out progressively till it's silent
 #   The ms parameter indicates the number of milliseconds the fading
 #   will take.
 # 
 
-proc Mix_FadeOutChannel*(which: cint; ms: cint): cint {.importc: "Mix_FadeOutChannel".}
-proc Mix_FadeOutGroup*(tag: cint; ms: cint): cint {.importc: "Mix_FadeOutGroup".}
-proc Mix_FadeOutMusic*(ms: cint): cint {.importc: "Mix_FadeOutMusic".}
+proc fadeOutChannel*(which: cint; ms: cint): cint {.importc: "Mix_FadeOutChannel".}
+proc fadeOutGroup*(tag: cint; ms: cint): cint {.importc: "Mix_FadeOutGroup".}
+proc fadeOutMusic*(ms: cint): cint {.importc: "Mix_FadeOutMusic".}
 # Query the fading status of a channel 
 
-proc Mix_FadingMusic*(): Mix_Fading {.importc: "Mix_FadingMusic".}
-proc Mix_FadingChannel*(which: cint): Mix_Fading {.importc: "Mix_FadingChannel".}
+proc fadingMusic*(): Fading {.importc: "Mix_FadingMusic".}
+proc fadingChannel*(which: cint): Fading {.importc: "Mix_FadingChannel".}
 # Pause/Resume a particular channel 
 
-proc Mix_Pause*(channel: cint) {.importc: "Mix_Pause".}
-proc Mix_Resume*(channel: cint) {.importc: "Mix_Resume".}
-proc Mix_Paused*(channel: cint): cint {.importc: "Mix_Paused".}
+proc pause*(channel: cint) {.importc: "Mix_Pause".}
+proc resume*(channel: cint) {.importc: "Mix_Resume".}
+proc paused*(channel: cint): cint {.importc: "Mix_Paused".}
 # Pause/Resume the music stream 
 
-proc Mix_PauseMusic*() {.importc: "Mix_PauseMusic".}
-proc Mix_ResumeMusic*() {.importc: "Mix_ResumeMusic".}
-proc Mix_RewindMusic*() {.importc: "Mix_RewindMusic".}
-proc Mix_PausedMusic*(): cint {.importc: "Mix_PausedMusic".}
+proc pauseMusic*() {.importc: "Mix_PauseMusic".}
+proc resumeMusic*() {.importc: "Mix_ResumeMusic".}
+proc rewindMusic*() {.importc: "Mix_RewindMusic".}
+proc pausedMusic*(): cint {.importc: "Mix_PausedMusic".}
 # Set the current position in the music stream.
 #   This returns 0 if successful, or -1 if it failed or isn't implemented.
 #   This function is only implemented for MOD music formats (set pattern
@@ -597,32 +598,32 @@ proc Mix_PausedMusic*(): cint {.importc: "Mix_PausedMusic".}
 #   position in seconds), at the moment.
 #
 
-proc Mix_SetMusicPosition*(position: cdouble): cint {.importc: "Mix_SetMusicPosition".}
+proc setMusicPosition*(position: cdouble): cint {.importc: "Mix_SetMusicPosition".}
 
 # Check the status of a specific channel.
 #   If the specified channel is -1, check all channels.
 #
-proc Mix_Playing*(channel: cint): cint {.importc: "Mix_Playing".}
-proc Mix_PlayingMusic*(): cint {.importc: "Mix_PlayingMusic".}
+proc playing*(channel: cint): cint {.importc: "Mix_Playing".}
+proc playingMusic*(): cint {.importc: "Mix_PlayingMusic".}
 
 # Stop music and set external music playback command 
-proc Mix_SetMusicCMD*(command: cstring): cint {.importc: "Mix_SetMusicCMD".}
+proc setMusicCMD*(command: cstring): cint {.importc: "Mix_SetMusicCMD".}
 # Synchro value is set by MikMod from modules while playing 
 
-proc Mix_SetSynchroValue*(value: cint): cint {.importc: "Mix_SetSynchroValue".}
-proc Mix_GetSynchroValue*(): cint {.importc: "Mix_GetSynchroValue".}
+proc setSynchroValue*(value: cint): cint {.importc: "Mix_SetSynchroValue".}
+proc getSynchroValue*(): cint {.importc: "Mix_GetSynchroValue".}
 # Set/Get/Iterate SoundFonts paths to use by supported MIDI backends 
 
-proc Mix_SetSoundFonts*(paths: cstring): cint {.
+proc setSoundFonts*(paths: cstring): cint {.
     importc: "Mix_SetSoundFonts".}
-proc Mix_GetSoundFonts*(): cstring {.importc: "Mix_GetSoundFonts".}
-proc Mix_EachSoundFont*(function: proc (a2: cstring; a3: pointer): cint {.cdecl.}; 
+proc getSoundFonts*(): cstring {.importc: "Mix_GetSoundFonts".}
+proc eachSoundFont*(function: proc (a2: cstring; a3: pointer): cint {.cdecl.}; 
                         data: pointer): cint {.importc: "Mix_EachSoundFont".}
-# Get the Mix_Chunk currently associated with a mixer channel
+# Get the Chunk currently associated with a mixer channel
 #    Returns NULL if it's an invalid channel, or there's no chunk associated.
 #
 
-proc Mix_GetChunk*(channel: cint): ptr Mix_Chunk {.importc: "Mix_GetChunk".}
+proc getChunk*(channel: cint): ptr Chunk {.importc: "Mix_GetChunk".}
 # Close the mixer, halting all playing audio 
 
-proc Mix_CloseAudio*() {.importc: "Mix_CloseAudio".}
+proc closeAudio*() {.importc: "Mix_CloseAudio".}
