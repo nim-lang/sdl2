@@ -15,7 +15,7 @@ let Frequence = 1000      # Hz
 let Volume = 0.1          # [0..1]
 
 # Current playback position
-var x = 0 
+var x = 0
 
 # Variables
 var buffer: array[RQBufferSizeInBytes*16, int16] # Allocate a safe amount of memory
@@ -28,27 +28,27 @@ proc SineAmplitude(): int16 = int16(round(sin(float(x mod int(c)) / c * 2 * PI) 
 # 3 different callback procedures which do the same thing:
 
 # Write amplitude direct to hardware buffer
-proc AudioCallback_1(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} = 
+proc AudioCallback_1(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} =
   for i in 0..int16(obtained.samples)-1:
       cast[ptr int16](cast[int](stream) + i * RQBytesPerSample)[] = SineAmplitude()
       inc(x)
 
-# Write amplitude to own buffer, then copy buffer with copyMem()  
-proc AudioCallback_2(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} = 
+# Write amplitude to own buffer, then copy buffer with copyMem()
+proc AudioCallback_2(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} =
   for i in 0..int16(obtained.samples)-1:
       buffer[i] = SineAmplitude()
       inc(x)
   copyMem(stream, addr(buffer[0]), RQBytesPerSample*int16(obtained.samples))
 
-# Write amplitude to own buffer, reset hardware buffer with 0, then output buffer with MixAudio() 
-proc AudioCallback_3(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} = 
+# Write amplitude to own buffer, reset hardware buffer with 0, then output buffer with MixAudio()
+proc AudioCallback_3(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} =
   for i in 0..int16(obtained.samples-1):
       buffer[i] = SineAmplitude()
       inc(x)
   for i in 0..int16(obtained.samples-1):
     (cast[ptr int16](cast[int](stream) + i * RQBytesPerSample ))[] = 0
   MixAudio(stream, cast[ptr uint8](addr(buffer[0])), uint32(RQBytesPerSample*int(obtained.samples)), SDL_MIX_MAXVOLUME)
-  
+
 proc main() =
   # Init audio playback
   if Init(INIT_AUDIO) != SdlSuccess:
@@ -72,7 +72,7 @@ proc main() =
   echo("padding: ", obtained.padding)
   if obtained.format != AUDIO_S16:
     echo("Couldn't open 16-bit audio channel.")
-    return 
+    return
   # Playback audio for 2 seconds
   PauseAudio(0)
   Delay(2000)

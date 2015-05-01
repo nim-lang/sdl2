@@ -33,7 +33,7 @@ type
 #//#define TTF_PATCHLEVEL		SDL_TTF_PATCHLEVEL
 ##define TTF_VERSION(X)		SDL_TTF_VERSION(X)
 
-when defined(SDL_STATIC):
+when defined(SDL_Static):
   {.push header: "<SDL2/SDL_ttf.h>".}
 else:
   {.push callConv:cdecl, dynlib:LibName.}

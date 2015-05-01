@@ -67,7 +67,7 @@ type
     ready*: cint
   GenericSocket* = ptr GenericSocketObj
 
-when defined(SDL_STATIC):
+when defined(SDL_Static):
   {.push header: "<SDL2/SDL2_net.h>".}
 else:
   {.push dynlib: LibName, callconv: cdecl.}

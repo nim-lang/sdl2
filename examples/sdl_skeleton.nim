@@ -1,9 +1,9 @@
-## Bare-bones SDL2 example 
-import sdl2, sdl2/gfx 
+## Bare-bones SDL2 example
+import sdl2, sdl2/gfx
 
 discard sdl2.init(INIT_EVERYTHING)
 
-var 
+var
   window: WindowPtr
   render: RendererPtr
 
@@ -21,12 +21,12 @@ while runGame:
     if evt.kind == QuitEvent:
       runGame = false
       break
-  
+
   let dt = fpsman.getFramerate() / 1000
-  
+
   render.setDrawColor 0,0,0,255
   render.clear
-  
+
   render.present
   fpsman.delay
 

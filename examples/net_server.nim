@@ -6,7 +6,7 @@ var
   local: TIPaddress
   server: TCPSocket
 
-if net.Init() < 0: 
+if net.Init() < 0:
   quit($net.GetError())
 
 if ResolveHost(addr local, nil, 2000) < 0:

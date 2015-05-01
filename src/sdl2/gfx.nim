@@ -53,7 +53,7 @@ type
 
 {.pragma: i, importc, discardable.}
 
-when defined(SDL_STATIC):
+when defined(SDL_Static):
   {.push header: "<SDL2/SDL2_gfxPrimitives.h>".}
 else:
   {.push callConv:cdecl, dynlib: LibName.}
@@ -215,7 +215,7 @@ proc stringRGBA*(renderer: RendererPtr; x: int16; y: int16; s: cstring;
                  r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Ends C function definitions when using C++
 
-when defined(SDL_STATIC):
+when defined(SDL_Static):
   {.pop.}
   {.push header: "<SDL2/SDL2_rotozoom.h>".}
 
@@ -236,7 +236,7 @@ proc shrinkSurface*(src: SurfacePtr; factorx, factorY: cint): SurfacePtr {.impor
 proc rotateSurface90Degrees*(src: SurfacePtr;
   numClockwiseTurns: cint): SurfacePtr {.importc.}
 
-when defined(SDL_STATIC):
+when defined(SDL_Static):
   {.pop.}
   {.push header: "<SDL2/SDL2_framerate.h>".}
 
