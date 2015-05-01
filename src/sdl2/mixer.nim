@@ -22,15 +22,20 @@
 {.deadCodeElim: on.}
 # Dynamically link to the correct library for our system: 
 
-when defined(windows): 
-  const 
-    LibName* = "SDL2_mixer.dll"
-elif defined(macosx): 
-  const 
-    LibName* = "SDL2_mixer.dylib"
-else: 
-  const 
-    LibName* = "SDL2_mixer.so"
+when not defined(SDL_STATIC):
+  when defined(Windows): 
+    const LibName* = "SDL2_mixer.dll"
+  elif defined(macosx): 
+    const LibName* = "SDL2_mixer.dylib"
+  elif defined(Linux):
+    const LibName* = "SDL2_mixer.so"
+  else: 
+    {.error.}
+
+when defined(SDL_STATIC):
+  {.push header: "<SDL2/SDL_mixer.h>".}
+else:
+  {.push callConv:cdecl, dynlib: LibName.}
 
 import sdl2, sdl2.audio
 
