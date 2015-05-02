@@ -1,4 +1,6 @@
-when defined(SDL_Static):
+{.deadCodeElim: on.}
+
+when not defined(SDL_Static):
   when defined(Linux):
     const LibName = "libSDL2_ttf.so"
   elif defined(macosx):
