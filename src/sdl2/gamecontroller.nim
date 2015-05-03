@@ -118,7 +118,7 @@ proc gameControllerMappingForGUID* (guid: JoystickGuid): cstring {.
 #
 #   \return the mapping string.  Must be freed with SDL_free.  Returns NULL if no mapping is available
 # /
-proc mapping* (gameController: GameControllerPtr): cstring {.
+proc gameControllerMapping* (gameController: GameControllerPtr): cstring {.
   importc: "SDL_GameControllerMapping".}
 
 ##
@@ -150,20 +150,20 @@ proc gameControllerOpen* (joystickIndex: cint): GameControllerPtr {.
 ##
 #   Return the name for this currently opened controller
 # /
-proc name* (gameController: GameControllerPtr): cstring {.
+proc gameControllerName* (gameController: GameControllerPtr): cstring {.
   importc: "SDL_GameControllerName".}
 
 ##
 #   Returns SDL_TRUE if the controller has been opened and currently connected,
 #   or SDL_FALSE if it has not.
 # /
-proc getAttached* (gameController: GameControllerPtr): Bool32 {.
+proc gameControllerGetAttached* (gameController: GameControllerPtr): Bool32 {.
   importc: "SDL_GameControllerGetAttached".}
 
 ##
 #   Get the underlying joystick object used by a controller
 # /
-proc getJoystick* (gameController: GameControllerPtr): JoystickPtr {.
+proc gameControllerGetJoystick* (gameController: GameControllerPtr): JoystickPtr {.
   importc: "SDL_GameControllerGetJoystick".}
 
 ##
@@ -219,7 +219,7 @@ proc gameControllerGetStringForAxis* (axis: GameControllerAxis): cstring {.
 ##
 #   Get the SDL joystick layer binding for this controller button mapping
 # /
-proc getBindForAxis* (gameController: GameControllerPtr, axis: GameControllerAxis): GameControllerButtonBind {.
+proc gameControllerGetBindForAxis* (gameController: GameControllerPtr, axis: GameControllerAxis): GameControllerButtonBind {.
   importc: "SDL_GameControllerGetBindForAxis".}
 
 ##
@@ -229,7 +229,7 @@ proc getBindForAxis* (gameController: GameControllerPtr, axis: GameControllerAxi
 #
 #   The axis indices start at index 0.
 # /
-proc getAxis* (gameController: GameControllerPtr, axis: GameControllerAxis): int16 {.
+proc gameControllerGetAxis* (gameController: GameControllerPtr, axis: GameControllerAxis): int16 {.
   importc: "SDL_GameControllerGetAxis".}
 
 ##
@@ -272,7 +272,7 @@ proc gameControllerGetStringForButton* (button: GameControllerButton): cstring {
 ##
 #   Get the SDL joystick layer binding for this controller button mapping
 # /
-proc getBindForButton* (gameController: GameControllerPtr, button: GameControllerButton): GameControllerButtonBind {.
+proc gameControllerGetBindForButton* (gameController: GameControllerPtr, button: GameControllerButton): GameControllerButtonBind {.
   importc: "SDL_GameControllerGetBindForButton".}
 
 
@@ -281,13 +281,23 @@ proc getBindForButton* (gameController: GameControllerPtr, button: GameControlle
 #
 #   The button indices start at index 0.
 # /
-proc getButton* (gameController: GameControllerPtr, button: GameControllerButton): uint8 {.
+proc gameControllerGetButton* (gameController: GameControllerPtr, button: GameControllerButton): uint8 {.
   importc: "SDL_GameControllerGetButton".}
 
 ##
 #   Close a controller previously opened with SDL_GameControllerOpen().
 # /
-proc close* (gameController: GameControllerPtr) {.
+proc gameControllerClose* (gameController: GameControllerPtr) {.
   importc: "SDL_GameControllerClose".}
 
 {.pop.}
+
+{.deprecated: [mapping: gameControllerMapping].}
+{.deprecated: [name: gameControllerName].}
+{.deprecated: [getAttached: gameControllerGetAttached].}
+{.deprecated: [getJoystick: gameControllerGetJoystick].}
+{.deprecated: [getBindForAxis: gameControllerGetBindForAxis].}
+{.deprecated: [getAxis: gameControllerGetAxis].}
+{.deprecated: [getBindForButton: gameControllerGetBindForButton].}
+{.deprecated: [getButton: gameControllerGetButton].}
+{.deprecated: [close: gameControllerClose].}
