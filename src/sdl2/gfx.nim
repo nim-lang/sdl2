@@ -31,7 +31,7 @@ import sdl2
 
 when not defined(SDL_Static):
   when defined(Linux):
-    const LibName = "libSDL2_gfx.so"
+    const LibName = "libSDL2_gfx(|-2.0).so(|.0)"
   elif defined(macosx):
     const LibName = "libSDL2_gfx.dylib"
   elif defined(Windows):

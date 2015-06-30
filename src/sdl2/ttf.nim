@@ -2,7 +2,7 @@
 
 when not defined(SDL_Static):
   when defined(Linux):
-    const LibName = "libSDL2_ttf.so"
+    const LibName = "libSDL2_ttf(|-2.0).so(|.0)"
   elif defined(macosx):
     const LibName = "libSDL2_ttf.dylib"
   elif defined(Windows):
