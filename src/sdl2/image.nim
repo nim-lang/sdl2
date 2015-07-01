@@ -2,7 +2,7 @@ import sdl2
 
 when not defined(SDL_Static):
   when defined(Linux):
-    const LibName = "libSDL2_image.so"
+    const LibName = "libSDL2_image(|-2.0).so(|.0)"
   elif defined(macosx):
     const LibName = "libSDL2_image.dylib"
   elif defined(Windows):

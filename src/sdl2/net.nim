@@ -24,7 +24,7 @@ import sdl2
 
 when not defined(SDL_Static):
   when defined(Linux):
-    const LibName* = "libSDL2_net.so"
+    const LibName* = "libSDL2_net(|-2.0).so(|.0)"
   else:
     {.error: "Please fill out your platform in sdl2/net.nim".}
 

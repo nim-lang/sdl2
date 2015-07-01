@@ -28,7 +28,7 @@ when not defined(SDL_Static):
   elif defined(macosx):
     const LibName* = "libSDL2_mixer.dylib"
   elif defined(Linux):
-    const LibName* = "libSDL2_mixer.so"
+    const LibName* = "libSDL2_mixer(|-2.0).so(|.0)"
   else:
     {.error.}
 
