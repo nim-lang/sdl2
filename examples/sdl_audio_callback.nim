@@ -19,7 +19,7 @@ var x = 0
 
 # Variables
 var buffer: array[RQBufferSizeInBytes*16, int16] # Allocate a safe amount of memory
-var obtained: TAudioSpec # Actual audio parameters SDL returns
+var obtained: AudioSpec # Actual audio parameters SDL returns
 
 # Generate a sine wave
 let c = float(SampleRate) / float(Frequence)
@@ -47,14 +47,14 @@ proc AudioCallback_3(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} 
       inc(x)
   for i in 0..int16(obtained.samples-1):
     (cast[ptr int16](cast[int](stream) + i * RQBytesPerSample ))[] = 0
-  MixAudio(stream, cast[ptr uint8](addr(buffer[0])), uint32(RQBytesPerSample*int(obtained.samples)), SDL_MIX_MAXVOLUME)
+  mixAudio(stream, cast[ptr uint8](addr(buffer[0])), uint32(RQBytesPerSample*int(obtained.samples)), SDL_MIX_MAXVOLUME)
 
 proc main() =
   # Init audio playback
-  if Init(INIT_AUDIO) != SdlSuccess:
+  if init(INIT_AUDIO) != SdlSuccess:
     echo("Couldn't initialize SDL\n")
     return
-  var audioSpec: TAudioSpec
+  var audioSpec: AudioSpec
   audioSpec.freq = cint(SampleRate)
   audioSpec.format = AUDIO_S16 # 16 bit PCM
   audioSpec.channels = 1       # mono
@@ -62,8 +62,8 @@ proc main() =
   audioSpec.padding = 0
   audioSpec.callback = AudioCallback_1
   audioSpec.userdata = nil
-  if OpenAudio(addr(audioSpec), addr(obtained)) != 0:
-    echo("Couldn't open audio device. " & $GetError() & "\n")
+  if openAudio(addr(audioSpec), addr(obtained)) != 0:
+    echo("Couldn't open audio device. " & $getError() & "\n")
     return
   echo("frequency: ", obtained.freq)
   echo("format: ", obtained.format)
@@ -74,7 +74,7 @@ proc main() =
     echo("Couldn't open 16-bit audio channel.")
     return
   # Playback audio for 2 seconds
-  PauseAudio(0)
-  Delay(2000)
+  pauseAudio(0)
+  delay(2000)
 
 main()
