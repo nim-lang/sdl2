@@ -25,6 +25,8 @@ import sdl2
 when not defined(SDL_Static):
   when defined(Linux):
     const LibName* = "libSDL2_net(|-2.0).so(|.0)"
+  elif defined(windows):
+    const LibName* = "SDL2_net.dll"
   else:
     {.error: "Please fill out your platform in sdl2/net.nim".}
 
