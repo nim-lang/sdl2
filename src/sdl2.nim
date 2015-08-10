@@ -300,6 +300,7 @@ const ## WindowFlags
     SDL_WINDOW_MOUSE_FOCUS*:cuint = 0x00000400#        /**< window has mouse focus */
     SDL_WINDOW_FULLSCREEN_DESKTOP*:cuint = ( SDL_WINDOW_FULLSCREEN or 0x00001000 )
     SDL_WINDOW_FOREIGN*:cuint = 0x00000800#             /**< window not created by SDL */
+    SDL_WINDOW_ALLOW_HIGHDPI*:cuint = 0x00002000#       /**< window should be created in high-DPI mode if supported */
     SDL_FLIP_NONE*: cint = 0x00000000 # Do not flip
     SDL_FLIP_HORIZONTAL*: cint = 0x00000001 # flip horizontally
     SDL_FLIP_VERTICAL*: cint = 0x00000002 # flip vertically
