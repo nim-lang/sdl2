@@ -764,7 +764,7 @@ proc getSize*(window: WindowPtr; w, h: var cint) {.importc: "SDL_GetWindowSize".
 proc setBordered*(window: WindowPtr; bordered: Bool32) {.importc: "SDL_SetWindowBordered".}
 
 
-proc setFullscreen*(window: WindowPtr; fullscreen: Bool32): SDL_Return {.importc: "SDL_SetWindowFullscreen".}
+proc setFullscreen*(window: WindowPtr; fullscreen: uint32): SDL_Return {.importc: "SDL_SetWindowFullscreen".}
 proc getSurface*(window: WindowPtr): SurfacePtr {.importc: "SDL_GetWindowSurface".}
 
 proc updateSurface*(window: WindowPtr): SDL_Return  {.importc: "SDL_UpdateWindowSurface".}
