@@ -38,12 +38,15 @@ type
     WindowEvent_FocusGained, WindowEvent_FocusLost, WindowEvent_Close
 
   EventType* {.size: sizeof(cint).} = enum
-    QuitEvent = 0x100, AppTerminating, AppLowMemory, AppWillEnterBackground, AppDidEnterBackground, AppWillEnterForeground, AppDidEnterForeground,
+    QuitEvent = 0x100, AppTerminating, AppLowMemory, AppWillEnterBackground,
+    AppDidEnterBackground, AppWillEnterForeground, AppDidEnterForeground,
     WindowEvent = 0x200, SysWMEvent,
     KeyDown = 0x300, KeyUp, TextEditing, TextInput,
     MouseMotion = 0x400, MouseButtonDown, MouseButtonUp, MouseWheel,
-    JoyAxisMotion = 0x600, JoyBallMotion, JoyHatMotion, JoyButtonDown, JoyButtonUp, JoyDeviceAdded, JoyDeviceRemoved,
-    ControllerAxisMotion = 0x650, ControllerButtonDown, ControllerButtonUp, ControllerDeviceAdded, ControllerDeviceRemoved, ControllerDeviceRemapped,
+    JoyAxisMotion = 0x600, JoyBallMotion, JoyHatMotion, JoyButtonDown,
+    JoyButtonUp, JoyDeviceAdded, JoyDeviceRemoved,
+    ControllerAxisMotion = 0x650, ControllerButtonDown, ControllerButtonUp,
+    ControllerDeviceAdded, ControllerDeviceRemoved, ControllerDeviceRemapped,
     FingerDown = 0x700, FingerUp, FingerMotion,
     DollarGesture = 0x800, DollarRecord, MultiGesture,
     ClipboardUpdate = 0x900,
@@ -698,6 +701,10 @@ proc getLogicalSize*(renderer: RendererPtr; w, h: var cint) {.
 
 proc setDrawColor*(renderer: RendererPtr; r, g, b: uint8, a = 255'u8): SDL_Return {.
   importc: "SDL_SetRenderDrawColor", discardable.}
+
+proc setDrawColor*(r: RendererPtr; c: Color) =
+  setDrawColor(r, c.r, c.g, c.b, c.a)
+
 proc getDrawColor*(renderer: RendererPtr; r, g, b, a: var uint8): SDL_Return {.
   importc: "SDL_GetRenderDrawColor", discardable.}
 proc setDrawBlendMode*(renderer: RendererPtr; blendMode: BlendMode): SDL_Return {.
@@ -1548,6 +1555,11 @@ proc calculateGammaRamp* (gamma: cfloat; ramp: ptr uint16) {.
   importc: "SDL_CalculateGammaRamp".}
   ##Calculate a 256 entry gamma ramp for a gamma value.
 
+# SDL_clipboard.h
+proc setClipboardText*(text: cstring): cint {.importc: "SDL_SetClipboardText".}
+proc getClipboardText*(): cstring {.importc: "SDL_GetClipboardText".}
+proc hasClipboardText*(): Bool32 {.importc: "SDL_HasClipboardText".}
+proc freeClipboardText*(text: cstring) {.importc: "SDL_free".}
 
 
 # SDL_system.h
