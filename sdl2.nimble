@@ -1,6 +1,6 @@
 [Package]
 name: "sdl2"
-version: "1.0"
+version: "1.1"
 author: "fowl"
 description: "Wrapper for SDL 2.x"
 license: "MIT"
@@ -8,5 +8,5 @@ license: "MIT"
 srcDir: "src"
 
 [Deps]
-requires: "nimrod > 0.9.2"
+requires: "nim > 0.11.2"
 
