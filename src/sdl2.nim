@@ -106,7 +106,7 @@ type
     which*: uint32
     button*: uint8
     state*: uint8
-    pad1,pad2: uint8
+    clicks*,pad2: uint8
     x*,y*: cint
   MouseWheelEventPtr* = ptr MouseWheelEventObj
   MouseWheelEventObj* = object
