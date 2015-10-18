@@ -8,5 +8,5 @@ license: "MIT"
 srcDir: "src"
 
 [Deps]
-requires: "nim > 0.11.2"
+requires: "nim >= 0.11.2"
 
