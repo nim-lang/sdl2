@@ -527,16 +527,18 @@ proc groupNewer*(tag: cint): cint {.importc: "Mix_GroupNewer".}
 #   If the specified channel is -1, play on the first free channel.
 #   If 'loops' is greater than zero, loop the sound that many times.
 #   If 'loops' is -1, loop inifinitely (~65000 times).
+#   The sound is played at most 'ticks' milliseconds. If -1, play forever.
 #   Returns which channel was used to play the sound.
 #
+
+proc playChannelTimed*(channel: cint; chunk: ptr Chunk; loops: cint;
+                           ticks: cint): cint {.importc: "Mix_PlayChannelTimed".}
+
+# The same as above, but the sound is played forever
 
 template playChannel*(channel, chunk, loops: expr): expr =
   playChannelTimed(channel, chunk, loops, - 1)
 
-# The same as above, but the sound is played at most 'ticks' milliseconds
-
-proc playChannelTimed*(channel: cint; chunk: ptr Chunk; loops: cint;
-                           ticks: cint): cint {.importc: "Mix_PlayChannelTimed".}
 proc playMusic*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
 # Fade in music or a channel over "ms" milliseconds, same semantics as the "Play" functions
 
