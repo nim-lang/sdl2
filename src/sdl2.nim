@@ -1663,7 +1663,7 @@ const
   BUTTON_X1MASK* = SDL_BUTTON(BUTTON_X1)
   BUTTON_X2MASK* = SDL_BUTTON(BUTTON_X2)
 
-
+const SDL_TOUCH_MOUSEID* = high(uint32)
 
 ## compatibility functions
 
