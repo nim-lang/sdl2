@@ -9,11 +9,9 @@ export unsigned, strutils.`%`
 
 {.push warning[user]: off}
 when defined(SDL_Static):
-  static: echo "SDL2 will be statically linked. Please make sure you pass the correct compiler/linker flags "&
-    "(header search paths, library search paths, linked libraries)."
+  static: echo "SDL2 will be statically linked. Please make sure you pass the correct linker flags "&
+    "(library search paths, linked libraries)."
   #{.passl: gorge("pkg-config --libs sdl2").}
-  #{.pragma: sdl_header, header: "<SDL2/SDL.h>".}
-  #{.error: "Static linking SDL2 is disabled.".}
 
 else:
   when defined(Windows):
@@ -684,9 +682,7 @@ type VoidCallback* = proc(arg:pointer):void{.cdecl.}
 const SDL_ANDROID_EXTERNAL_STORAGE_READ*  = cint(0x01)
 const SDL_ANDROID_EXTERNAL_STORAGE_WRITE* = cint(0x02)
 
-when defined(SDL_Static):
-  {.push header: "<SDL2/SDL.h>".}
-else:
+when not defined(SDL_Static):
   {.push callConv: cdecl, dynlib: LibName.}
 
 
@@ -1733,7 +1729,8 @@ proc write* (ctx:RWopsPtr; `ptr`:pointer; size,num:csize): csize{.inline.} =
 proc close* (ctx:RWopsPtr): cint {.inline.} =
   ctx.close(ctx)
 
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
 
 let defaultEvent* = Event(kind: QuitEvent)
   ## a default "initialized" Event
