@@ -589,12 +589,12 @@ template SDL_WINDOWPOS_ISCENTERED*(X): expr = (((X) and 0xFFFF0000) == SDL_WINDO
 
 
 template evConv(name, name2, ptype: expr; valid: set[EventType]): stmt {.immediate.}=
-  proc `name`* (event: var Event): ptype =
+  proc `name`* (event: Event): ptype =
     assert event.kind in valid
-    return cast[ptype](addr event)
-  proc `name2`* (event: var Event): ptype =
+    return cast[ptype](unsafeAddr event)
+  proc `name2`* (event: Event): ptype =
     assert event.kind in valid
-    return cast[ptype](addr event)
+    return cast[ptype](unsafeAddr event)
 
 evConv(EvWindow, window, WindowEventPtr, {WindowEvent})
 evConv(EvKeyboard, key, KeyboardEventPtr, {KeyDown, KeyUP})
