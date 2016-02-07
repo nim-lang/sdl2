@@ -701,8 +701,8 @@ proc getLogicalSize*(renderer: RendererPtr; w, h: var cint) {.
 proc setDrawColor*(renderer: RendererPtr; r, g, b: uint8, a = 255'u8): SDL_Return {.
   importc: "SDL_SetRenderDrawColor", discardable.}
 
-proc setDrawColor*(r: RendererPtr; c: Color) =
-  setDrawColor(r, c.r, c.g, c.b, c.a)
+proc setDrawColor*(renderer: RendererPtr; c: Color) =
+  setDrawColor(renderer, c.r, c.g, c.b, c.a)
 
 proc getDrawColor*(renderer: RendererPtr; r, g, b, a: var uint8): SDL_Return {.
   importc: "SDL_GetRenderDrawColor", discardable.}
