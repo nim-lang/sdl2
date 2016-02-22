@@ -247,6 +247,21 @@ type
     SDL_GL_CONTEXT_PROFILE_MASK,
     SDL_GL_SHARE_WITH_CURRENT_CONTEXT
 
+const
+  # GLprofile enum.
+  SDL_GL_CONTEXT_PROFILE_CORE*:          cint = 0x0001
+  SDL_GL_CONTEXT_PROFILE_COMPATIBILITY*: cint = 0x0002
+  SDL_GL_CONTEXT_PROFILE_ES*:            cint = 0x0004
+
+  # GLcontextFlag enum.
+  SDL_GL_CONTEXT_DEBUG_FLAG*:              cint = 0x0001
+  SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG*: cint = 0x0002
+  SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG*:      cint = 0x0004
+  SDL_GL_CONTEXT_RESET_ISOLATION_FLAG*:    cint = 0x0008
+
+  # GLcontextRelease enum.
+  SDL_GL_CONTEXT_RELEASE_BEHAVIOR_NONE*:  cint  = 0x0000
+  SDL_GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH*: cint  = 0x0001
 
 type
   DisplayMode* = object
