@@ -1363,7 +1363,7 @@ proc warpMouseInWindow*(window: WindowPtr; x, y: cint)  {.
 proc setRelativeMouseMode*(enabled: Bool32): SDL_Return  {.
   importc: "SDL_SetRelativeMouseMode".}
 #*
-proc captureMouse(enabled: Bool32): SDL_Return {.
+proc captureMouse*(enabled: Bool32): SDL_Return {.
   importc: "SDL_CaptureMouse" .}
 #*
 proc getRelativeMouseMode*(): Bool32 {.importc: "SDL_GetRelativeMouseMode".}
