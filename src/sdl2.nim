@@ -612,14 +612,16 @@ template evConv(name, name2, ptype: expr; valid: set[EventType]): stmt {.immedia
     assert event.kind in valid
     return cast[ptype](unsafeAddr event)
 
-evConv(EvWindow, window, WindowEventPtr, {WindowEvent})
-evConv(EvKeyboard, key, KeyboardEventPtr, {KeyDown, KeyUP})
-evConv(EvTextEditing, edit, TextEditingEventPtr, {TextEditing})
-evConv(EvTextInput, text, TextInputEventPtr, {TextInput})
 
-evConv(EvMouseMotion, motion, MouseMotionEventPtr, {MouseMotion})
-evConv(EvMouseButton, button, MouseButtonEventPtr, {MouseButtonDown, MouseButtonUp})
-evConv(EvMouseWheel, wheel, MouseWheelEventPtr, {MouseWheel})
+
+evConv(evWindow, window, WindowEventPtr, {WindowEvent})
+evConv(evKeyboard, key, KeyboardEventPtr, {KeyDown, KeyUP})
+evConv(evTextEditing, edit, TextEditingEventPtr, {TextEditing})
+evConv(evTextInput, text, TextInputEventPtr, {TextInput})
+
+evConv(evMouseMotion, motion, MouseMotionEventPtr, {MouseMotion})
+evConv(evMouseButton, button, MouseButtonEventPtr, {MouseButtonDown, MouseButtonUp})
+evConv(evMouseWheel, wheel, MouseWheelEventPtr, {MouseWheel})
 
 evConv(EvJoyAxis, jaxis, JoyAxisEventPtr, {JoyAxisMotion})
 evConv(EvJoyBall, jball, JoyBallEventPtr, {JoyBallMotion})
@@ -635,11 +637,25 @@ evConv(EvTouchFinger, tfinger, TouchFingerEventPtr, {FingerMotion, FingerDown, F
 evConv(EvMultiGesture, mgesture, MultiGestureEventPtr, {MultiGesture})
 evConv(EvDollarGesture, dgesture, DollarGestureEventPtr, {DollarGesture})
 
-evConv(EvDropFile, drop, DropEventPtr, {DropFile})
-evConv(EvQuit, quit, QuitEventPtr, {QuitEvent})
+evConv(evDropFile, drop, DropEventPtr, {DropFile})
+evConv(evQuit, quit, QuitEventPtr, {QuitEvent})
 
-evConv(EvUser, user, UserEventPtr, {UserEvent, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5})
+evConv(evUser, user, UserEventPtr, {UserEvent, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5})
 #evConv(EvSysWM, syswm, SysWMEventPtr, {SysWMEvent})
+
+{.deprecated: [EvWindow: evWindow].}
+{.deprecated: [EvKeyboard: evKeyboard].}
+{.deprecated: [EvTextEditing:evTextEditing].}
+{.deprecated: [EvTextInput: evTextInput].}
+
+{.deprecated: [EvMouseMotion: evMouseMotion].}
+{.deprecated: [EvMouseButton: evMouseButton].}
+{.deprecated: [EvMouseWheel:evMouseWheel].}
+
+{.deprecated: [EvDropFile: evDropFile].}
+{.deprecated: [EvQuit: evQuit].}
+
+{.deprecated: [EvUser: evUser].}
 
 const ## SDL_MessageBox flags. If supported will display warning icon, etc.
   SDL_MESSAGEBOX_ERROR* = 0x00000010 #*< error dialog
