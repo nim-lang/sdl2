@@ -23,14 +23,12 @@
 # Dynamically link to the correct library for our system:
 
 when not defined(SDL_Static):
-  when defined(Windows):
+  when defined(windows):
     const LibName* = "SDL2_mixer.dll"
   elif defined(macosx):
     const LibName* = "libSDL2_mixer.dylib"
-  elif defined(Linux):
-    const LibName* = "libSDL2_mixer(|-2.0).so(|.0)"
   else:
-    {.error.}
+    const LibName* = "libSDL2_mixer(|-2.0).so(|.0)"
 
 when defined(SDL_Static):
   {.push header: "<SDL2/SDL_mixer.h>".}

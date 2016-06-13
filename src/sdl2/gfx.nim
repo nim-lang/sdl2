@@ -30,13 +30,12 @@
 import sdl2
 
 when not defined(SDL_Static):
-  when defined(Linux):
-    const LibName = "libSDL2_gfx(|-2.0).so(|.0)"
+  when defined(windows):
+    const LibName = "SDL2_gfx.dll"
   elif defined(macosx):
     const LibName = "libSDL2_gfx.dylib"
-  elif defined(Windows):
-    const LibName = "SDL2_gfx.dll"
-  else: {.error.}
+  else:
+    const LibName = "libSDL2_gfx(|-2.0).so(|.0)"
 
 const
   FPS_UPPER_LIMIT* = 200

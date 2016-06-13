@@ -1,12 +1,12 @@
 {.deadCodeElim: on.}
 
 when not defined(SDL_Static):
-  when defined(Linux):
-    const LibName = "libSDL2_ttf(|-2.0).so(|.0)"
+  when defined(windows):
+    const LibName* = "SDL2_ttf.dll"
   elif defined(macosx):
     const LibName = "libSDL2_ttf.dylib"
-  elif defined(Windows):
-    const LibName* = "SDL2_ttf.dll"
+  else:
+    const LibName = "libSDL2_ttf(|-2.0).so(|.0)"
 
 import sdl2
 

@@ -14,12 +14,12 @@ when defined(SDL_Static):
   #{.passl: gorge("pkg-config --libs sdl2").}
 
 else:
-  when defined(Windows):
+  when defined(windows):
     const LibName* = "SDL2.dll"
-  elif defined(Linux):
-    const LibName* = "libSDL2.so"
   elif defined(macosx):
     const LibName* = "libSDL2.dylib"
+  else:
+    const LibName* = "libSDL2.so"
 {.pop.}
 
 include sdl2/private/keycodes

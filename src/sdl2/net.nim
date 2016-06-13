@@ -23,12 +23,12 @@
 import sdl2
 
 when not defined(SDL_Static):
-  when defined(Linux):
-    const LibName* = "libSDL2_net(|-2.0).so(|.0)"
-  elif defined(windows):
+  when defined(windows):
     const LibName* = "SDL2_net.dll"
+  elif defined(macosx):
+    const LibName* = "libSDL2_net.dylib"
   else:
-    {.error: "Please fill out your platform in sdl2/net.nim".}
+    const LibName* = "libSDL2_net(|-2.0).so(|.0)"
 
 type
   IpAddress* = object

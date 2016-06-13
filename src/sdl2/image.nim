@@ -1,14 +1,12 @@
 import sdl2
 
 when not defined(SDL_Static):
-  when defined(Linux):
-    const LibName = "libSDL2_image(|-2.0).so(|.0)"
+  when defined(windows):
+    const LibName = "SDL2_image.dll"
   elif defined(macosx):
     const LibName = "libSDL2_image.dylib"
-  elif defined(Windows):
-    const LibName = "SDL2_image.dll"
   else:
-    {.fatal: "Please fill out the library name for your platform at the top of sdl2/image.nim".}
+    const LibName = "libSDL2_image(|-2.0).so(|.0)"
 
 const
   IMG_INIT_JPG* = 0x00000001
