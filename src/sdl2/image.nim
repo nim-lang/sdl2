@@ -14,9 +14,7 @@ const
   IMG_INIT_TIF* = 0x00000004
   IMG_INIT_WEBP* = 0x00000008
 
-when defined(SDL_Static):
-  {.push header: "<SDL2/SDL_image.h>".}
-else:
+when not defined(SDL_Static):
   {.push callConv:cdecl, dynlib: LibName.}
 
 proc linkedVersion*(): ptr SDL_version {.importc: "IMG_Linked_Version".}
