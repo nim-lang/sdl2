@@ -116,7 +116,7 @@ type
   JoyAxisEventObj* = object
     kind*: EventType
     timestamp*: uint32
-    which*: uint8
+    which*: int32
     axis*: uint8
     pad1,pad2: uint8
     value*: cint
@@ -124,7 +124,8 @@ type
   JoyBallEventObj* = object
     kind*: EventType
     timestamp*: uint32
-    which*,ball*, pad1,pad2: uint8
+    which*: int32
+    ball*, pad1,pad2: uint8
     xrel*,yrel*: int32
   JoyHatEventPtr* = ptr JoyHatEventObj
   JoyHatEventObj* = object
