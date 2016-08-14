@@ -1391,19 +1391,20 @@ proc createCursor*(data, mask: ptr uint8;
 proc createColorCursor*(surface: SurfacePtr; hot_x, hot_y: cint): CursorPtr {.
   importc: "SDL_CreateColorCursor".}
 #*
-type SystemCursor* = enum
-  SDL_SYSTEM_CURSOR_ARROW,     ## Arrow
-  SDL_SYSTEM_CURSOR_IBEAM,     ## I-beam
-  SDL_SYSTEM_CURSOR_WAIT,      ## Wait
-  SDL_SYSTEM_CURSOR_CROSSHAIR, ## Crosshair
-  SDL_SYSTEM_CURSOR_WAITARROW, ## Small wait cursor (or Wait if not available)
-  SDL_SYSTEM_CURSOR_SIZENWSE,  ## Double arrow pointing northwest and southeast
-  SDL_SYSTEM_CURSOR_SIZENESW,  ## Double arrow pointing northeast and southwest
-  SDL_SYSTEM_CURSOR_SIZEWE,    ## Double arrow pointing west and east
-  SDL_SYSTEM_CURSOR_SIZENS,    ## Double arrow pointing north and south
-  SDL_SYSTEM_CURSOR_SIZEALL,   ## Four pointed arrow pointing north, south, east, and west
-  SDL_SYSTEM_CURSOR_NO,        ## Slashed circle or crossbones
-  SDL_SYSTEM_CURSOR_HAND      ## Hand
+type
+  SystemCursor* = enum
+    SDL_SYSTEM_CURSOR_ARROW,     ## Arrow
+    SDL_SYSTEM_CURSOR_IBEAM,     ## I-beam
+    SDL_SYSTEM_CURSOR_WAIT,      ## Wait
+    SDL_SYSTEM_CURSOR_CROSSHAIR, ## Crosshair
+    SDL_SYSTEM_CURSOR_WAITARROW, ## Small wait cursor (or Wait if not available)
+    SDL_SYSTEM_CURSOR_SIZENWSE,  ## Double arrow pointing northwest and southeast
+    SDL_SYSTEM_CURSOR_SIZENESW,  ## Double arrow pointing northeast and southwest
+    SDL_SYSTEM_CURSOR_SIZEWE,    ## Double arrow pointing west and east
+    SDL_SYSTEM_CURSOR_SIZENS,    ## Double arrow pointing north and south
+    SDL_SYSTEM_CURSOR_SIZEALL,   ## Four pointed arrow pointing north, south, east, and west
+    SDL_SYSTEM_CURSOR_NO,        ## Slashed circle or crossbones
+    SDL_SYSTEM_CURSOR_HAND       ## Hand
 
 proc createSystemCursor*(c: SystemCursor): CursorPtr {.
   importc: "SDL_CreateSystemCursor".}
