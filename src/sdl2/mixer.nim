@@ -56,11 +56,13 @@ when false:
 
 proc linkedVersion*(): ptr SDL_version {.importc: "Mix_Linked_Version".}
 
-type
-  initFlags* {.size: sizeof(cint).} = enum
-    MIX_INIT_FLAC = 0x00000001, MIX_INIT_MOD = 0x00000002,
-    MIX_INIT_MODPLUG = 0x00000004, MIX_INIT_MP3 = 0x00000008,
-    MIX_INIT_OGG = 0x00000010, MIX_INIT_FLUIDSYNTH = 0x00000020
+const
+    MIX_INIT_FLAC*       : cint = 0x00000001
+    MIX_INIT_MOD*        : cint = 0x00000002
+    MIX_INIT_MODPLUG*    : cint = 0x00000004
+    MIX_INIT_MP3*        : cint = 0x00000008
+    MIX_INIT_OGG*        : cint = 0x00000010 
+    MIX_INIT_FLUIDSYNTH* : cint = 0x00000020
 
 
 # Loads dynamic libraries and prepares them for use.  Flags should be
