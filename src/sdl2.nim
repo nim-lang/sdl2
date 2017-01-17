@@ -112,6 +112,7 @@ type
     timestamp*,windowID*: uint32
     which*: uint32
     x*,y*: cint
+    direction*: MouseWheelDirection
   JoyAxisEventPtr* = ptr JoyAxisEventObj
   JoyAxisEventObj* = object
     kind*: EventType
@@ -247,6 +248,10 @@ type
     SDL_GL_CONTEXT_FLAGS,
     SDL_GL_CONTEXT_PROFILE_MASK,
     SDL_GL_SHARE_WITH_CURRENT_CONTEXT
+
+  MouseWheelDirection* {.size: sizeof(uint32).} = enum
+    SDL_MOUSEWHEEL_NORMAL,
+    SDL_MOUSEWHEEL_FLIPPED
 
 const
   # GLprofile enum.
