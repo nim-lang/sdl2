@@ -394,43 +394,43 @@ const
 #      (SDL_static_cast(Uint32, SDL_static_cast(Uint8, (B))) << 8) | \
 #      (SDL_static_cast(Uint32, SDL_static_cast(Uint8, (C))) << 16) | \
 #      (SDL_static_cast(Uint32, SDL_static_cast(Uint8, (D))) << 24))
-template SDL_FOURCC (a,b,c,d): expr =
-  a or (b shl 8) or (c shl 16) or (d shl 24)
+template SDL_FOURCC (a,b,c,d: uint8): uint32 =
+  uint32(a) or (uint32(b) shl 8) or (uint32(c) shl 16) or (uint32(d) shl 24)
 
-template SDL_DEFINE_PIXELFOURCC*(A, B, C, D: expr): expr =
-  cint(SDL_FOURCC(A.int, B.int, C.int, D.int))
+template SDL_DEFINE_PIXELFOURCC*(A, B, C, D: char): uint32 =
+  SDL_FOURCC(A.uint8, B.uint8, C.uint8, D.uint8)
 
-template SDL_DEFINE_PIXELFORMAT*(`type`, order, layout, bits, bytes: expr): expr =
-  ((1 shl 28) or ((`type`) shl 24) or ((order) shl 20) or ((layout) shl 16) or
+template SDL_DEFINE_PIXELFORMAT*(`type`, order, layout, bits, bytes: int): uint32 =
+  uint32((1 shl 28) or ((`type`) shl 24) or ((order) shl 20) or ((layout) shl 16) or
       ((bits) shl 8) or ((bytes) shl 0))
 
-template SDL_PIXELFLAG*(X: expr): expr =
-  (((X) shr 28) and 0x0000000F)
+template SDL_PIXELFLAG*(X: uint32): int =
+  int(((X) shr 28) and 0x0000000F)
 
-template SDL_PIXELTYPE*(X: expr): expr =
-  (((X) shr 24) and 0x0000000F)
+template SDL_PIXELTYPE*(X: uint32): int =
+  int(((X) shr 24) and 0x0000000F)
 
-template SDL_PIXELORDER*(X: expr): expr =
-  (((X) shr 20) and 0x0000000F)
+template SDL_PIXELORDER*(X: uint32): int =
+  int(((X) shr 20) and 0x0000000F)
 
-template SDL_PIXELLAYOUT*(X: expr): expr =
-  (((X) shr 16) and 0x0000000F)
+template SDL_PIXELLAYOUT*(X: uint32): int =
+  int(((X) shr 16) and 0x0000000F)
 
-template SDL_BITSPERPIXEL*(X: expr): expr =
-  (((X) shr 8) and 0x000000FF)
+template SDL_BITSPERPIXEL*(X: uint32): int =
+  int(((X) shr 8) and 0x000000FF)
 
-template SDL_BYTESPERPIXEL*(X: expr): expr =
-  (if SDL_ISPIXELFORMAT_FOURCC(X): (if (((X) == SDL_PIXELFORMAT_YUY2) or
+template SDL_BYTESPERPIXEL*(X: uint32): int =
+  int(if SDL_ISPIXELFORMAT_FOURCC(X): (if (((X) == SDL_PIXELFORMAT_YUY2) or
       ((X) == SDL_PIXELFORMAT_UYVY) or ((X) == SDL_PIXELFORMAT_YVYU)): 2 else: 1) else: (
       ((X) shr 0) and 0x000000FF))
 
-template SDL_ISPIXELFORMAT_INDEXED*(format: expr): expr =
+template SDL_ISPIXELFORMAT_INDEXED*(format: uint32): bool =
   (not SDL_ISPIXELFORMAT_FOURCC(format) and
       ((SDL_PIXELTYPE(format) == SDL_PIXELTYPE_INDEX1) or
       (SDL_PIXELTYPE(format) == SDL_PIXELTYPE_INDEX4) or
       (SDL_PIXELTYPE(format) == SDL_PIXELTYPE_INDEX8)))
 
-template SDL_ISPIXELFORMAT_ALPHA*(format: expr): expr =
+template SDL_ISPIXELFORMAT_ALPHA*(format: uint32): bool =
   (not SDL_ISPIXELFORMAT_FOURCC(format) and
       ((SDL_PIXELORDER(format) == SDL_PACKEDORDER_ARGB) or
       (SDL_PIXELORDER(format) == SDL_PACKEDORDER_RGBA) or
@@ -438,8 +438,8 @@ template SDL_ISPIXELFORMAT_ALPHA*(format: expr): expr =
       (SDL_PIXELORDER(format) == SDL_PACKEDORDER_BGRA)))
 
 # The flag is set to 1 because 0x1? is not in the printable ASCII range
-template SDL_ISPIXELFORMAT_FOURCC*(format: expr): expr =
-  ((format) and (SDL_PIXELFLAG(format) != 1))
+template SDL_ISPIXELFORMAT_FOURCC*(format: uint32): bool =
+  ((format != 0) and (SDL_PIXELFLAG(format) != 1))
 
 # Note: If you modify this list, update SDL_GetPixelFormatName()
 const
@@ -600,25 +600,22 @@ const
   INIT_EVERYTHING*  = 0x0000FFFF
 
 const SDL_WINDOWPOS_UNDEFINED_MASK* = 0x1FFF0000
-template SDL_WINDOWPOS_UNDEFINED_DISPLAY*(X: cint): expr = (SDL_WINDOWPOS_UNDEFINED_MASK or X)
+template SDL_WINDOWPOS_UNDEFINED_DISPLAY*(X: cint): untyped = (SDL_WINDOWPOS_UNDEFINED_MASK or X)
 const SDL_WINDOWPOS_UNDEFINED* = SDL_WINDOWPOS_UNDEFINED_DISPLAY(0)
-template SDL_WINDOWPOS_ISUNDEFINED*(X): expr = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_UNDEFINED_MASK)
+template SDL_WINDOWPOS_ISUNDEFINED*(X): untyped = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_UNDEFINED_MASK)
 
 const SDL_WINDOWPOS_CENTERED_MASK* = 0x2FFF0000
-template SDL_WINDOWPOS_CENTERED_DISPLAY*(X: cint): expr = (SDL_WINDOWPOS_CENTERED_MASK or X)
+template SDL_WINDOWPOS_CENTERED_DISPLAY*(X: cint): untyped = (SDL_WINDOWPOS_CENTERED_MASK or X)
 const SDL_WINDOWPOS_CENTERED* = SDL_WINDOWPOS_CENTERED_DISPLAY(0)
-template SDL_WINDOWPOS_ISCENTERED*(X): expr = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_CENTERED_MASK)
+template SDL_WINDOWPOS_ISCENTERED*(X): untyped = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_CENTERED_MASK)
 
-
-template evConv(name, name2, ptype: expr; valid: set[EventType]): stmt {.immediate.}=
+template evConv(name, name2, ptype: untyped; valid: set[EventType]): untyped =
   proc `name`* (event: Event): ptype =
     assert event.kind in valid
     return cast[ptype](unsafeAddr event)
   proc `name2`* (event: Event): ptype =
     assert event.kind in valid
     return cast[ptype](unsafeAddr event)
-
-
 
 evConv(evWindow, window, WindowEventPtr, {WindowEvent})
 evConv(evKeyboard, key, KeyboardEventPtr, {KeyDown, KeyUP})
