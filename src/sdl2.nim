@@ -20,6 +20,7 @@ else:
     const LibName* = "libSDL2.dylib"
   else:
     const LibName* = "libSDL2.so"
+
 {.pop.}
 
 include sdl2/private/keycodes
@@ -600,14 +601,14 @@ const
   INIT_EVERYTHING*  = 0x0000FFFF
 
 const SDL_WINDOWPOS_UNDEFINED_MASK* = 0x1FFF0000
-template SDL_WINDOWPOS_UNDEFINED_DISPLAY*(X: cint): untyped = (SDL_WINDOWPOS_UNDEFINED_MASK or X)
-const SDL_WINDOWPOS_UNDEFINED* = SDL_WINDOWPOS_UNDEFINED_DISPLAY(0)
-template SDL_WINDOWPOS_ISUNDEFINED*(X): untyped = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_UNDEFINED_MASK)
+template SDL_WINDOWPOS_UNDEFINED_DISPLAY*(X: cint): untyped = cint(SDL_WINDOWPOS_UNDEFINED_MASK or X)
+const SDL_WINDOWPOS_UNDEFINED*: cint = SDL_WINDOWPOS_UNDEFINED_DISPLAY(0)
+template SDL_WINDOWPOS_ISUNDEFINED*(X: cint): bool = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_UNDEFINED_MASK)
 
 const SDL_WINDOWPOS_CENTERED_MASK* = 0x2FFF0000
-template SDL_WINDOWPOS_CENTERED_DISPLAY*(X: cint): untyped = (SDL_WINDOWPOS_CENTERED_MASK or X)
-const SDL_WINDOWPOS_CENTERED* = SDL_WINDOWPOS_CENTERED_DISPLAY(0)
-template SDL_WINDOWPOS_ISCENTERED*(X): untyped = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_CENTERED_MASK)
+template SDL_WINDOWPOS_CENTERED_DISPLAY*(X: cint): cint = cint(SDL_WINDOWPOS_CENTERED_MASK or X)
+const SDL_WINDOWPOS_CENTERED*: cint = SDL_WINDOWPOS_CENTERED_DISPLAY(0)
+template SDL_WINDOWPOS_ISCENTERED*(X: cint): bool = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_CENTERED_MASK)
 
 template evConv(name, name2, ptype: untyped; valid: set[EventType]): untyped =
   proc `name`* (event: Event): ptype =
