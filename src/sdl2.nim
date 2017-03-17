@@ -302,7 +302,7 @@ type
   RendererFlip* = cint
   SysWMType* {.size: sizeof(cint).}=enum
     SysWM_Unknown, SysWM_Windows, SysWM_X11, SysWM_DirectFB,
-    SysWM_Cocoa, SysWM_UIkit
+    SysWM_Cocoa, SysWM_UIkit, SysWM_Android
   WMinfo* = object
     version*: SDL_Version
     subsystem*: SysWMType
