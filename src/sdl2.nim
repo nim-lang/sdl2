@@ -981,6 +981,8 @@ proc drawLines*(renderer: RendererPtr; points: ptr Point;
 
 proc drawRect*(renderer: RendererPtr; rect: var Rect): SDL_Return{.
   importc: "SDL_RenderDrawRect", discardable.}
+proc drawRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return{.
+  importc: "SDL_RenderDrawRect", discardable.}
 
 proc drawRects*(renderer: RendererPtr; rects: ptr Rect;
   count: cint): SDL_Return {.importc: "SDL_RenderDrawRects".}
@@ -1001,7 +1003,7 @@ proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyEx", discardable.}
 proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
-             srcRect, dstRect: ptr Rect; angle: cdouble; center: ptr Point;
+             srcrect, dstrect: ptr Rect; angle: cdouble; center: ptr Point;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyEx", discardable.}
 
@@ -1009,6 +1011,8 @@ proc clear*(renderer: RendererPtr): cint {.
   importc: "SDL_RenderClear", discardable.}
 
 proc readPixels*(renderer: RendererPtr; rect: var Rect; format: cint;
+  pixels: pointer; pitch: cint): cint {.importc: "SDL_RenderReadPixels".}
+proc readPixels*(renderer: RendererPtr; rect: ptr Rect; format: cint;
   pixels: pointer; pitch: cint): cint {.importc: "SDL_RenderReadPixels".}
 proc present*(renderer: RendererPtr) {.importc: "SDL_RenderPresent".}
 
