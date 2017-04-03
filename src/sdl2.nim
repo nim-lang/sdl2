@@ -873,6 +873,10 @@ proc getRevision*(): cstring {.
   importc: "SDL_GetRevision".}
 proc getRevisionNumber*(): cint {.
   importc: "SDL_GetRevisionNumber".}
+proc getBasePath*(): cstring {.
+  importc: "SDL_GetBasePath".}
+proc getPrefPath*(org, app: cstring): cstring {.
+  importc: "SDL_GetPrefPath".}
 
 
 proc getNumRenderDrivers*(): cint {.
@@ -1204,6 +1208,8 @@ proc getCurrentDisplayMode*(displayIndex: cint;
 
 proc getClosestDisplayMode*(displayIndex: cint; mode: ptr DisplayMode;
                                 closest: ptr DisplayMode): ptr DisplayMode {.importc: "SDL_GetClosestDisplayMode".}
+proc getDisplayDPI*(displayIndex: cint;
+  ddpi, hdpi, vdpi: ptr cfloat): SDL_Return {.importc: "SDL_GetDisplayDPI".}
 #*
 #*
 proc createWindow*(title: cstring; x, y, w, h: cint;
