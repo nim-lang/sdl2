@@ -53,30 +53,31 @@ type
 #
 # @{
 const
-  SDL_AUDIO_MASK_BITSIZE* = (0x000000FF)
-  SDL_AUDIO_MASK_DATATYPE* = (1 shl 8)
-  SDL_AUDIO_MASK_ENDIAN* = (1 shl 12)
-  SDL_AUDIO_MASK_SIGNED* = (1 shl 15)
-template SDL_AUDIO_BITSIZE*(x: expr): expr =
+  SDL_AUDIO_MASK_BITSIZE*  = uint32(0x000000FF)
+  SDL_AUDIO_MASK_DATATYPE* = uint32(1 shl 8)
+  SDL_AUDIO_MASK_ENDIAN*   = uint32(1 shl 12)
+  SDL_AUDIO_MASK_SIGNED*   = uint32(1 shl 15)
+
+template SDL_AUDIO_BITSIZE*(x: uint32): uint32 =
   (x and SDL_AUDIO_MASK_BITSIZE)
 
-template SDL_AUDIO_ISFLOAT*(x: expr): expr =
-  (x and SDL_AUDIO_MASK_DATATYPE)
+template SDL_AUDIO_ISFLOAT*(x: uint32): bool =
+  (x and SDL_AUDIO_MASK_DATATYPE) != 0
 
-template SDL_AUDIO_ISBIGENDIAN*(x: expr): expr =
-  (x and SDL_AUDIO_MASK_ENDIAN)
+template SDL_AUDIO_ISBIGENDIAN*(x: uint32): bool =
+  (x and SDL_AUDIO_MASK_ENDIAN) != 0
 
-template SDL_AUDIO_ISSIGNED*(x: expr): expr =
-  (x and SDL_AUDIO_MASK_SIGNED)
+template SDL_AUDIO_ISSIGNED*(x: uint32): bool =
+  (x and SDL_AUDIO_MASK_SIGNED) != 0
 
-template SDL_AUDIO_ISINT*(x: expr): expr =
-  (not SDL_AUDIO_ISFLOAT(x))
+template SDL_AUDIO_ISINT*(x: uint32): bool =
+  not SDL_AUDIO_ISFLOAT(x)
 
-template SDL_AUDIO_ISLITTLEENDIAN*(x: expr): expr =
-  (not SDL_AUDIO_ISBIGENDIAN(x))
+template SDL_AUDIO_ISLITTLEENDIAN*(x: uint32): bool =
+  not SDL_AUDIO_ISBIGENDIAN(x)
 
-template SDL_AUDIO_ISUNSIGNED*(x: expr): expr =
-  (not SDL_AUDIO_ISSIGNED(x))
+template SDL_AUDIO_ISUNSIGNED*(x: uint32): bool =
+  not SDL_AUDIO_ISSIGNED(x)
 
 #*
 #   \name Audio format flags
@@ -93,6 +94,7 @@ const
   AUDIO_S16MSB* = 0x00009010 #*< As above, but big-endian byte order
   AUDIO_U16* = AUDIO_U16LSB
   AUDIO_S16* = AUDIO_S16LSB
+
 # @}
 #*
 #   \name int32 support
@@ -409,8 +411,8 @@ proc loadWAV_RW*(src: ptr RWops; freesrc: cint;
 #   Loads a WAV from a file.
 #   Compatibility convenience function.
 #
-template loadWAV*(file, spec, audio_buf, audio_len: expr): expr =
-  SDL_LoadWAV_RW(rwFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
+template loadWAV*(file: string, spec: ptr AudioSpec, audio_buf: ptr ptr uint8, audio_len: ptr uint32): ptr AudioSpec =
+  loadWAV_RW(rwFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
 
 #*
 #   This function frees data previously allocated with SDL_LoadWAV_RW()
