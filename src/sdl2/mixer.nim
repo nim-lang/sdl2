@@ -629,3 +629,5 @@ proc getChunk*(channel: cint): ptr Chunk {.importc: "Mix_GetChunk".}
 # Close the mixer, halting all playing audio
 
 proc closeAudio*() {.importc: "Mix_CloseAudio".}
+
+{.pop.}
