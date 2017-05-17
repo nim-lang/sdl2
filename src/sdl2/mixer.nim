@@ -148,11 +148,11 @@ proc loadMUS*(file: cstring): ptr Music {.importc: "Mix_LoadMUS".}
 # Load a music file from an SDL_RWop object (Ogg and MikMod specific currently)
 #   Matt Campbell (matt@campbellhome.dhs.org) April 2000
 
-proc loadMUS_RW*(src: ptr RWopsPtr; freesrc: cint): ptr Music {.
+proc loadMUS_RW*(src: RWopsPtr; freesrc: cint): ptr Music {.
     importc: "Mix_LoadMUS_RW".}
 # Load a music file from an SDL_RWop object assuming a specific format
 
-proc loadMUSType_RW*(src: ptr RWopsPtr; `type`: MusicType; freesrc: cint): ptr Music {.
+proc loadMUSType_RW*(src: RWopsPtr; `type`: MusicType; freesrc: cint): ptr Music {.
     importc: "Mix_LoadMUSType_RW".}
 # Load a wave file of the mixer format from a memory buffer
 
