@@ -37,13 +37,12 @@ else:
 
 import sdl2, sdl2.audio
 
-when false:
-  when SDL_BYTEORDER == SDL_LIL_ENDIAN:
-    const
-      MIX_DEFAULT_FORMAT = AUDIO_S16LSB
-  else:
-    const
-      MIX_DEFAULT_FORMAT = AUDIO_S16MSB
+when system.cpuEndian == littleEndian: # SDL_BYTEORDER == SDL_LIL_ENDIAN
+  const
+    MIX_DEFAULT_FORMAT* = AUDIO_S16LSB
+else:
+  const
+    MIX_DEFAULT_FORMAT* = AUDIO_S16MSB
 
 # Remove prefixes in our wrapper, we have modules in Nim:
 
