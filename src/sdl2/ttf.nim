@@ -199,6 +199,8 @@ proc ttfWasInit*(): bool {.importc: "TTF_WasInit".}
 proc getFontKerningSize*(font: FontPtr; prev_index, indx: cint): cint {.
   importc: "TTF_GetFontKerningSize".}
 
+proc ttfGetError*(): cstring {.importc: "TTF_GetError".}
+
 {.pop.}
 
 
