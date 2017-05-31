@@ -37,13 +37,12 @@ else:
 
 import sdl2, sdl2.audio
 
-when false:
-  when SDL_BYTEORDER == SDL_LIL_ENDIAN:
-    const
-      MIX_DEFAULT_FORMAT = AUDIO_S16LSB
-  else:
-    const
-      MIX_DEFAULT_FORMAT = AUDIO_S16MSB
+when system.cpuEndian == littleEndian: # SDL_BYTEORDER == SDL_LIL_ENDIAN
+  const
+    MIX_DEFAULT_FORMAT* = AUDIO_S16LSB
+else:
+  const
+    MIX_DEFAULT_FORMAT* = AUDIO_S16MSB
 
 # Remove prefixes in our wrapper, we have modules in Nim:
 
@@ -145,14 +144,14 @@ template loadWAV*(file: expr): expr =
   loadWAV_RW(rwFromFile(file, "rb"), 1)
 
 proc loadMUS*(file: cstring): ptr Music {.importc: "Mix_LoadMUS".}
-# Load a music file from an SDL_RWop object (Ogg and MikMod specific currently)
+# Load a music file from an SDL_RWops object (Ogg and MikMod specific currently)
 #   Matt Campbell (matt@campbellhome.dhs.org) April 2000
 
-proc loadMUS_RW*(src: ptr RWopsPtr; freesrc: cint): ptr Music {.
+proc loadMUS_RW*(src: RWopsPtr; freesrc: cint): ptr Music {.
     importc: "Mix_LoadMUS_RW".}
-# Load a music file from an SDL_RWop object assuming a specific format
+# Load a music file from an SDL_RWops object assuming a specific format
 
-proc loadMUSType_RW*(src: ptr RWopsPtr; `type`: MusicType; freesrc: cint): ptr Music {.
+proc loadMUSType_RW*(src: RWopsPtr; `type`: MusicType; freesrc: cint): ptr Music {.
     importc: "Mix_LoadMUSType_RW".}
 # Load a wave file of the mixer format from a memory buffer
 
@@ -629,3 +628,5 @@ proc getChunk*(channel: cint): ptr Chunk {.importc: "Mix_GetChunk".}
 # Close the mixer, halting all playing audio
 
 proc closeAudio*() {.importc: "Mix_CloseAudio".}
+
+{.pop.}
