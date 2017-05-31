@@ -234,7 +234,7 @@ const
   SDL_MIX_MAXVOLUME* = 128
 
 when defined(SDL_Static):
-  {.push header: "<SDL2/SDL.h>".}
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 else:
   {.push callConv: cdecl, dynlib: LibName.}
 
@@ -492,7 +492,8 @@ proc closeAudioDevice*(dev: AudioDeviceID) {.
 # Ends C function definitions when using C++
 
 # vi: set ts=4 sw=4 expandtab:
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
 
 {.deprecated: [TAudioCVT: AudioCVT].}
 {.deprecated: [TAudioCallback: AudioCallback].}

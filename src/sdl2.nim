@@ -9,9 +9,7 @@ export unsigned, strutils.`%`
 
 {.push warning[user]: off}
 when defined(SDL_Static):
-  static: echo "SDL2 will be statically linked. Please make sure you pass the correct linker flags "&
-    "(library search paths, linked libraries)."
-  #{.passl: gorge("pkg-config --libs sdl2").}
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 
 else:
   when defined(windows):

@@ -7,6 +7,8 @@ when not defined(SDL_Static):
     const LibName = "libSDL2_image.dylib"
   else:
     const LibName = "libSDL2_image(|-2.0).so(|.0)"
+else:
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 
 const
   IMG_INIT_JPG* = 0x00000001
@@ -14,9 +16,7 @@ const
   IMG_INIT_TIF* = 0x00000004
   IMG_INIT_WEBP* = 0x00000008
 
-when defined(SDL_Static):
-  {.push header: "<SDL2/SDL_image.h>".}
-else:
+when not defined(SDL_Static):
   {.push callConv:cdecl, dynlib: LibName.}
 
 proc linkedVersion*(): ptr SDL_version {.importc: "IMG_Linked_Version".}
@@ -83,7 +83,8 @@ proc readXPMFromArray*(xpm: cstringArray): SurfacePtr {.importc: "IMG_ReadXPMFro
 proc savePNG*(surface: SurfacePtr, file: cstring): cint {.importc: "IMG_SavePNG".}
 #"""
 
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
 
 {.deprecated: [IMG_Init: init].}
 {.deprecated: [IMG_Linked_Version: linkedVersion].}

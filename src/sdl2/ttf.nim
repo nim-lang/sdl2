@@ -7,6 +7,8 @@ when not defined(SDL_Static):
     const LibName = "libSDL2_ttf.dylib"
   else:
     const LibName = "libSDL2_ttf(|-2.0).so(|.0)"
+else:
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 
 import sdl2
 
@@ -35,9 +37,7 @@ type
 #//#define TTF_PATCHLEVEL		SDL_TTF_PATCHLEVEL
 ##define TTF_VERSION(X)		SDL_TTF_VERSION(X)
 
-when defined(SDL_Static):
-  {.push header: "<SDL2/SDL_ttf.h>".}
-else:
+when not defined(SDL_Static):
   {.push callConv:cdecl, dynlib:LibName.}
 
 proc ttfLinkedVersion*(): ptr SDL_version {.importc: "TTF_Linked_Version".}
@@ -199,7 +199,8 @@ proc ttfWasInit*(): bool {.importc: "TTF_WasInit".}
 proc getFontKerningSize*(font: FontPtr; prev_index, indx: cint): cint {.
   importc: "TTF_GetFontKerningSize".}
 
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
 
 
 # For compatibility with previous versions, here are the old functions

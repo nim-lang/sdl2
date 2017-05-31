@@ -780,7 +780,7 @@ type
 
 
 when defined(SDL_Static):
-  {.push header: "<SDL2/SDL.h>".}
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 else:
   {.push callConv: cdecl, dynlib: LibName.}
 
@@ -1189,4 +1189,5 @@ proc rumblePlay*(haptic: HapticPtr, strength: float, length: uint32 ):cint {.imp
 
 proc rumbleStop*(haptic: HapticPtr):cint {.importc: "SDL_HapticRumbleStop".}
 
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
