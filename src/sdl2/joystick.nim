@@ -61,7 +61,7 @@ type
   JoystickID* = int32
 
 when defined(SDL_Static):
-  {.push header: "<SDL2/SDL.h>".}
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 else:
   {.push callConv: cdecl, dynlib: LibName.}
 
@@ -267,7 +267,8 @@ proc close* (joystick: JoystickPtr) {.inline.} = joystick.joystickClose()
 # Ends C function definitions when using C++
 
 # vi: set ts=4 sw=4 expandtab:
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
 
 {.deprecated: [PJoystick: JoystickPtr].}
 {.deprecated: [TJoystick: Joystick].}

@@ -36,6 +36,8 @@ when not defined(SDL_Static):
     const LibName = "libSDL2_gfx.dylib"
   else:
     const LibName = "libSDL2_gfx(|-2.0).so(|.0)"
+else:
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 
 const
   FPS_UPPER_LIMIT* = 200
@@ -52,9 +54,7 @@ type
 
 {.pragma: i, importc, discardable.}
 
-when defined(SDL_Static):
-  {.push header: "<SDL2/SDL2_gfxPrimitives.h>".}
-else:
+when not defined(SDL_Static):
   {.push callConv:cdecl, dynlib: LibName.}
 
 # ---- Function Prototypes
@@ -214,10 +214,6 @@ proc stringRGBA*(renderer: RendererPtr; x: int16; y: int16; s: cstring;
                  r,g,b,a: uint8): SDL_Return {.importc, discardable.}
 # Ends C function definitions when using C++
 
-when defined(SDL_Static):
-  {.pop.}
-  {.push header: "<SDL2/SDL2_rotozoom.h>".}
-
 proc rotozoomSurface*(src: SurfacePtr; angle, zoom: cdouble;
   smooth: cint): SurfacePtr {.importc.}
 proc rotozoomSurfaceXY*(src: SurfacePtr; angle, zoomX, zoomY: cdouble;
@@ -235,10 +231,6 @@ proc shrinkSurface*(src: SurfacePtr; factorx, factorY: cint): SurfacePtr {.impor
 proc rotateSurface90Degrees*(src: SurfacePtr;
   numClockwiseTurns: cint): SurfacePtr {.importc.}
 
-when defined(SDL_Static):
-  {.pop.}
-  {.push header: "<SDL2/SDL2_framerate.h>".}
-
 proc init*(manager: var FpsManager) {.importc: "SDL_initFramerate".}
 proc setFramerate*(manager: var FpsManager; rate: cint): SDL_Return {.
   importc: "SDL_setFramerate", discardable.}
@@ -246,7 +238,8 @@ proc getFramerate*(manager: var FpsManager): cint {.importc: "SDL_getFramerate".
 proc getFramecount*(manager: var FpsManager): cint {.importc: "SDL_getFramecount".}
 proc delay*(manager: var FpsManager): cint {.importc: "SDL_framerateDelay", discardable.}
 
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
 
 from strutils import splitLines
 proc mlStringRGBA*(renderer: RendererPtr; x,y: int16, S: string, R,G,B,A: uint8, lineSpacing = 2'i16) =

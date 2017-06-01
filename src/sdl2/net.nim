@@ -29,6 +29,8 @@ when not defined(SDL_Static):
     const LibName* = "libSDL2_net.dylib"
   else:
     const LibName* = "libSDL2_net(|-2.0).so(|.0)"
+else:
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 
 type
   IpAddress* = object
@@ -69,9 +71,7 @@ type
     ready*: cint
   GenericSocket* = ptr GenericSocketObj
 
-when defined(SDL_Static):
-  {.push header: "<SDL2/SDL2_net.h>".}
-else:
+when not defined(SDL_Static):
   {.push dynlib: LibName, callconv: cdecl.}
 # This function gets the version of the dynamically linked SDL_net library.
 #   it should NOT be used to fill a version structure, instead you should
@@ -277,7 +277,8 @@ proc write32* (value: uint32, dest: pointer) {.importc: "SDLNet_Write32".}
 proc read16* (src: pointer): uint16 {.importc: "SDLNet_Read16".}
 proc read32* (src: pointer): uint32 {.importc: "SDLNet_Read32".}
 
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
 
 proc tcpAddSocket*(set: SocketSet; sock: TcpSocket): cint =
   addSocket(set, cast[GenericSocket](sock))

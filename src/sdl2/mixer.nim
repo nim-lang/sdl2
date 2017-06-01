@@ -29,10 +29,10 @@ when not defined(SDL_Static):
     const LibName* = "libSDL2_mixer.dylib"
   else:
     const LibName* = "libSDL2_mixer(|-2.0).so(|.0)"
-
-when defined(SDL_Static):
-  {.push header: "<SDL2/SDL_mixer.h>".}
 else:
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
+
+when not defined(SDL_Static):
   {.push callConv:cdecl, dynlib: LibName.}
 
 import sdl2, sdl2.audio
@@ -629,4 +629,5 @@ proc getChunk*(channel: cint): ptr Chunk {.importc: "Mix_GetChunk".}
 
 proc closeAudio*() {.importc: "Mix_CloseAudio".}
 
-{.pop.}
+when not defined(SDL_Static):
+  {.pop.}
