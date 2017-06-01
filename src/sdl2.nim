@@ -719,6 +719,9 @@ const SDL_ANDROID_EXTERNAL_STORAGE_WRITE* = cint(0x02)
 when not defined(SDL_Static):
   {.push callConv: cdecl, dynlib: LibName.}
 
+proc getBasePath*(): cstring {.
+  importc: "SDL_GetBasePath".}
+
 
 ## functions whose names have been shortened by elision of a type name
 proc getWMInfo*(window: WindowPtr; info: var WMInfo): Bool32 {.
@@ -752,6 +755,8 @@ proc destroy*(renderer: RendererPtr) {.importc: "SDL_DestroyRenderer".}
 #proc destroy* (renderer: RendererPtr) {.inline.} = renderer.destroyRenderer
 
 proc getDisplayIndex*(window: WindowPtr): cint {.importc: "SDL_GetWindowDisplayIndex".}
+
+proc getDisplayDPI*(displayIndex: cint, ddpi, vdpi, hdpi: ptr cfloat): cint {.importc: "SDL_GetDisplayDPI".}
 #*
 proc setDisplayMode*(window: WindowPtr;
   mode: ptr DisplayMode): SDL_Return {.importc: "SDL_SetWindowDisplayMode".}

@@ -206,15 +206,15 @@ proc getAxis* (joystick: JoystickPtr, axis: cint): int16 {.inline.} = joystick.j
 #
 #  @{#
 const
-  SDL_HAT_CENTERED*:cint = (0x00000000)
-  SDL_HAT_UP*:cint = (0x00000001)
-  SDL_HAT_RIGHT*:cint = (0x00000002)
-  SDL_HAT_DOWN*:cint = (0x00000004)
-  SDL_HAT_LEFT*:cint = (0x00000008)
-  SDL_HAT_RIGHTUP*:cint = (SDL_HAT_RIGHT or SDL_HAT_UP)
-  SDL_HAT_RIGHTDOWN*:cint = (SDL_HAT_RIGHT or SDL_HAT_DOWN)
-  SDL_HAT_LEFTUP*:cint = (SDL_HAT_LEFT or SDL_HAT_UP)
-  SDL_HAT_LEFTDOWN*:cint = (SDL_HAT_LEFT or SDL_HAT_DOWN)
+  SDL_HAT_CENTERED*:uint8 = (0x00000000)
+  SDL_HAT_UP*:uint8 = (0x00000001)
+  SDL_HAT_RIGHT*:uint8 = (0x00000002)
+  SDL_HAT_DOWN*:uint8 = (0x00000004)
+  SDL_HAT_LEFT*:uint8 = (0x00000008)
+  SDL_HAT_RIGHTUP*:uint8 = (SDL_HAT_RIGHT or SDL_HAT_UP)
+  SDL_HAT_RIGHTDOWN*:uint8 = (SDL_HAT_RIGHT or SDL_HAT_DOWN)
+  SDL_HAT_LEFTUP*:uint8 = (SDL_HAT_LEFT or SDL_HAT_UP)
+  SDL_HAT_LEFTDOWN*:uint8 = (SDL_HAT_LEFT or SDL_HAT_DOWN)
 #  @}#
 
 #
