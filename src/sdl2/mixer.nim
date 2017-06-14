@@ -60,7 +60,7 @@ const
     MIX_INIT_MOD*        : cint = 0x00000002
     MIX_INIT_MODPLUG*    : cint = 0x00000004
     MIX_INIT_MP3*        : cint = 0x00000008
-    MIX_INIT_OGG*        : cint = 0x00000010 
+    MIX_INIT_OGG*        : cint = 0x00000010
     MIX_INIT_FLUIDSYNTH* : cint = 0x00000020
 
 

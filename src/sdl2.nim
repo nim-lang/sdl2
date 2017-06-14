@@ -1712,7 +1712,7 @@ const
 ##define SDL_GetEventState(type) SDL_EventState(type, SDL_QUERY)
 proc getEventState*(kind: EventType): uint8 {.inline.} = eventState(kind, SDL_QUERY)
 
-##define SDL_BUTTON(X)		(1 << ((X)-1))
+##define SDL_BUTTON(X)          (1 << ((X)-1))
 template SDL_BUTTON*(x: uint8): uint8 = (1'u8 shl (x - 1'u8))
 const
   BUTTON_LEFT* = 1'u8
@@ -1753,7 +1753,7 @@ proc blitScaled*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
 #proc init*(flags: cint): SDL_Return {.inline, deprecated.} = sdl2.init(flags)
 #proc quit*() {.inline,deprecated.} = sdl2.quit()
 
-#/#define SDL_LoadBMP(file)	SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
+#/#define SDL_LoadBMP(file)     SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
 proc loadBMP*(file: string): SurfacePtr {.inline.} = loadBMP_RW(rwFromFile(cstring(file), "rb"), 1)
 ##define SDL_SaveBMP(surface, file) \
 #  SDL_SaveBMP_RW(surface, SDL_RWFromFile(file, "wb"), 1)

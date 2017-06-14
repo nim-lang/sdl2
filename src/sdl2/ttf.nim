@@ -18,24 +18,24 @@ type
 # Set up for C function definitions, even when using C++
 # Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
 #/*
-##define SDL_TTF_MAJOR_VERSION	2
-##define SDL_TTF_MINOR_VERSION	0
-##define SDL_TTF_PATCHLEVEL	12
+##define SDL_TTF_MAJOR_VERSION  2
+##define SDL_TTF_MINOR_VERSION  0
+##define SDL_TTF_PATCHLEVEL     12
 #
 # This macro can be used to fill a version structure with the compile-time
 #  version of the SDL_ttf library.
 #
-##define SDL_TTF_VERSION(X)						\
-#{									\
-# (X)->major = SDL_TTF_MAJOR_VERSION;				\
-# (X)->minor = SDL_TTF_MINOR_VERSION;				\
-# (X)->patch = SDL_TTF_PATCHLEVEL;				\
+##define SDL_TTF_VERSION(X)                                             \
+#{                                                                      \
+# (X)->major = SDL_TTF_MAJOR_VERSION;                           \
+# (X)->minor = SDL_TTF_MINOR_VERSION;                           \
+# (X)->patch = SDL_TTF_PATCHLEVEL;                              \
 #}
 # Backwards compatibility
-##define TTF_MAJOR_VERSION	SDL_TTF_MAJOR_VERSION
-##define TTF_MINOR_VERSION	SDL_TTF_MINOR_VERSION
-#//#define TTF_PATCHLEVEL		SDL_TTF_PATCHLEVEL
-##define TTF_VERSION(X)		SDL_TTF_VERSION(X)
+##define TTF_MAJOR_VERSION      SDL_TTF_MAJOR_VERSION
+##define TTF_MINOR_VERSION      SDL_TTF_MINOR_VERSION
+#//#define TTF_PATCHLEVEL               SDL_TTF_PATCHLEVEL
+##define TTF_VERSION(X)         SDL_TTF_VERSION(X)
 
 when not defined(SDL_Static):
   {.push callConv:cdecl, dynlib:LibName.}
@@ -204,11 +204,11 @@ when not defined(SDL_Static):
 
 
 # For compatibility with previous versions, here are the old functions
-##define TTF_RenderText(font, text, fg, bg)	\
+##define TTF_RenderText(font, text, fg, bg)     \
 # TTF_RenderText_Shaded(font, text, fg, bg)
-##define TTF_RenderUTF8(font, text, fg, bg)	\
+##define TTF_RenderUTF8(font, text, fg, bg)     \
 # TTF_RenderUTF8_Shaded(font, text, fg, bg)
-##define TTF_RenderUNICODE(font, text, fg, bg)	\
+##define TTF_RenderUNICODE(font, text, fg, bg)  \
 # TTF_RenderUNICODE_Shaded(font, text, fg, bg)
 
 proc renderText*(font: FontPtr; text: cstring;

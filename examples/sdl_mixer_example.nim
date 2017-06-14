@@ -25,7 +25,7 @@ channel = mixer.playMusic(sound2, 0); #ogg/flac
 if channel == -1:
     quit("Unable to play sound")
 
-var 
+var
     window: WindowPtr
     render: RendererPtr
 
