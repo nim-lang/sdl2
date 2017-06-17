@@ -140,7 +140,7 @@ proc querySpec*(frequency: ptr cint; format: ptr uint16; channels: ptr cint): ci
 
 proc loadWAV_RW*(src: RWopsPtr; freesrc: cint): ptr Chunk {.importc: "Mix_LoadWAV_RW".}
 
-template loadWAV*(file: expr): expr =
+template loadWAV*(file: untyped): untyped =
   loadWAV_RW(rwFromFile(file, "rb"), 1)
 
 proc loadMUS*(file: cstring): ptr Music {.importc: "Mix_LoadMUS".}
@@ -535,7 +535,7 @@ proc playChannelTimed*(channel: cint; chunk: ptr Chunk; loops: cint;
 
 # The same as above, but the sound is played forever
 
-template playChannel*(channel, chunk, loops: expr): expr =
+template playChannel*(channel, chunk, loops: untyped): untyped =
   playChannelTimed(channel, chunk, loops, - 1)
 
 proc playMusic*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
@@ -544,7 +544,7 @@ proc playMusic*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".
 proc fadeInMusic*(music: ptr Music; loops: cint; ms: cint): cint {.importc: "Mix_FadeInMusic".}
 proc fadeInMusicPos*(music: ptr Music; loops: cint; ms: cint;
                          position: cdouble): cint {.importc: "Mix_FadeInMusicPos".}
-template fadeInChannel*(channel, chunk, loops, ms: expr): expr =
+template fadeInChannel*(channel, chunk, loops, ms: untyped): untyped =
   fadeInChannelTimed(channel, chunk, loops, ms, - 1)
 
 proc fadeInChannelTimed*(channel: cint; chunk: ptr Chunk; loops: cint;

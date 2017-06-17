@@ -116,7 +116,7 @@ type
                             #                                 for array bounds
 
 const SDLK_SCANCODE_MASK = 1 shl 30
-template SDL_SCANCODE_TO_KEYCODE(some: ScanCode): expr = (some.cint or SDLK_SCANCODE_MASK)
+template SDL_SCANCODE_TO_KEYCODE(some: ScanCode): untyped = (some.cint or SDLK_SCANCODE_MASK)
 
 const
   K_UNKNOWN*: cint = 0
@@ -390,10 +390,10 @@ type
 
 converter toInt*(some: Keymod): cint = cint(some)
 
-template KMOD_CTRL*: expr = (KMOD_LCTRL or KMOD_RCTRL)
-template KMOD_SHIFT*:expr = (KMOD_LSHIFT or KMOD_RSHIFT)
-template KMOD_ALT*: expr = (KMOD_LALT or KMOD_RALT)
-template KMOD_GUI*: expr = (KMOD_LGUI or KMOD_RGUI)
+template KMOD_CTRL*: untyped = (KMOD_LCTRL or KMOD_RCTRL)
+template KMOD_SHIFT*:untyped = (KMOD_LSHIFT or KMOD_RSHIFT)
+template KMOD_ALT*: untyped = (KMOD_LALT or KMOD_RALT)
+template KMOD_GUI*: untyped = (KMOD_LGUI or KMOD_RGUI)
 
 {.deprecated: [TScancode: Scancode].}
 {.deprecated: [TKeymod: Keymod].}
