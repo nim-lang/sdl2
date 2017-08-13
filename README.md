@@ -20,4 +20,8 @@ Install SDL2 development libraries using your distribution's packaging tool of c
 TODO
 
 # Installation
-Add the `sdl2` nim package to your nimble package configuration, or install it by hand using `nimble install`. For more information on using nimble, consult [the nim documentation](https://nim-lang.org/docs/lib.html#nimble).
+Add `requires "sdl2"` to your `.nimble` file.
+
+You can also install manually with `nimble install sdl2` if your project does not yet have a nimble package file.
+
+For more information on using nimble, consult [the nim documentation](https://nim-lang.org/docs/lib.html#nimble).
