@@ -366,6 +366,33 @@ proc getAudioStatus*(): AudioStatus {.
   importc: "SDL_GetAudioStatus".}
 proc getAudioDeviceStatus*(dev: AudioDeviceID): AudioStatus {.
   importc: "SDL_GetAudioDeviceStatus".}
+
+#*
+#   \brief Use this function to get the number of bytes of still-queued audio.
+#
+#   \param dev the device ID of which we will query queued audio size
+#
+#   \return the number of bytes (not samples!) of queued audio.
+#
+#   \sa SDL_GetQueuedAudioSize()
+#
+proc getQueuedAudioSize*(dev: AudioDeviceID): uint32 {.
+  importc: "SDL_GetQueuedAudioSize".}
+
+#*
+#   \brief Use this function to queue more audio on non-callback devices.
+#
+#   \param dev  the device ID to which we will queue audio
+#   \param data the data to queue to the device for later playback
+#   \param len  the number of bytes (not samples!) to which (data) points
+#
+#   \return 0 on success or a negative error code on failure; call SDL_GetError() for more information.
+#
+#   \sa SDL_QueueAudio()
+#
+proc queueAudio*(dev: AudioDeviceID, data: pointer, len: uint32): cint {.
+  importc: "SDL_QueueAudio".}
+
 # @}
 # Audio State
 #*
@@ -403,10 +430,12 @@ proc pauseAudioDevice*(dev: AudioDeviceID; pause_on: cint) {.
 #   wave file cannot be opened, uses an unknown data format, or is
 #   corrupt.  Currently raw and MS-ADPCM WAVE files are supported.
 #
+
 proc loadWAV_RW*(src: ptr RWops; freesrc: cint;
                  spec: ptr AudioSpec; audio_buf: ptr ptr uint8;
                  audio_len: ptr uint32): ptr AudioSpec {.
   importc: "SDL_LoadWAV_RW".}
+
 #*
 #   Loads a WAV from a file.
 #   Compatibility convenience function.

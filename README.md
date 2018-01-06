@@ -25,3 +25,6 @@ Add `requires "sdl2"` to your `.nimble` file.
 You can also install manually with `nimble install sdl2` if your project does not yet have a nimble package file.
 
 For more information on using nimble, consult [the nim documentation](https://nim-lang.org/docs/lib.html#nimble).
+
+# Documentation
+For documentation about SDL2 see [wiki.libsdl.org](https://wiki.libsdl.org/).
