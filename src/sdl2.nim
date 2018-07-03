@@ -1340,38 +1340,38 @@ type VkHandle = ptr object
 type VkNonDispatchableHandle = ptr object # If on x64. Otherwise should be a uint64. Not sure how to check
 
 # Skipped using Vk prefix to stop any potential name clashes with the Vulkan library
-type VulkanInstance = VkHandle
-type VulkanSurface = VkNonDispatchableHandle
+type VulkanInstance* = VkHandle
+type VulkanSurface* = VkNonDispatchableHandle
 
 #extern DECLSPEC int SDLCALL SDL_Vulkan_LoadLibrary(const char *path);
-proc vulkanLoadLibrary(path: cstring):cint {.
+proc vulkanLoadLibrary*(path: cstring):cint {.
   importc: "SDL_Vulkan_LoadLibrary".}
 
 #extern DECLSPEC void *SDLCALL SDL_Vulkan_GetVkGetInstanceProcAddr(void);
-proc vulkanGetVkGetInstanceProcAddr(): ptr void {. 
+proc vulkanGetVkGetInstanceProcAddr*(): ptr void {. 
   importc: "SDL_Vulkan_GetVkGetInstancePorcAddr".}
 
 #extern DECLSPEC void SDLCALL SDL_Vulkan_UnloadLibrary(void);
-proc vulkanUnloadLibrary() {.
+proc vulkanUnloadLibrary*() {.
   importc: "SDL_Vulkan_UnloadLibrary".}
 
 #extern DECLSPEC SDL_bool SDLCALL SDL_Vulkan_GetInstanceExtensions(
 #                           SDL_Window *window,
 #                           unsigned int *pCount,
 #                           const char **pNames);
-proc vulkanGetInstanceExtensions(window: WindowPtr, pCount: ptr cuint, pNames: cstringArray): Bool32 {.
+proc vulkanGetInstanceExtensions*(window: WindowPtr, pCount: ptr cuint, pNames: cstringArray): Bool32 {.
   importc: "SDL_Vulkan_GetInstanceExtensions".}
 
 #extern DECLSPEC SDL_bool SDLCALL SDL_Vulkan_CreateSurface(
 #                       SDL_Window *window,
 #                       VkInstance instance,
 #                       VkSurfaceKHR* surface);
-proc vulkanGetInstanceExtensions(window: WindowPtr, instance: VulkanInstance, surface: ptr VulkanSurface): Bool32 {.
+proc vulkanCreateSurface*(window: WindowPtr, instance: VulkanInstance, surface: ptr VulkanSurface): Bool32 {.
   importc: "SDL_Vulkan_CreateSurface".}
 
 #extern DECLSPEC void SDLCALL SDL_Vulkan_GetDrawableSize(SDL_Window * window,
 #                                                       int *w, int *h);
-proc vulkanGetDrawableSize(window: WindowPtr, w, h: ptr cint) {.
+proc vulkanGetDrawableSize*(window: WindowPtr, w, h: ptr cint) {.
   importc: "SDL_Vulkan_GetDrawableSize".}
 
 ##SDL_keyboard.h:
