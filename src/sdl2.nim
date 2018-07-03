@@ -1359,7 +1359,7 @@ proc vulkanUnloadLibrary() {.
 #                           SDL_Window *window,
 #                           unsigned int *pCount,
 #                           const char **pNames);
-proc vulkanGetInstanceExtensions(window: WindowPtr, pCount: ptr uint, pNames: cstringArray): Bool32 {.
+proc vulkanGetInstanceExtensions(window: WindowPtr, pCount: ptr cuint, pNames: cstringArray): Bool32 {.
   importc: "SDL_Vulkan_GetInstanceExtensions".}
 
 #extern DECLSPEC SDL_bool SDLCALL SDL_Vulkan_CreateSurface(
