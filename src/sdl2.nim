@@ -1336,8 +1336,8 @@ proc glDeleteContext* (context: GlContextPtr) {.
 
 
 ##SDL_vulkan.h
-type VkHandle = ptr object
-type VkNonDispatchableHandle = ptr object # If on x64. Otherwise should be a uint64. Not sure how to check
+type VkHandle = int64
+type VkNonDispatchableHandle = int64
 
 # Skipped using Vk prefix to stop any potential name clashes with the Vulkan library
 type VulkanInstance* = VkHandle
