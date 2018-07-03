@@ -1,5 +1,5 @@
 # Package
-version = "1.1"
+version = "1.2"
 author = "fowl"
 description = "Wrapper for SDL 2.x"
 license = "MIT"
