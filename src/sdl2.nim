@@ -323,9 +323,11 @@ const ## WindowFlags
     SDL_WINDOW_FOREIGN*:cuint = 0x00000800#             /**< window not created by SDL */
     SDL_WINDOW_ALLOW_HIGHDPI*:cuint = 0x00002000#       /**< window should be created in high-DPI mode if supported */
     SDL_WINDOW_MOUSE_CAPTURE*:cuint = 0x00004000#       /**< window has mouse captured (unrelated to INPUT_GRABBED) */
+    SDL_WINDOW_VULKAN*:cuint = 0x10000000#              /**< window usable for Vulkan surface */
     SDL_FLIP_NONE*: cint = 0x00000000 # Do not flip
     SDL_FLIP_HORIZONTAL*: cint = 0x00000001 # flip horizontally
     SDL_FLIP_VERTICAL*: cint = 0x00000002 # flip vertically
+
 
 converter toBool*(some: Bool32): bool = bool(some)
 converter toBool*(some: SDL_Return): bool = some == SdlSuccess
@@ -1332,6 +1334,45 @@ proc glSwapWindow*(window: WindowPtr) {.
 proc glDeleteContext* (context: GlContextPtr) {.
   importc: "SDL_GL_DeleteContext".}
 
+
+##SDL_vulkan.h
+type VkHandle = int64
+type VkNonDispatchableHandle = int64
+
+# Skipped using Vk prefix to stop any potential name clashes with the Vulkan library
+type VulkanInstance* = VkHandle
+type VulkanSurface* = VkNonDispatchableHandle
+
+#extern DECLSPEC int SDLCALL SDL_Vulkan_LoadLibrary(const char *path);
+proc vulkanLoadLibrary*(path: cstring):cint {.
+  importc: "SDL_Vulkan_LoadLibrary".}
+
+#extern DECLSPEC void *SDLCALL SDL_Vulkan_GetVkGetInstanceProcAddr(void);
+proc vulkanGetVkGetInstanceProcAddr*(): ptr void {. 
+  importc: "SDL_Vulkan_GetVkGetInstancePorcAddr".}
+
+#extern DECLSPEC void SDLCALL SDL_Vulkan_UnloadLibrary(void);
+proc vulkanUnloadLibrary*() {.
+  importc: "SDL_Vulkan_UnloadLibrary".}
+
+#extern DECLSPEC SDL_bool SDLCALL SDL_Vulkan_GetInstanceExtensions(
+#                           SDL_Window *window,
+#                           unsigned int *pCount,
+#                           const char **pNames);
+proc vulkanGetInstanceExtensions*(window: WindowPtr, pCount: ptr cuint, pNames: cstringArray): Bool32 {.
+  importc: "SDL_Vulkan_GetInstanceExtensions".}
+
+#extern DECLSPEC SDL_bool SDLCALL SDL_Vulkan_CreateSurface(
+#                       SDL_Window *window,
+#                       VkInstance instance,
+#                       VkSurfaceKHR* surface);
+proc vulkanCreateSurface*(window: WindowPtr, instance: VulkanInstance, surface: ptr VulkanSurface): Bool32 {.
+  importc: "SDL_Vulkan_CreateSurface".}
+
+#extern DECLSPEC void SDLCALL SDL_Vulkan_GetDrawableSize(SDL_Window * window,
+#                                                       int *w, int *h);
+proc vulkanGetDrawableSize*(window: WindowPtr, w, h: ptr cint) {.
+  importc: "SDL_Vulkan_GetDrawableSize".}
 
 ##SDL_keyboard.h:
 proc getKeyboardFocus*: WindowPtr {.importc: "SDL_GetKeyboardFocus".}
