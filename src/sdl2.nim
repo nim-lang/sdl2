@@ -1348,7 +1348,7 @@ proc vulkanLoadLibrary*(path: cstring):cint {.
   importc: "SDL_Vulkan_LoadLibrary".}
 
 #extern DECLSPEC void *SDLCALL SDL_Vulkan_GetVkGetInstanceProcAddr(void);
-proc vulkanGetVkGetInstanceProcAddr*(): ptr void {. 
+proc vulkanGetVkGetInstanceProcAddr*(): pointer {.
   importc: "SDL_Vulkan_GetVkGetInstancePorcAddr".}
 
 #extern DECLSPEC void SDLCALL SDL_Vulkan_UnloadLibrary(void);
