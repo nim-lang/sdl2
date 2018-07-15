@@ -1120,7 +1120,14 @@ proc setClipRect*(surface: SurfacePtr; rect: ptr Rect): Bool32 {.
   importc: "SDL_SetClipRect".}
 proc getClipRect*(surface: SurfacePtr; rect: ptr Rect) {.
   importc: "SDL_GetClipRect".}
-
+  
+proc rendererSetClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
+  importc: "SDL_RenderSetClipRect".}
+proc rendererGetClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
+  importc: "SDL_RenderGetClipRect".}
+proc renderIsClipEnabled*(renderer: RendererPtr): cint {.
+  importc: "SDL_RenderIsClipEnabled".}
+  
 proc convertSurface*(src: SurfacePtr; fmt: ptr PixelFormat;
   flags: cint): SurfacePtr {.importc: "SDL_ConvertSurface".}
 proc convertSurfaceFormat*(src: SurfacePtr; pixel_format,
