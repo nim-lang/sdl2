@@ -610,7 +610,7 @@ template SDL_WINDOWPOS_CENTERED_DISPLAY*(X: cint): cint = cint(SDL_WINDOWPOS_CEN
 const SDL_WINDOWPOS_CENTERED*: cint = SDL_WINDOWPOS_CENTERED_DISPLAY(0)
 template SDL_WINDOWPOS_ISCENTERED*(X: cint): bool = (((X) and 0xFFFF0000) == SDL_WINDOWPOS_CENTERED_MASK)
 
-template evConv(name, name2, ptype: untyped; valid: set[EventType]): untyped =
+template evConv(name, name2, ptype: untyped; valid: openarray[EventType]): untyped =
   proc `name`* (event: Event): ptype =
     assert event.kind in valid
     return cast[ptype](unsafeAddr event)
@@ -618,33 +618,33 @@ template evConv(name, name2, ptype: untyped; valid: set[EventType]): untyped =
     assert event.kind in valid
     return cast[ptype](unsafeAddr event)
 
-evConv(evWindow, window, WindowEventPtr, {WindowEvent})
-evConv(evKeyboard, key, KeyboardEventPtr, {KeyDown, KeyUP})
-evConv(evTextEditing, edit, TextEditingEventPtr, {TextEditing})
-evConv(evTextInput, text, TextInputEventPtr, {TextInput})
+evConv(evWindow, window, WindowEventPtr, [WindowEvent])
+evConv(evKeyboard, key, KeyboardEventPtr, [KeyDown, KeyUP])
+evConv(evTextEditing, edit, TextEditingEventPtr, [TextEditing])
+evConv(evTextInput, text, TextInputEventPtr, [TextInput])
 
-evConv(evMouseMotion, motion, MouseMotionEventPtr, {MouseMotion})
-evConv(evMouseButton, button, MouseButtonEventPtr, {MouseButtonDown, MouseButtonUp})
-evConv(evMouseWheel, wheel, MouseWheelEventPtr, {MouseWheel})
+evConv(evMouseMotion, motion, MouseMotionEventPtr, [MouseMotion])
+evConv(evMouseButton, button, MouseButtonEventPtr, [MouseButtonDown, MouseButtonUp])
+evConv(evMouseWheel, wheel, MouseWheelEventPtr, [MouseWheel])
 
-evConv(EvJoyAxis, jaxis, JoyAxisEventPtr, {JoyAxisMotion})
-evConv(EvJoyBall, jball, JoyBallEventPtr, {JoyBallMotion})
-evConv(EvJoyHat, jhat, JoyHatEventPtr, {JoyHatMotion})
-evConv(EvJoyButton, jbutton, JoyButtonEventPtr, {JoyButtonDown, JoyButtonUp})
-evConv(EvJoyDevice, jdevice, JoyDeviceEventPtr, {JoyDeviceAdded, JoyDeviceRemoved})
+evConv(EvJoyAxis, jaxis, JoyAxisEventPtr, [JoyAxisMotion])
+evConv(EvJoyBall, jball, JoyBallEventPtr, [JoyBallMotion])
+evConv(EvJoyHat, jhat, JoyHatEventPtr, [JoyHatMotion])
+evConv(EvJoyButton, jbutton, JoyButtonEventPtr, [JoyButtonDown, JoyButtonUp])
+evConv(EvJoyDevice, jdevice, JoyDeviceEventPtr, [JoyDeviceAdded, JoyDeviceRemoved])
 
-evConv(EvControllerAxis, caxis, ControllerAxisEventPtr, {ControllerAxisMotion})
-evConv(EvControllerButton, cbutton, ControllerButtonEventPtr, {ControllerButtonDown, ControllerButtonUp})
-evConv(EvControllerDevice, cdevice, ControllerDeviceEventPtr, {ControllerDeviceAdded, ControllerDeviceRemoved})
+evConv(EvControllerAxis, caxis, ControllerAxisEventPtr, [ControllerAxisMotion])
+evConv(EvControllerButton, cbutton, ControllerButtonEventPtr, [ControllerButtonDown, ControllerButtonUp])
+evConv(EvControllerDevice, cdevice, ControllerDeviceEventPtr, [ControllerDeviceAdded, ControllerDeviceRemoved])
 
-evConv(EvTouchFinger, tfinger, TouchFingerEventPtr, {FingerMotion, FingerDown, FingerUp})
-evConv(EvMultiGesture, mgesture, MultiGestureEventPtr, {MultiGesture})
-evConv(EvDollarGesture, dgesture, DollarGestureEventPtr, {DollarGesture})
+evConv(EvTouchFinger, tfinger, TouchFingerEventPtr, [FingerMotion, FingerDown, FingerUp])
+evConv(EvMultiGesture, mgesture, MultiGestureEventPtr, [MultiGesture])
+evConv(EvDollarGesture, dgesture, DollarGestureEventPtr, [DollarGesture])
 
-evConv(evDropFile, drop, DropEventPtr, {DropFile})
-evConv(evQuit, quit, QuitEventPtr, {QuitEvent})
+evConv(evDropFile, drop, DropEventPtr, [DropFile])
+evConv(evQuit, quit, QuitEventPtr, [QuitEvent])
 
-evConv(evUser, user, UserEventPtr, {UserEvent, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5})
+evConv(evUser, user, UserEventPtr, [UserEvent, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5])
 #evConv(EvSysWM, syswm, SysWMEventPtr, {SysWMEvent})
 
 {.deprecated: [EvWindow: evWindow].}
