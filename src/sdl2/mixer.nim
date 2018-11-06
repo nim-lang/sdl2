@@ -448,7 +448,7 @@ proc setDistance*(channel: cint; distance: uint8): cint {.importc: "Mix_SetDista
 #                --ryan.
 #
 
-when 0:
+when false:
   # Causes an echo effect to be mixed into a sound. (echo) is the amount
   #   of echo to mix. 0 is no echo, 255 is infinite (and probably not
   #   what you want).
