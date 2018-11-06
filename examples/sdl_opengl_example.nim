@@ -2,7 +2,7 @@
 
 import sdl2
 import opengl
-import glu
+import opengl/glu
 
 discard sdl2.init(INIT_EVERYTHING)
 
