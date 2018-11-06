@@ -42,7 +42,7 @@ mixer.closeAudio()
 sdl2.quit()
 
 # keep window open enough to hear sound, testing purposes
-Delay(1000)
+sdl2.delay(1000)
 
 destroy render
 destroy window

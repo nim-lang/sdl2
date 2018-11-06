@@ -3,34 +3,34 @@
 import sdl2, sdl2/net
 
 var
-  local: TIPaddress
-  server: TCPSocket
+  local: IpAddress
+  server: TcpSocket
 
-if net.Init() < 0:
-  quit($net.GetError())
+if net.init() < 0:
+  quit($net.getError())
 
-if ResolveHost(addr local, nil, 2000) < 0:
-  quit($net.GetError())
+if resolveHost(addr local, nil, 2000) < 0:
+  quit($net.getError())
 
-server = TCP_Open(addr local)
+server = tcpOpen(addr local)
 if server.isNil:
-  quit($net.GetError())
+  quit($net.getError())
 
 var running = true
 while running:
-  let client = server.TCP_Accept
+  let client = server.tcpAccept
   if not client.isNil:
 
-    let remote = TCP_GetPeerAddress(client)
+    let remote = tcpGetPeerAddress(client)
     if remote.isNil:
-      quit($net.GetError())
+      quit($net.getError())
     else:
-      echo "Host connected: ", ResolveIP(remote)
+      echo "Host connected: ", resolveIP(remote)
 
     var buffer: array[513,char]
     let buf = buffer[0].addr
     while true:
-      if client.TCP_Recv(buf, 512) > 0:
+      if client.tcpRecv(buf, 512) > 0:
         let s = $buf
         echo "<< ", s
         if s == "exit":
@@ -41,8 +41,7 @@ while running:
           running = false
           break
 
-    client.TCP_Close
+    client.tcpClose
 
-server.TCP_Close
-net.Quit()
-
+server.tcpClose
+net.quit()
