@@ -1,7 +1,7 @@
 import macros
 
-import unsigned, strutils
-export unsigned, strutils.`%`
+import strutils
+export strutils.`%`
 
 
 # Add for people running sdl 2.0.0
@@ -304,7 +304,7 @@ type
   WMinfo* = object
     version*: SDL_Version
     subsystem*: SysWMType
-    padding*: array[0.. <24, byte] ## if the low-level stuff is important to you check \
+    padding*: array[24, byte] ## if the low-level stuff is important to you check \
       ## SDL_syswm.h and cast padding to the right type
 
 const ## WindowFlags
@@ -1120,14 +1120,14 @@ proc setClipRect*(surface: SurfacePtr; rect: ptr Rect): Bool32 {.
   importc: "SDL_SetClipRect".}
 proc getClipRect*(surface: SurfacePtr; rect: ptr Rect) {.
   importc: "SDL_GetClipRect".}
-  
+
 proc setClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   importc: "SDL_RenderSetClipRect".}
 proc getClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   importc: "SDL_RenderGetClipRect".}
 proc isClipEnabled*(renderer: RendererPtr): cint {.
   importc: "SDL_RenderIsClipEnabled".}
-  
+
 proc convertSurface*(src: SurfacePtr; fmt: ptr PixelFormat;
   flags: cint): SurfacePtr {.importc: "SDL_ConvertSurface".}
 proc convertSurfaceFormat*(src: SurfacePtr; pixel_format,
