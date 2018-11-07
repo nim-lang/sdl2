@@ -847,7 +847,7 @@ proc quitSubSystem*(flags: uint32) {.
 proc wasInit*(flags: uint32): uint32 {.
   importc: "SDL_WasInit".}
 
-proc quit()* {.
+proc quit*() {.
   importc: "SDL_Quit".}
 
 proc getPlatform*(): cstring {.
