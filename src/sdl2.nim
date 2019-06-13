@@ -34,7 +34,7 @@ type
     WindowEvent_Maximized, WindowEvent_Restored, WindowEvent_Enter, WindowEvent_Leave,
     WindowEvent_FocusGained, WindowEvent_FocusLost, WindowEvent_Close
 
-  EventType* {.size: sizeof(cint).} = enum
+  EventType* {.size: sizeof(uint32).} = enum
     QuitEvent = 0x100, AppTerminating, AppLowMemory, AppWillEnterBackground,
     AppDidEnterBackground, AppWillEnterForeground, AppDidEnterForeground,
     WindowEvent = 0x200, SysWMEvent,
@@ -48,7 +48,8 @@ type
     DollarGesture = 0x800, DollarRecord, MultiGesture,
     ClipboardUpdate = 0x900,
     DropFile = 0x1000,
-    UserEvent = 0x8000, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5
+    AudioDeviceAdded = 0x1100, AudioDeviceRemoved = 0x1101,
+    UserEvent = 0x8000, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5,
 
 
   Event* = object
@@ -74,8 +75,8 @@ type
     windowID*: uint32
     state*: uint8
     repeat*: bool
-    pad1,pad2: byte
     keysym*: KeySym
+    pad*: array[24, byte]
   TextEditingEventPtr* = ptr TextEditingEventObj
   TextEditingEventObj* = object
     kind*: EventType
@@ -96,6 +97,7 @@ type
     which*: uint32
     state*: uint32
     x*,y*, xrel*,yrel*: int32
+    pad*: array[20, byte]
   MouseButtonEventPtr* = ptr MouseButtonEventObj
   MouseButtonEventObj* = object
     kind*: EventType
@@ -103,8 +105,9 @@ type
     which*: uint32
     button*: uint8
     state*: uint8
-    clicks*,pad2: uint8
+    clicks*: uint8
     x*,y*: cint
+    pad*: array[28, byte]
   MouseWheelEventPtr* = ptr MouseWheelEventObj
   MouseWheelEventObj* = object
     kind*: EventType
