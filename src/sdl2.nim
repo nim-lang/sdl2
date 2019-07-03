@@ -50,6 +50,7 @@ type
     DropFile = 0x1000,
     AudioDeviceAdded = 0x1100, AudioDeviceRemoved = 0x1101,
     UserEvent = 0x8000, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5,
+    LastEvent = 0xFFFF,
 
 
   Event* = object
