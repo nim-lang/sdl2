@@ -37,8 +37,9 @@ type
   EventType* {.size: sizeof(uint32).} = enum
     QuitEvent = 0x100, AppTerminating, AppLowMemory, AppWillEnterBackground,
     AppDidEnterBackground, AppWillEnterForeground, AppDidEnterForeground,
+    DisplayEvent = 0x150,
     WindowEvent = 0x200, SysWMEvent,
-    KeyDown = 0x300, KeyUp, TextEditing, TextInput,
+    KeyDown = 0x300, KeyUp, TextEditing, TextInput, KeymapChanged,
     MouseMotion = 0x400, MouseButtonDown, MouseButtonUp, MouseWheel,
     JoyAxisMotion = 0x600, JoyBallMotion, JoyHatMotion, JoyButtonDown,
     JoyButtonUp, JoyDeviceAdded, JoyDeviceRemoved,
@@ -47,8 +48,10 @@ type
     FingerDown = 0x700, FingerUp, FingerMotion,
     DollarGesture = 0x800, DollarRecord, MultiGesture,
     ClipboardUpdate = 0x900,
-    DropFile = 0x1000,
+    DropFile = 0x1000,  DropText, DropBegin, DropComplete,
     AudioDeviceAdded = 0x1100, AudioDeviceRemoved = 0x1101,
+    SensorUpdate = 0x1200,
+    RenderTargetsReset = 0x2000, RenderDeviceReset,
     UserEvent = 0x8000, UserEvent1, UserEvent2, UserEvent3, UserEvent4, UserEvent5,
     LastEvent = 0xFFFF,
 
@@ -308,7 +311,7 @@ type
   WMinfo* = object
     version*: SDL_Version
     subsystem*: SysWMType
-    padding*: array[24, byte] ## if the low-level stuff is important to you check \
+    padding*: array[64, byte] ## if the low-level stuff is important to you check \
       ## SDL_syswm.h and cast padding to the right type
 
 const ## WindowFlags
