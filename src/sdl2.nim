@@ -32,7 +32,8 @@ type
     WindowEvent_None = 0, WindowEvent_Shown, WindowEvent_Hidden, WindowEvent_Exposed,
     WindowEvent_Moved, WindowEvent_Resized, WindowEvent_SizeChanged, WindowEvent_Minimized,
     WindowEvent_Maximized, WindowEvent_Restored, WindowEvent_Enter, WindowEvent_Leave,
-    WindowEvent_FocusGained, WindowEvent_FocusLost, WindowEvent_Close
+    WindowEvent_FocusGained, WindowEvent_FocusLost, WindowEvent_Close,
+    WindowEvent_TakeFocus, WindowEvent_HitTest
 
   EventType* {.size: sizeof(uint32).} = enum
     QuitEvent = 0x100, AppTerminating, AppLowMemory, AppWillEnterBackground,
@@ -1687,7 +1688,7 @@ when defined(windows):
     ## These can be passed to EnumAdapters and EnumOutputs respectively to get the objects
     ## required to create a DX10 or DX11 device and swap chain.
 
-elif defined(iPhone):
+elif defined(iPhone) or defined(ios):
 
 
   #extern DECLSPEC int SDLCALL SDL_iPhoneSetAnimationCallback(
