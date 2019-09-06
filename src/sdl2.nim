@@ -16,6 +16,8 @@ else:
     const LibName* = "SDL2.dll"
   elif defined(macosx):
     const LibName* = "libSDL2.dylib"
+  elif defined(openbsd):
+    const LibName* = "libSDL2.so.0.6"
   else:
     const LibName* = "libSDL2.so"
 
