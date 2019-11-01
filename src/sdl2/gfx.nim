@@ -27,6 +27,8 @@
 #
 #
 
+# Docs: http://www.ferzkopp.net/Software/SDL_gfx-2.0/Docs/html/_s_d_l__gfx_primitives_8c.html
+
 import sdl2
 
 when not defined(SDL_Static):
@@ -37,7 +39,7 @@ when not defined(SDL_Static):
   else:
     const LibName = "libSDL2_gfx(|-2.0).so(|.0)"
 else:
-  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
+  static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2_gfx."
 
 const
   FPS_UPPER_LIMIT* = 200

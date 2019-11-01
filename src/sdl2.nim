@@ -895,6 +895,8 @@ proc getRenderer*(window: WindowPtr): RendererPtr {.
   importc: "SDL_GetRenderer".}
 proc getRendererInfo*(renderer: RendererPtr; info: RendererInfoPtr): cint {.
   importc: "SDL_GetRendererInfo".}
+proc getRendererOutputSize*(renderer: RendererPtr, w: ptr cint, h: ptr cint): cint {.
+  importc: "SDL_GetRendererOutputSize".}
 
 proc createTexture*(renderer: RendererPtr; format: uint32;
   access, w, h: cint): TexturePtr {.
@@ -1810,6 +1812,9 @@ proc point*[T: SomeNumber](x, y: T): Point = (x.cint, y.cint)
 proc contains*(some: Rect; point: Point): bool =
   return point.x >= some.x and point.x <= (some.x + some.w) and
           point.y >= some.y and point.y <= (some.y + some.h)
+
+const
+  HINT_RENDER_SCALE_QUALITY* = "SDL_RENDER_SCALE_QUALITY"
 
 proc setHint*(name: cstring, value: cstring): bool {.
   importc: "SDL_SetHint".}
