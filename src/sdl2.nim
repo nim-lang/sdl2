@@ -173,8 +173,8 @@ type
     timestamp*: uint32
     which*: int32
 
-  TouchID = int64
-  FingerID = int64
+  TouchID* = int64
+  FingerID* = int64
 
   TouchFingerEventPtr* = ptr TouchFingerEventObj
   TouchFingerEventObj* = object
@@ -183,6 +183,7 @@ type
     touchID*: TouchID
     fingerID*: FingerID
     x*,y*,dx*,dy*,pressure*: cfloat
+    pad*: array[24, byte]
   MultiGestureEventPtr* = ptr MultiGestureEventObj
   MultiGestureEventObj* = object
     kind*: EventType
@@ -190,6 +191,11 @@ type
     touchID*: TouchID
     dTheta*,dDist*,x*,y*: cfloat
     numFingers*: uint16
+
+  Finger* = object
+    id*: FingerID
+    x*,y*: cfloat
+    pressure*: cfloat
 
   GestureID = int64
   DollarGestureEventPtr* = ptr DollarGestureEventObj
@@ -1674,6 +1680,9 @@ proc getClipboardText*(): cstring {.importc: "SDL_GetClipboardText".}
 proc hasClipboardText*(): Bool32 {.importc: "SDL_HasClipboardText".}
 proc freeClipboardText*(text: cstring) {.importc: "SDL_free".}
 
+
+proc getNumTouchFingers*(id: TouchID): cint {.importc: "SDL_GetNumTouchFingers".}
+proc getTouchFinger*(id: TouchID, index: cint): ptr Finger {.importc: "SDL_GetTouchFinger".}
 
 # SDL_system.h
 when defined(windows):
