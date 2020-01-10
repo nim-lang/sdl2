@@ -1,5 +1,5 @@
 ## Bare-bones SDL2 example
-import sdl2, sdl2/gfx
+import sdl2
 
 discard sdl2.init(INIT_EVERYTHING)
 
@@ -13,8 +13,6 @@ render = createRenderer(window, -1, Renderer_Accelerated or Renderer_PresentVsyn
 var
   evt = sdl2.defaultEvent
   runGame = true
-  fpsman: FpsManager
-fpsman.init
 
 while runGame:
   while pollEvent(evt):
@@ -22,14 +20,9 @@ while runGame:
       runGame = false
       break
 
-  let dt = fpsman.getFramerate() / 1000
-
   render.setDrawColor 0,0,0,255
   render.clear
-
   render.present
-  fpsman.delay
 
 destroy render
 destroy window
-
