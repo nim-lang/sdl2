@@ -191,6 +191,56 @@ type
 
   AudioFilter* = proc (cvt: ptr AudioCVT; format: AudioFormat){.cdecl.}
 
+type
+  AudioStream = object
+    # The AudioStream object. SDL2 doesn't make the contents of this object
+    # visible to users of the C API, so we don't make it visible either.
+    cvt_before_resampling*: AudioCVT
+    cvt_after_resampling*: AudioCVT
+    queue*: pointer
+    first_run*: Bool32
+    staging_buffer*: ptr uint8
+    staging_buffer_size*: cint
+    staging_buffer_filled*: cint
+    work_buffer_base*: ptr uint8  # maybe unaligned pointer from SDL_realloc().
+    work_buffer_len*: cint
+    src_sample_frame_size*: cint
+    src_format*: AudioFormat
+    src_channels*: uint8
+    src_rate*: cint
+    dst_sample_frame_size*: cint
+    dst_format*: AudioFormat
+    dst_channels*: uint8
+    dst_rate*: cint
+    rate_incr*: cdouble
+    pre_resample_channels*: uint8
+    packetlen*: cint
+    resampler_padding_samples*: cint
+    resampler_padding*: ptr cfloat
+    resampler_state*: pointer
+    resampler_func*: proc(stream: AudioStreamPtr, inbuf: pointer, inbuflen: cint, outbuf: pointer, outbuflen: cint): cint
+    reset_resampler_func*: proc(stream: AudioStreamPtr)
+    cleanup_resampler_func*: proc(stream: AudioStreamPtr)
+  
+  AudioStreamPtr* = ptr AudioStream
+    ## (Available since SDL 2.0.7)
+    ## A pointer to an `SDL_AudioStream`_. Audio streams were added to SDL2
+    ## in version 2.0.7, to provide an easier-to-use alternative to 
+    ## `SDL_AudioCVT`_.
+    ##
+    ## .. _SDL_AudioStream: https://wiki.libsdl.org/Tutorials/AudioStream
+    ## .. _SDL_AudioCVT: https://wiki.libsdl.org/SDL_AudioCVT
+    ##
+    ## See Also:
+    ## * `newAudioStream proc<#newAudioStream,AudioFormat,uint8,cint,AudioFormat,uint8,cint>`_
+    ## * `newAudioStream proc<#newAudioStream,AudioSpec,AudioSpec>`_
+    ## * `put proc<#put,AudioStreamPtr,pointer,cint>`_
+    ## * `get proc<#get,AudioStreamPtr,pointer,cint>`_
+    ## * `available proc<#available,AudioStreamPtr>`_
+    ## * `flush proc<#flush,AudioStreamPtr>`_
+    ## * `clear proc<#clear,AudioStreamPtr>`_
+    ## * `destroy proc<#destroy,AudioStreamPtr>`_
+
 when false:
   #*
   #   A structure to hold a set of audio conversion filters and buffers.
@@ -517,6 +567,110 @@ proc closeAudio*() {.
 proc closeAudioDevice*(dev: AudioDeviceID) {.
   importc: "SDL_CloseAudioDevice".}
 # Ends C function definitions when using C++
+
+
+proc newAudioStream*(
+  src_format: AudioFormat;
+  src_channels: uint8;
+  src_rate: cint;
+  dst_format: AudioFormat;
+  dst_channels: uint8;
+  dst_rate: cint): AudioStreamPtr {.importc: "SDL_NewAudioStream".}
+  ## (Available since SDL 2.0.7)
+  ## Create a new audio stream. return 0 on success, or -1
+  ## on error.
+  ## 
+  ## Parameters:
+  ## * `src_format` The format of the source audio
+  ## * `src_channels` The number of channels of the source audio
+  ## * `src_rate` The sampling rate of the source audio
+  ## * `dst_format` The format of the desired audio output
+  ## * `dst_channels` The number of channels of the desired audio output
+  ## * `dst_rate The` sampling rate of the desired audio output
+  ##
+  ## See also:
+  ## * `AudioStreamPtr type<#AudioStreamPtr>`_
+  ## * `newAudioStream proc<#newAudioStream,AudioSpec,AudioSpec>`_
+
+proc newAudioStream*(srcSpec, destSpec: AudioSpec): AudioStreamPtr =
+  ## (Available since SDL 2.0.7)
+  ## Create a new audio stream that converts from `srcSpec` to `destSpec`.
+  ##
+  ## See also:
+  ## * `AudioStreamPtr type<#AudioStreamPtr>`_
+  ## * `newAudioStream proc<#newAudioStream,AudioFormat,uint8,cint,AudioFormat,uint8,cint>`_
+  newAudioStream(
+    srcSpec.format, srcSpec.channels, srcSpec.freq,
+    destSpec.format, destSpec.channels, destSpec.freq)
+
+proc put*(
+  stream: AudioStreamPtr,
+  buf: pointer,
+  len: cint): cint {.importc: "SDL_AudioStreamPut".}
+  ## (Available since SDL 2.0.7)
+  ## Add data to be converted/resampled to the stream. Returns 0 on success, or -1 on error.
+  ## 
+  ## Parameters:
+  ## * `stream` The stream the audio data is being added to
+  ## * `buf` A pointer to the audio data to add
+  ## * `len` The number of bytes to write to the stream
+  ##
+  ## See also:
+  ## * `AudioStreamPtr type<#AudioStreamPtr>`_
+
+proc get*(
+  stream: AudioStreamPtr,
+  buf: pointer,
+  len: cint): cint {.importc: "SDL_AudioStreamGet".}
+  ## (Available since SDL 2.0.7)
+  ## Get converted/resampled data from the stream.
+  ## Returns the number of bytes read from the stream, or -1 on error.
+  ## 
+  ## Parameters:
+  ## * `stream` The stream the audio is being requested from
+  ## * `buf` A buffer to fill with audio data
+  ## * `len` The maximum number of bytes to fill
+  ##
+  ## See also:
+  ## * `AudioStreamPtr type<#AudioStreamPtr>`_
+
+proc available*(stream: AudioStreamPtr): cint {.importc: "SDL_AudioStreamAvailable".}
+  ## (Available since SDL 2.0.7)
+  ## Get the number of converted/resampled bytes available (BYTES, not samples!).
+  ## The stream may be buffering data behind the scenes until it has enough to
+  ## resample correctly, so this number might be lower than what you expect, or even
+  ## be zero. Add more data or flush the stream if you need the data now.
+  ##
+  ## See also:
+  ## * `AudioStreamPtr type<#AudioStreamPtr>`_
+
+proc flush*(stream: AudioStreamPtr): cint {.importc: "SDL_AudioStreamFlush".}
+  ## (Available since SDL 2.0.7)
+  ## Tell the stream that you're done sending data, and anything being buffered
+  ## should be converted/resampled and made available immediately. Returns 0
+  ## on success, -1 on error.
+  ##
+  ## It is legal to add more data to a stream after flushing, but there will
+  ## be audio gaps in the output. Generally this is intended to signal the
+  ## end of input, so the complete output becomes available.
+  ##
+  ## See also:
+  ## * `AudioStreamPtr type<#AudioStreamPtr>`_
+
+proc clear*(stream: AudioStreamPtr) {.importc: "SDL_AudioStreamClear".}
+  ## (Available since SDL 2.0.7)
+  ## Clear any pending data in the stream without converting it.
+  ##
+  ## See also:
+  ## * `AudioStreamPtr type<#AudioStreamPtr>`_
+
+proc destroy*(stream: AudioStreamPtr) {.importc: "SDL_FreeAudioStream".}
+  ## (Available since SDL 2.0.7)
+  ## Free an audio stream.
+  ##
+  ## See also:
+  ## * `AudioStreamPtr type<#AudioStreamPtr>`_
+
 
 # vi: set ts=4 sw=4 expandtab:
 when not defined(SDL_Static):
