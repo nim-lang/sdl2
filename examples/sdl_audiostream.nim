@@ -29,8 +29,7 @@ proc main() =
     (version.patch < 7'u8):
     quit "your version of SDL2 does not support SDL_AudioStream!"
 
-
-
+  # ask SDL how many output devices are available
   let ndevices = getNumAudioDevices(0.cint).cint
   if ndevices == 0:
     quit "no devices!"
