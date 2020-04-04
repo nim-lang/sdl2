@@ -90,12 +90,14 @@ type
     windowID*: uint32
     text*: array[SDL_TEXTEDITINGEVENT_TEXT_SIZE, char]
     start*,length*: int32
+    pad*: array[8, byte]
   TextInputEventPtr* = ptr TextInputEventObj
   TextInputEventObj* = object
     kind*: EventType
     timestamp*: uint32
     windowID*: uint32
     text*: array[SDL_TEXTINPUTEVENT_TEXT_SIZE,char]
+    pad*: array[24, byte]
   MouseMotionEventPtr* = ptr MouseMotionEventObj
   MouseMotionEventObj* =  object
     kind*: EventType
