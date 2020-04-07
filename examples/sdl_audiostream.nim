@@ -105,6 +105,7 @@ proc main() =
   let nBytesPerSample = hardwareSpec.channels * (SDL_AUDIO_BITSIZE(hardwareSpec.format.uint32) div 8).uint8
   
   # make a buffer that's just one of those.
+
   # use a shared allocation! another thread (the audio output thread)
   # is going to be playing around with this memory!
   var obuf = allocShared(nBytesPerSample)
