@@ -569,7 +569,7 @@ type
     refcount*: cint
     next*: ptr PixelFormat
 
-  BlitMapPtr*{.pure.} = ptr object ##couldnt find SDL_BlitMap ?
+  BlitMapPtr* {.pure.} = ptr object ##couldnt find SDL_BlitMap ?
 
   SurfacePtr* = ptr Surface
   Surface* {.pure, final.} = object
