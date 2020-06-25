@@ -13,7 +13,7 @@ else:
 import sdl2
 
 type
-  FontPtr* = ptr object{.pure.}
+  FontPtr* {.pure.} = ptr object
 
 # Set up for C function definitions, even when using C++
 # Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
