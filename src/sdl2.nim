@@ -24,12 +24,6 @@ else:
 {.pop.}
 
 
-when not defined(android) and not defined(ios):
-  type csize_t_const* = csize_t
-else:
-  type csize_t_const* = csize
-
-
 include sdl2/private/keycodes
 
 const
@@ -716,9 +710,9 @@ type
   RWops* {.pure, final.} = object
     size*: proc (context: RWopsPtr): int64 {.cdecl, tags: [], raises: [].}
     seek*: proc (context: RWopsPtr; offset: int64; whence: cint): int64 {.cdecl, tags: [], raises: [].}
-    read*: proc (context: RWopsPtr; destination: pointer; size, maxnum: csize_t_const): csize_t_const {.cdecl, tags: [ReadIOEffect], raises: [].}
-    write*: proc (context: RWopsPtr; source: pointer; size: csize_t_const;
-                  num: csize_t_const): csize_t_const {.cdecl, tags: [WriteIOEffect], raises: [].}
+    read*: proc (context: RWopsPtr; destination: pointer; size, maxnum: csize_t): csize_t {.cdecl, tags: [ReadIOEffect], raises: [].}
+    write*: proc (context: RWopsPtr; source: pointer; size: csize_t;
+                  num: csize_t): csize_t {.cdecl, tags: [WriteIOEffect], raises: [].}
     close*: proc (context: RWopsPtr): cint {.cdecl, tags: [WriteIOEffect].}
     kind*: cint
     mem*: Mem
@@ -1191,13 +1185,13 @@ proc readLE32*(src: RWopsPtr): uint32 {.importc: "SDL_ReadLE32".}
 proc readBE32*(src: RWopsPtr): uint32 {.importc: "SDL_ReadBE32".}
 proc readLE64*(src: RWopsPtr): uint64 {.importc: "SDL_ReadLE64".}
 proc readBE64*(src: RWopsPtr): uint64 {.importc: "SDL_ReadBE64".}
-proc writeU8*(dst: RWopsPtr; value: uint8): csize_t_const {.importc: "SDL_WriteU8".}
-proc writeLE16*(dst: RWopsPtr; value: uint16): csize_t_const {.importc: "SDL_WriteLE16".}
-proc writeBE16*(dst: RWopsPtr; value: uint16): csize_t_const {.importc: "SDL_WriteBE16".}
-proc writeLE32*(dst: RWopsPtr; value: uint32): csize_t_const {.importc: "SDL_WriteLE32".}
-proc writeBE32*(dst: RWopsPtr; value: uint32): csize_t_const {.importc: "SDL_WriteBE32".}
-proc writeLE64*(dst: RWopsPtr; value: uint64): csize_t_const {.importc: "SDL_WriteLE64".}
-proc writeBE64*(dst: RWopsPtr; value: uint64): csize_t_const {.importc: "SDL_WriteBE64".}
+proc writeU8*(dst: RWopsPtr; value: uint8): csize_t {.importc: "SDL_WriteU8".}
+proc writeLE16*(dst: RWopsPtr; value: uint16): csize_t {.importc: "SDL_WriteLE16".}
+proc writeBE16*(dst: RWopsPtr; value: uint16): csize_t {.importc: "SDL_WriteBE16".}
+proc writeLE32*(dst: RWopsPtr; value: uint32): csize_t {.importc: "SDL_WriteLE32".}
+proc writeBE32*(dst: RWopsPtr; value: uint32): csize_t {.importc: "SDL_WriteBE32".}
+proc writeLE64*(dst: RWopsPtr; value: uint64): csize_t {.importc: "SDL_WriteLE64".}
+proc writeBE64*(dst: RWopsPtr; value: uint64): csize_t {.importc: "SDL_WriteBE64".}
 
 proc showMessageBox*(messageboxdata: ptr MessageBoxData;
   buttonid: var cint): cint {.importc: "SDL_ShowMessageBox".}
@@ -1846,9 +1840,9 @@ proc size* (ctx:RWopsPtr): int64 {.inline.} =
   ctx.size(ctx)
 proc seek* (ctx:RWopsPtr; offset:int64; whence:cint): int64 {.inline.} =
   ctx.seek(ctx,offset,whence)
-proc read* (ctx:RWopsPtr; `ptr`: pointer; size,maxnum:csize_t_const): csize_t_const{.inline.} =
+proc read* (ctx:RWopsPtr; `ptr`: pointer; size,maxnum:csize_t): csize_t{.inline.} =
   ctx.read(ctx, `ptr`, size, maxnum)
-proc write* (ctx:RWopsPtr; `ptr`:pointer; size,num:csize_t_const): csize_t_const{.inline.} =
+proc write* (ctx:RWopsPtr; `ptr`:pointer; size,num:csize_t): csize_t{.inline.} =
   ctx.write(ctx, `ptr`, size, num)
 proc close* (ctx:RWopsPtr): cint {.inline.} =
   ctx.close(ctx)
