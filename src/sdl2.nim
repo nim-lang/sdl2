@@ -887,7 +887,7 @@ proc getPrefPath*(org, app: cstring): cstring {.
 
 
 proc getNumRenderDrivers*(): cint {.
-  importc: "SDL_GetNumRenderDriver".}
+  importc: "SDL_GetNumRenderDrivers".}
 proc getRenderDriverInfo*(index: cint; info: var RendererInfo): SDL_Return {.
   importc: "SDL_GetRenderDriverInfo".}
 proc createWindowAndRenderer*(width, height: cint; window_flags: uint32;
