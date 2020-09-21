@@ -73,8 +73,9 @@ type
     timestamp*: uint32
     windowID*: uint32
     event*: WindowEventID
-    pad*: array[56-21, byte]
+    pad1,pad2,pad3: uint8
     data1*, data2*: cint
+    pad*: array[56-24, byte]
   KeyboardEventPtr* = ptr KeyboardEventObj
   KeyboardEventObj* = object
     kind*: EventType
