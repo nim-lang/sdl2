@@ -940,6 +940,9 @@ proc getTextureBlendMode*(texture: TexturePtr;
 
 proc updateTexture*(texture: TexturePtr; rect: ptr Rect; pixels: pointer;
   pitch: cint): SDL_Return {.importc: "SDL_UpdateTexture", discardable.}
+proc updateYUVTexture*(texture: TexturePtr; rect: ptr Rect; Yplane: pointer;
+  Ypitch: cint; Uplane: pointer; Upitch: cint; Vplane: pointer; Vpitch: cint): SDL_Return {.
+  importc: "SDL_UpdateYUVTexture", discardable.}
 
 proc lockTexture*(texture: TexturePtr; rect: ptr Rect; pixels: ptr pointer;
   pitch: ptr cint): SDL_Return {.importc: "SDL_LockTexture", discardable.}
