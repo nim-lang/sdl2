@@ -125,6 +125,7 @@ type
     which*: uint32
     x*,y*: cint
     direction*: MouseWheelDirection
+    pad*: array[28, byte]
   JoyAxisEventPtr* = ptr JoyAxisEventObj
   JoyAxisEventObj* = object
     kind*: EventType
