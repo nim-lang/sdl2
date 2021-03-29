@@ -440,6 +440,22 @@ proc getQueuedAudioSize*(dev: AudioDeviceID): uint32 {.
 #
 proc queueAudio*(dev: AudioDeviceID, data: pointer, len: uint32): cint {.
   importc: "SDL_QueueAudio".}
+  
+  
+  #*
+#   \brief Use this function to dequeue audio on non-callback devices.
+#
+#   \param dev  the device ID to which we will queue audio
+#   \param data the data to queue to the device for later playback
+#   \param len  the number of bytes (not samples!) to which (data) points
+#
+#   \return 0 on success or a negative error code on failure; call SDL_GetError() for more information.
+#
+#   \sa SDL_DequeueAudio()
+#
+  
+proc dequeueAudio*(dev: AudioDeviceID, data: pointer, len: uint32): cint {.
+  importc: "SDL_DequeueAudio".}
 
 # @}
 # Audio State
