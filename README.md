@@ -4,13 +4,22 @@ This package contains the bindings for SDL2 to Nim.
 # Pre-requisites
 You must install the SDL2 C libraries before these Nim bindings can be used.
 
-## macOS with Homebrew
+## macOS 
+
+#### Homebrew
 If you don't already have Homebrew installed, install it from [the Homebrew site](https://brew.sh/).
 
 Install the SDL2 C libraries:
 
 ```bash
 brew install sdl2{,_gfx,_image,_mixer,_net,_ttf}
+```
+
+#### MacPorts
+If you don't already have Macports installed, install it from [the Macports site](https://www.macports.org).
+
+```bash
+sudo port install libsdl2 libsdl2_gfx libsdl2_image libsdl2_mixer libsdl2_ttf libsdl2_net
 ```
 
 ## Linux
