@@ -18,6 +18,8 @@ else:
     const LibName* = "libSDL2.dylib"
   elif defined(openbsd):
     const LibName* = "libSDL2.so.0.6"
+  elif defined(haiku):
+    const LibName* = "libSDL2-2.0.so.0"
   else:
     const LibName* = "libSDL2.so"
 
