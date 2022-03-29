@@ -1,3 +1,6 @@
+## A simple library to load images of various formats as SDL surfaces.
+
+
 import sdl2
 
 when not defined(SDL_Static):
@@ -17,36 +20,48 @@ const
   IMG_INIT_WEBP* = 0x00000008
 
 when not defined(SDL_Static):
-  {.push callConv:cdecl, dynlib: LibName.}
+  {.push callConv: cdecl, dynlib: LibName.}
 
 proc linkedVersion*(): ptr SDL_version {.importc: "IMG_Linked_Version".}
+  ## Gets the version of the dynamically linked image library.
 
 proc init*(flags: cint = IMG_INIT_JPG or IMG_INIT_PNG): cint {.importc: "IMG_Init".}
   ## It returns the flags successfully initialized, or 0 on failure.
-  ## This is completely different than SDL_Init() -_-
+  ## This is completely different than sdl2.init() -_-
 
 proc quit*() {.importc: "IMG_Quit".}
-# Load an image from an SDL data source.
-#   The 'type' may be one of: "BMP", "GIF", "PNG", etc.
-#
-#   If the image format supports a transparent pixel, SDL will set the
-#   colorkey for the surface.  You can enable RLE acceleration on the
-#   surface afterwards by calling:
-# SDL_SetColorKey(image, SDL_RLEACCEL, image->format->colorkey);
-#
-proc loadTyped_RW*(src: RWopsPtr; freesrc: cint; `type`: cstring): SurfacePtr {.importc: "IMG_LoadTyped_RW".}
+  ## Unloads libraries loaded with `init()`.
+
+proc loadTyped_RW*(src: RWopsPtr; freesrc: cint;
+                  `type`: cstring): SurfacePtr {.importc: "IMG_LoadTyped_RW".}
+  ## Load an image from an SDL data source.
+  ##
+  ## `kind` may be one of: `"BMP"`, `"GIF"`, `"PNG"`, etc.
+  ##
+  ## If the image format supports a transparent pixel, SDL will set the
+  ## colorkey for the surface.  You can enable RLE acceleration on the
+  ## surface afterwards by calling:
+  ##
+  ## .. code-block:: nim
+  ##   setColorKey(image, SDL_RLEACCEL, image.format.colorkey)
+
 # Convenience functions
 proc load*(file: cstring): SurfacePtr {.importc: "IMG_Load".}
-proc load_RW*(src: RWopsPtr; freesrc: cint): SurfacePtr {.importc: "IMG_Load_RW".}
-  ##Load an image directly into a render texture.
-#
-proc loadTexture*(renderer: RendererPtr; file: cstring): TexturePtr {.importc: "IMG_LoadTexture".}
-proc loadTexture_RW*(renderer: RendererPtr; src: RWopsPtr;
-                     freesrc: cint): TexturePtr {.importc: "IMG_LoadTexture_RW".}
-proc loadTextureTyped_RW*(renderer: RendererPtr; src: RWopsPtr;
-                          freesrc: cint; `type`: cstring): TexturePtr {.importc: "IMG_LoadTextureTyped_RW".}
+proc load_RW*(src: RWopsPtr;
+              freesrc: cint): SurfacePtr {.importc: "IMG_Load_RW".}
+  ## Load an image directly into a render texture.
 
-#discard """
+proc loadTexture*(renderer: RendererPtr;
+                  file: cstring): TexturePtr {.importc: "IMG_LoadTexture".}
+proc loadTexture_RW*(renderer: RendererPtr; src: RWopsPtr;
+                     freesrc: cint): TexturePtr {.
+  importc: "IMG_LoadTexture_RW".}
+proc loadTextureTyped_RW*(renderer: RendererPtr;
+                          src: RWopsPtr;
+                          freesrc: cint;
+                          `type`: cstring): TexturePtr {.
+  importc: "IMG_LoadTextureTyped_RW".}
+
 # Functions to detect a file type, given a seekable source
 proc isICO*(src: RWopsPtr): cint {.importc: "IMG_isICO".}
 proc isCUR*(src: RWopsPtr): cint {.importc: "IMG_isCUR".}
@@ -81,7 +96,6 @@ proc loadWEBP_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadWEBP_RW".}
 proc readXPMFromArray*(xpm: cstringArray): SurfacePtr {.importc: "IMG_ReadXPMFromArray".}
 # Saving functions
 proc savePNG*(surface: SurfacePtr, file: cstring): cint {.importc: "IMG_SavePNG".}
-#"""
 
 when not defined(SDL_Static):
   {.pop.}

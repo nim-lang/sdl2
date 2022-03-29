@@ -1,6 +1,3 @@
-import "../sdl2"
-
-
 discard """ Simple DirectMedia Layer
 Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
@@ -20,36 +17,34 @@ freely, subject to the following restrictions:
    misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 
-
-
-\file SDL_joystick.h
-
-Include file for SDL joystick event handling
-
-The term "device_index" identifies currently plugged in joystick devices between 0 and SDL_NumJoysticks, with the exact joystick
- behind a device_index changing as joysticks are plugged and unplugged.
-
-The term "instance_id" is the current instantiation of a joystick device in the system, if the joystick is removed and then re-inserted
- then it will get a new instance_id, instance_id's are monotonically increasing identifiers of a joystick plugged in.
-
-The term JoystickGUID is a stable 128-bit identifier for a joystick device that does not change over time, it identifies class of
- the device (a X360 wired controller for example). This identifier is platform dependent.
-
 """
 
-#*
-#   \file SDL_joystick.h
-#
-#   In order to use these functions, SDL_Init() must have been called
-#   with the ::SDL_INIT_JOYSTICK flag.  This causes SDL to scan the system
-#   for joysticks, and load appropriate drivers.
-#
-#   If you would like to receive joystick updates while the application
-#   is in the background, you should set the following hint before calling
-#   SDL_Init(): SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS
-#
+## Include file for SDL joystick event handling
+##
+## The term "device_index" identifies currently plugged in joystick devices
+## between 0 and SDL_NumJoysticks, with the exact joystick behind a 
+## device_index changing as joysticks are plugged and unplugged.
+##
+## The term "instance_id" is the current instantiation of a joystick device in
+## the system, if the joystick is removed and then re-inserted then it will get
+## a new instance_id, instance_id's are monotonically increasing identifiers of
+## a joystick plugged in.
+##
+## The term JoystickGUID is a stable 128-bit identifier for a joystick device
+## that does not change over time, it identifies class of the device 
+## (a X360 wired controller for example). This identifier is platform dependent.
+##
+## In order to use these functions, `init()` must have been called with
+## the `INIT_JOYSTICK` flag. This causes SDL to scan the system for joysticks,
+## and load appropriate drivers.
+##
+## If you would like to receive joystick updates while the application
+## is in the background, you should set the following hint before calling
+## `init()`: `SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS`
+import "../sdl2"
 
-# The joystick structure used to identify an SDL joystick#
+
+# The joystick structure used to identify an SDL joystick
 type
   Joystick* = object
   JoystickPtr* = ptr Joystick
@@ -59,213 +54,244 @@ type
   JoystickGuid* = object
     data: array[16, uint8]
   JoystickID* = int32
+    ## This is a unique ID for a joystick for the time it is connected to the
+    ## system, and is never reused for the lifetime of the application. If the
+    ## joystick is disconnected and reconnected, it will get a new ID.
+    ##
+    ## The ID value starts at `0` and increments from there.
+    ## The value `-1` is an invalid ID.
 
 when defined(SDL_Static):
   static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
 else:
   {.push callConv: cdecl, dynlib: LibName.}
 
-#  Function prototypes# /
-##
-#   Count the number of joysticks attached to the system right now
-# /
-proc numJoysticks*(): cint {.
-  importc: "SDL_NumJoysticks".}
 
-##
-#   Get the implementation dependent name of a joystick.
-#   This can be called before any joysticks are opened.
-#   If no name can be found, this function returns NULL.
-# /
+proc numJoysticks*(): cint {.importc: "SDL_NumJoysticks".}
+  ## Count the number of joysticks attached to the system right now.
+
 proc joystickNameForIndex*(device_index: cint): cstring {.
   importc: "SDL_JoystickNameForIndex".}
+  ## Get the implementation dependent name of a joystick.
+  ##
+  ## This can be called before any joysticks are opened.
+  ## If no name can be found, this procedure returns `nil`.
 
-##
-#   Open a joystick for use.
-#   The index passed as an argument refers tothe N'th joystick on the system.
-#   This index is the value which will identify this joystick in future joystick
-#   events.
-#
-#   \return A joystick identifier, or NULL if an error occurred.
-# /
 proc joystickOpen*(device_index: cint): JoystickPtr {.
   importc: "SDL_JoystickOpen".}
+  ## Open a joystick for use.
+  ##
+  ## The index passed as an argument refers to the N'th joystick on the system.
+  ## This index is not the value which will identify this joystick in future
+  ## joystick events. The joystick's instance id (`JoystickID`) will be used
+  ## there instead.
+  ##
+  ## `Return` a joystick identifier, or `nil` if an error occurred.
 
-##
-#   Return the name for this currently opened joystick.
-#   If no name can be found, this function returns NULL.
-# /
 proc joystickName*(joystick: ptr Joystick): cstring {.importc: "SDL_JoystickName".}
-proc name* (joystick: ptr Joystick): cstring {.inline.} = joystick.joystickName
+  ## `Return` the name for this currently opened joystick.
+  ## If no name can be found, this procedure returns `nil`.
 
-##
-#   Return the GUID for the joystick at this index
-# /
+proc name*(joystick: ptr Joystick): cstring {.inline.} =
+  ## `Return` the name for this currently opened joystick.
+  ## If no name can be found, this procedure returns `nil`.
+  joystick.joystickName
+
 proc joystickGetDeviceGUID*(device_index: cint): JoystickGUID {.
   importc: "SDL_JoystickGetDeviceGUID".}
+  ## Return the GUID for the joystick at this index.
+  ##
+  ## This can be called before any joysticks are opened.
 
-# *
-#   Return the GUID for this opened joystick
-#
 proc joystickGetGUID*(joystick: JoystickPtr): JoystickGUID {.
   importc: "SDL_JoystickGetGUID".}
-proc getGUID* (joystick: JoystickPtr): JoystickGUID {.inline.} = joystick.joystickGetGUID
+  ## `Return` the GUID for this opened joystick.
 
-# *
-#   Return a string representation for this guid. pszGUID must point to at least 33 bytes
-#   (32 for the string plus a NULL terminator).
-#
+proc getGUID*(joystick: JoystickPtr): JoystickGUID {.inline.} =
+  ## `Return` the GUID for this opened joystick.
+  joystick.joystickGetGUID
+
 proc joystickGetGUIDString*(guid: JoystickGUID, pszGUID: cstring, cbGUID: cint) {.
   importc: "SDL_JoystickGetGUIDString".}
+  ## `Return` a string representation for this guid.
+  ##
+  ## `pszGUID` must point to at least 33 bytes
+  ## (32 for the string plus a `nil` terminator).
 
-# *
-#   convert a string into a joystick formatted guid
-#
 proc joystickGetGUIDFromString*(pchGUID: cstring): JoystickGUID {.
   importc: "SDL_JoystickGetGUIDFromString".}
+  ## Convert a string into a joystick GUID.
 
-# *
-#   Returns SDL_TRUE if the joystick has been opened and currently connected, or SDL_FALSE if it has not.
-#
 proc joystickGetAttached*(joystick: JoystickPtr): Bool32 {.
   importc: "SDL_JoystickGetAttached".}
-proc getAttached* (joystick: JoystickPtr): Bool32 {.inline.} = joystick.joystickGetAttached
+  ## `Return` `true` if the joystick has been opened and currently
+  ## connected, or `false` if it has not.
 
-# *
-#   Get the instance ID of an opened joystick or -1 if the joystick is invalid.
-#
+proc getAttached* (joystick: JoystickPtr): Bool32 {.inline.} =
+  ## `Return` `true` if the joystick has been opened and currently
+  ## connected, or `false` if it has not.
+  joystick.joystickGetAttached
+
 proc joystickInstanceID*(joystick: JoystickPtr): JoystickID {.
   importc: "SDL_JoystickInstanceID".}
-proc instanceID* (joystick: JoystickPtr): JoystickID {.inline.} = joystick.joystickInstanceID
+  ## Get the instance ID of an opened joystick,
+  ## or `-1` if the joystick is invalid.
 
-# *
-#   Get the number of general axis controls on a joystick.
-#
+proc instanceID*(joystick: JoystickPtr): JoystickID {.inline.} =
+  ## Get the instance ID of an opened joystick,
+  ## or `-1` if the joystick is invalid.
+  joystick.joystickInstanceID
+
 proc joystickNumAxes*(joystick: JoystickPtr): cint {.
   importc: "SDL_JoystickNumAxes".}
-proc numAxes* (joystick: JoystickPtr): cint {.inline.} = joystick.joystickNumAxes
+  ## Get the number of general axis controls on a joystick.
 
-# *
-#   Get the number of trackballs on a joystick.
-#
-#   Joystick trackballs have only relative motion events associated
-#   with them and their state cannot be polled.
-#   events are enabled.
-#
+proc numAxes* (joystick: JoystickPtr): cint {.inline.} =
+  ## Get the number of general axis controls on a joystick.
+  joystick.joystickNumAxes
+
 proc joystickNumBalls*(joystick: JoystickPtr): cint {.
   importc: "SDL_JoystickNumBalls".}
-proc numBalls* (joystick: JoystickPtr): cint {.inline.} = joystick.joystickNumBalls
+  ## Get the number of trackballs on a joystick.
+  ##
+  ## Joystick trackballs have only relative motion events associated
+  ## with them and their state cannot be polled.
 
-#
-#   Get the number of POV hats on a joystick.
-#
+proc numBalls*(joystick: JoystickPtr): cint {.inline.} =
+  ## Get the number of trackballs on a joystick.
+  ##
+  ## Joystick trackballs have only relative motion events associated
+  ## with them and their state cannot be polled.
+  joystick.joystickNumBalls
+
 proc joystickNumHats*(joystick: JoystickPtr): cint {.
   importc: "SDL_JoystickNumHats".}
-proc numHats* (joystick: JoystickPtr): cint {.inline.} = joystick.joystickNumHats
+  ## Get the number of POV hats on a joystick.
 
-#
-#   Get the number of buttons on a joystick.
-#
+proc numHats*(joystick: JoystickPtr): cint {.inline.} =
+  ## Get the number of POV hats on a joystick.
+  joystick.joystickNumHats
+
 proc joystickNumButtons*(joystick: JoystickPtr): cint {.
   importc: "SDL_JoystickNumButtons".}
-proc numButtons* (joystick: JoystickPtr): cint {.inline.} = joystick.joystickNumButtons
+  ## Get the number of buttons on a joystick.
 
-#
-#   Update the current state of the open joysticks.
-#
-#   This is called automatically by the event loop if any joystick
-#
-proc joystickUpdate*() {.
-  importc: "SDL_JoystickUpdate".}
+proc numButtons*(joystick: JoystickPtr): cint {.inline.} =
+  ## Get the number of buttons on a joystick.
+  joystick.joystickNumButtons
 
-#
-#   Enable/disable joystick event polling.
-#
-#   If joystick events are disabled, you must call SDL_JoystickUpdate()
-#   yourself and check the state of the joystick when you want joystick
-#   information.
-#
-#   The state can be one of ::SDL_QUERY, ::SDL_ENABLE or ::SDL_IGNORE.
-#
+proc joystickUpdate*() {.importc: "SDL_JoystickUpdate".}
+  ## Update the current state of the open joysticks.
+  ##
+  ## This is called automatically by the event loop if any joystick
+  ## events are enabled.
+
 proc joystickEventState*(state: cint): cint {.
   importc: "SDL_JoystickEventState".}
+  ## Enable/disable joystick event polling.
+  ##
+  ## If joystick events are disabled, you must call `joystickUpdate()`
+  ## yourself and check the state of the joystick when you want joystick
+  ## information.
+  ##
+  ## The `state` can be one of `SDL_QUERY`, `SDL_ENABLE` or `SDL_IGNORE`.
 
-#
-#   Get the current state of an axis control on a joystick.
-#
-#   The state is a value ranging from -32768 to 32767.
-#
-#   The axis indices start at index 0.
-#
 proc joystickGetAxis*(joystick: JoystickPtr, axis: cint): int16 {.
-  importc: "SDL_JoystickGetAxis".}
-proc getAxis* (joystick: JoystickPtr, axis: cint): int16 {.inline.} = joystick.joystickGetAxis(axis)
+  importc: "SDL_JoystickGetAxis".}SDL_
+  ## Get the current state of an aSDL_xis control on a joystick.
+  ##SDL_
+  ##SDL_ The state is a value ranging SDL_from `-32768` to `32767`.
+  ##SDL_
+  ##SDL_ The axis indices start at indSDL_ex `0`.
+SDL_
+SDL_proc getAxis*(joystick: JoystickPtSDL_r, axis: cint): int16 {.inline.} =
+  ## Get the current state of an aSDL_xis control on a joystick.
+  ##
+  ## The state is a value ranging from `-32768` to `32767`.
+  ##
+  ## The axis indices start at index `0`.
+  joystick.joystickGetAxis(axis)
 
-#
-#   \name Hat positions
-#
-#  @{#
 const
-  SDL_HAT_CENTERED*:cint = (0x00000000)
-  SDL_HAT_UP*:cint = (0x00000001)
-  SDL_HAT_RIGHT*:cint = (0x00000002)
-  SDL_HAT_DOWN*:cint = (0x00000004)
-  SDL_HAT_LEFT*:cint = (0x00000008)
-  SDL_HAT_RIGHTUP*:cint = (SDL_HAT_RIGHT or SDL_HAT_UP)
-  SDL_HAT_RIGHTDOWN*:cint = (SDL_HAT_RIGHT or SDL_HAT_DOWN)
-  SDL_HAT_LEFTUP*:cint = (SDL_HAT_LEFT or SDL_HAT_UP)
-  SDL_HAT_LEFTDOWN*:cint = (SDL_HAT_LEFT or SDL_HAT_DOWN)
-#  @}#
+  SDL_HAT_CENTERED*: cint = 0x00000000
+  SDL_HAT_UP*: cint = 0x00000001
+  SDL_HAT_RIGHT*: cint = 0x00000002
+  SDL_HAT_DOWN*: cint = 0x00000004
+  SDL_HAT_LEFT*: cint = 0x00000008
+  SDL_HAT_RIGHTUP*: cint = SDL_HAT_RIGHT or SDL_HAT_UP
+  SDL_HAT_RIGHTDOWN*: cint = SDL_HAT_RIGHT or SDL_HAT_DOWN
+  SDL_HAT_LEFTUP*: cint = SDL_HAT_LEFT or SDL_HAT_UP
+  SDL_HAT_LEFTDOWN*: cint = SDL_HAT_LEFT or SDL_HAT_DOWN
 
-#
-#   Get the current state of a POV hat on a joystick.
-#
-#   The hat indices start at index 0.
-#
-#   \return The return value is one of the following positions:
-#            - ::SDL_HAT_CENTERED
-#            - ::SDL_HAT_UP
-#            - ::SDL_HAT_RIGHT
-#            - ::SDL_HAT_DOWN
-#            - ::SDL_HAT_LEFT
-#            - ::SDL_HAT_RIGHTUP
-#            - ::SDL_HAT_RIGHTDOWN
-#            - ::SDL_HAT_LEFTUP
-#            - ::SDL_HAT_LEFTDOWN
-#
+
 proc joystickGetHat*(joystick: JoystickPtr, hat: cint): uint8 {.
   importc: "SDL_JoystickGetHat".}
-proc getHat* (joystick: JoystickPtr, hat: cint): uint8 {.inline.} = joystick.joystickGetHat(hat)
+  ## Get the current state of a POV hat on a joystick.
+  ##
+  ## The hat indices start at index `0`.
+  ##
+  ## `Return` The return value is one of the following positions:
+  ## * SDL_HAT_CENTERED
+  ## * SDL_HAT_UP
+  ## * SDL_HAT_RIGHT
+  ## * SDL_HAT_DOWN
+  ## * SDL_HAT_LEFT
+  ## * SDL_HAT_RIGHTUP
+  ## * SDL_HAT_RIGHTDOWN
+  ## * SDL_HAT_LEFTUP
+  ## * SDL_HAT_LEFTDOWN
 
-#
-#   Get the ball axis change since the last poll.
-#
-#   \return 0, or -1 if you passed it invalid parameters.
-#
-#   The ball indices start at index 0.
-#
+proc getHat*(joystick: JoystickPtr, hat: cint): uint8 {.inline.} =
+  ## Get the current state of a POV hat on a joystick.
+  ##
+  ## The hat indices start at index `0`.
+  ##
+  ## `Return` The return value is one of the following positions:
+  ## * SDL_HAT_CENTERED
+  ## * SDL_HAT_UP
+  ## * SDL_HAT_RIGHT
+  ## * SDL_HAT_DOWN
+  ## * SDL_HAT_LEFT
+  ## * SDL_HAT_RIGHTUP
+  ## * SDL_HAT_RIGHTDOWN
+  ## * SDL_HAT_LEFTUP
+  ## * SDL_HAT_LEFTDOWN
+  joystick.joystickGetHat(hat)
+
 proc joystickGetBall*(joystick: JoystickPtr, ball: cint, dx: ptr cint, dy: ptr cint): cint {.
   importc: "SDL_JoystickGetBall".}
-proc getBall* (joystick: JoystickPtr, ball: cint, dx: ptr cint, dy: ptr cint): cint {.inline.} = joystick.joystickGetBall(ball, dx, dy)
+  ## Get the ball axis change since the last poll.
+  ##
+  ## `Return` `0`, or `-1` if you passed it invalid parameters.
+  ##
+  ## The ball indices start at index `0`.
 
-#
-#   Get the current state of a button on a joystick.
-#
-#   The button indices start at index 0.
-#
+proc getBall*(joystick: JoystickPtr, ball: cint, dx: ptr cint, dy: ptr cint): cint {.inline.} =
+  ## Get the ball axis change since the last poll.
+  ##
+  ## `Return` `0`, or `-1` if you passed it invalid parameters.
+  ##
+  ## The ball indices start at index `0`.
+  joystick.joystickGetBall(ball, dx, dy)
+
 proc joystickGetButton*(joystick: JoystickPtr, button: cint): uint8 {.
   importc: "SDL_JoystickGetButton".}
-proc getButton* (joystick: JoystickPtr, button: cint): uint8 {.inline.} = joystick.joystickGetButton(button)
+  ## Get the current state of a button on a joystick.
+  ##
+  ## The button indices start at index `0`.
 
-#
-#   Close a joystick previously opened with SDL_JoystickOpen().
-#
-proc joystickClose*(joystick: JoystickPtr) {.
-  importc: "SDL_JoystickClose".}
-proc close* (joystick: JoystickPtr) {.inline.} = joystick.joystickClose()
+proc getButton* (joystick: JoystickPtr, button: cint): uint8 {.inline.} =
+  ## Get the current state of a button on a joystick.
+  ##
+  ## The button indices start at index `0`.
+  joystick.joystickGetButton(button)
 
-# Ends C function definitions when using C++
+proc joystickClose*(joystick: JoystickPtr) {.importc: "SDL_JoystickClose".}
+  ## Close a joystick previously opened with `joystickOpen()`.
 
-# vi: set ts=4 sw=4 expandtab:
+proc close* (joystick: JoystickPtr) {.inline.} =
+  ## Close a joystick previously opened with `joystickOpen()`.
+  joystick.joystickClose()
+
 when not defined(SDL_Static):
   {.pop.}

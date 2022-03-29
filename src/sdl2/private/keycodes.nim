@@ -1,7 +1,15 @@
-## do not import this, it is included in sdl2.nim
+# do not import this, it is included in sdl2.nim
 
 type
   Scancode* {.size: sizeof(cint).} = enum
+    ## The SDL keyboard scancode representation.
+    ##
+    ## Values of this type are used to represent keyboard keys, among other
+    ## places in the ``key.keysym.scancode`` field of the Event structure.
+    ##
+    ## The values in this enumeration are based on the USB usage page standard:
+    ## https://www.usb.org/sites/default/files/documents/hut1_12v2.pdf
+
     SDL_SCANCODE_UNKNOWN = 0,
     SDL_SCANCODE_A = 4, SDL_SCANCODE_B = 5, SDL_SCANCODE_C = 6,
     SDL_SCANCODE_D = 7, SDL_SCANCODE_E = 8, SDL_SCANCODE_F = 9,
@@ -41,7 +49,7 @@ type
     SDL_SCANCODE_KP_5 = 93, SDL_SCANCODE_KP_6 = 94, SDL_SCANCODE_KP_7 = 95,
     SDL_SCANCODE_KP_8 = 96, SDL_SCANCODE_KP_9 = 97, SDL_SCANCODE_KP_0 = 98,
     SDL_SCANCODE_KP_PERIOD = 99, SDL_SCANCODE_NONUSBACKSLASH = 100,
-    SDL_SCANCODE_APPLICATION = 101, #*< windows contextual menu, compose
+    SDL_SCANCODE_APPLICATION = 101, ## windows contextual menu, compose
     SDL_SCANCODE_POWER = 102,
     SDL_SCANCODE_KP_EQUALS = 103, SDL_SCANCODE_F13 = 104,
     SDL_SCANCODE_F14 = 105, SDL_SCANCODE_F15 = 106, SDL_SCANCODE_F16 = 107,
@@ -50,7 +58,7 @@ type
     SDL_SCANCODE_F23 = 114, SDL_SCANCODE_F24 = 115,
     SDL_SCANCODE_EXECUTE = 116, SDL_SCANCODE_HELP = 117,
     SDL_SCANCODE_MENU = 118, SDL_SCANCODE_SELECT = 119,
-    SDL_SCANCODE_STOP = 120, SDL_SCANCODE_AGAIN = 121, #*< redo
+    SDL_SCANCODE_STOP = 120, SDL_SCANCODE_AGAIN = 121, ## redo
     SDL_SCANCODE_UNDO = 122, SDL_SCANCODE_CUT = 123, SDL_SCANCODE_COPY = 124,
     SDL_SCANCODE_PASTE = 125, SDL_SCANCODE_FIND = 126,
     SDL_SCANCODE_MUTE = 127, SDL_SCANCODE_VOLUMEUP = 128, SDL_SCANCODE_VOLUMEDOWN = 129,
@@ -59,15 +67,15 @@ type
     SDL_SCANCODE_INTERNATIONAL4 = 138, SDL_SCANCODE_INTERNATIONAL5 = 139,
     SDL_SCANCODE_INTERNATIONAL6 = 140, SDL_SCANCODE_INTERNATIONAL7 = 141,
     SDL_SCANCODE_INTERNATIONAL8 = 142, SDL_SCANCODE_INTERNATIONAL9 = 143, SDL_SCANCODE_LANG1 = 144, #*< Hangul/English toggle
-    SDL_SCANCODE_LANG2 = 145, #*< Hanja conversion
-    SDL_SCANCODE_LANG3 = 146, #*< Katakana
-    SDL_SCANCODE_LANG4 = 147, #*< Hiragana
-    SDL_SCANCODE_LANG5 = 148, #*< Zenkaku/Hankaku
-    SDL_SCANCODE_LANG6 = 149, #*< reserved
-    SDL_SCANCODE_LANG7 = 150, #*< reserved
-    SDL_SCANCODE_LANG8 = 151, #*< reserved
-    SDL_SCANCODE_LANG9 = 152, #*< reserved
-    SDL_SCANCODE_ALTERASE = 153, #*< Erase-Eaze
+    SDL_SCANCODE_LANG2 = 145, ## Hanja conversion
+    SDL_SCANCODE_LANG3 = 146, ## Katakana
+    SDL_SCANCODE_LANG4 = 147, ## Hiragana
+    SDL_SCANCODE_LANG5 = 148, ## Zenkaku/Hankaku
+    SDL_SCANCODE_LANG6 = 149, ## reserved
+    SDL_SCANCODE_LANG7 = 150, ## reserved
+    SDL_SCANCODE_LANG8 = 151, ## reserved
+    SDL_SCANCODE_LANG9 = 152, ## reserved
+    SDL_SCANCODE_ALTERASE = 153, ## Erase-Eaze
     SDL_SCANCODE_SYSREQ = 154, SDL_SCANCODE_CANCEL = 155,
     SDL_SCANCODE_CLEAR = 156, SDL_SCANCODE_PRIOR = 157,
     SDL_SCANCODE_RETURN2 = 158, SDL_SCANCODE_SEPARATOR = 159,
@@ -97,9 +105,9 @@ type
     SDL_SCANCODE_KP_BINARY = 218, SDL_SCANCODE_KP_OCTAL = 219,
     SDL_SCANCODE_KP_DECIMAL = 220, SDL_SCANCODE_KP_HEXADECIMAL = 221,
     SDL_SCANCODE_LCTRL = 224, SDL_SCANCODE_LSHIFT = 225, SDL_SCANCODE_LALT = 226, #*< alt, option
-    SDL_SCANCODE_LGUI = 227, #*< windows, command (apple), meta
+    SDL_SCANCODE_LGUI = 227, ## windows, command (apple), meta
     SDL_SCANCODE_RCTRL = 228, SDL_SCANCODE_RSHIFT = 229, SDL_SCANCODE_RALT = 230, #*< alt gr, option
-    SDL_SCANCODE_RGUI = 231, #*< windows, command (apple), meta
+    SDL_SCANCODE_RGUI = 231, ## windows, command (apple), meta
     SDL_SCANCODE_MODE = 257,
     SDL_SCANCODE_AUDIONEXT = 258, SDL_SCANCODE_AUDIOPREV = 259,
     SDL_SCANCODE_AUDIOSTOP = 260, SDL_SCANCODE_AUDIOPLAY = 261,
@@ -112,8 +120,8 @@ type
     SDL_SCANCODE_BRIGHTNESSDOWN = 275, SDL_SCANCODE_BRIGHTNESSUP = 276, SDL_SCANCODE_DISPLAYSWITCH = 277,
     SDL_SCANCODE_KBDILLUMTOGGLE = 278, SDL_SCANCODE_KBDILLUMDOWN = 279,
     SDL_SCANCODE_KBDILLUMUP = 280, SDL_SCANCODE_EJECT = 281, SDL_SCANCODE_SLEEP = 282,
-    SDL_NUM_SCANCODES = 512 #*< not a key, just marks the number of scancodes
-                            #                                 for array bounds
+    SDL_NUM_SCANCODES = 512
+      ## not a key, just marks the number of scancodes for array bounds
 
 const SDLK_SCANCODE_MASK = 1 shl 30
 template SDL_SCANCODE_TO_KEYCODE(some: ScanCode): untyped = (some.cint or SDLK_SCANCODE_MASK)
@@ -181,15 +189,15 @@ const
   K_o*: cint = 'o'.cint
   K_p*: cint = 'p'.cint
   K_q*: cint = 'q'.cint
-  K_r*: cint =  'r'.cint
-  K_s*: cint =  's'.cint
-  K_t*: cint =  't'.cint
-  K_u*: cint =  'u'.cint
-  K_v*: cint =  'v'.cint
-  K_w*: cint =  'w'.cint
-  K_x*: cint =  'x'.cint
-  K_y*: cint =  'y'.cint
-  K_z*: cint =  'z'.cint
+  K_r*: cint = 'r'.cint
+  K_s*: cint = 's'.cint
+  K_t*: cint = 't'.cint
+  K_u*: cint = 'u'.cint
+  K_v*: cint = 'v'.cint
+  K_w*: cint = 'w'.cint
+  K_x*: cint = 'x'.cint
+  K_y*: cint = 'y'.cint
+  K_z*: cint = 'z'.cint
 
   K_DELETE*: cint =  '\127'.cint
   K_CAPSLOCK*: cint =  SDL_SCANCODE_TO_KEYCODE(SDL_SCANCODE_CAPSLOCK)
