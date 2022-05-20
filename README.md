@@ -29,7 +29,7 @@ Install SDL2 development libraries using your distribution's packaging tool of c
 Using SDL2 with [mingw-w64](https://mingw-w64.org) environment
  * Install [mingw-w64-builds](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe). Check that `x86_64-w64-mingw32\bin\` from the installed mingw toolchain is in your `PATH` variable.
  * Download [SDL2 Development Libraries](https://www.libsdl.org/download-2.0.php) for MinGW
- * Extract contents of the downoaded archive to your mingw-w64 folder (for example, `SDL2-2.0.12\x86_64-w64-mingw32\` to `mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\x86_64-w64-mingw32\`)
+ * Extract contents of the downloaded archive to your mingw-w64 folder (for example, `SDL2-2.0.12\x86_64-w64-mingw32\` to `mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\x86_64-w64-mingw32\`)
  ### Static linking SDL2
  Pass the following options to nim on compilation:
  `--dynlibOverride:libSDL2 --passL:"-static -lmingw32 -lSDL2main -lSDL2 -mwindows  -Wl,--no-undefined -Wl,--dynamicbase -Wl,--nxcompat -Wl,--high-entropy-va -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lsetupapi -lversion -luuid"`
