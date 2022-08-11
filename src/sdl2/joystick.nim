@@ -198,13 +198,13 @@ proc joystickEventState*(state: cint): cint {.
 
 proc joystickGetAxis*(joystick: JoystickPtr, axis: cint): int16 {.
   importc: "SDL_JoystickGetAxis".}
-  ## Get the current state of an aSDL_xis control on a joystick.
+  ## Get the current state of an axis control on a joystick.
   ##
-  ## The state is a value ranging SDL_from `-32768` to `32767`.
+  ## The state is a value ranging from `-32768` to `32767`.
   ##
-  ## The axis indices start at indSDL_ex `0`.
+  ## The axis indices start at index `0`.
 
-proc getAxis*(joystick: JoystickPtSDL_r, axis: cint): int16 {.inline.} =
+proc getAxis*(joystick: JoystickPtr, axis: cint): int16 {.inline.} =
   ## Get the current state of an aSDL_xis control on a joystick.
   ##
   ## The state is a value ranging from `-32768` to `32767`.
