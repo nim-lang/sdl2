@@ -54,7 +54,7 @@ type
     WindowEvent_FocusGained, ## Window has gained keyboard focus
     WindowEvent_FocusLost, ## Window has lost keyboard focus
     WindowEvent_Close,
-    WindowEvent_TakeFocus, 
+    WindowEvent_TakeFocus,
       ## The window manager requests that the window be closed
     WindowEvent_HitTest
       ## Window had a hit test that wasn't `SDL_HITTEST_NORMAL`.
@@ -390,8 +390,8 @@ type
     kind*: EventType ## `DOLLARGESTURE` or `DOLLARRECORD`
     timestamp*: uint32 ## In milliseconds, populated using `getTicks()`
     touchID*: TouchID ## The touch device id
-    gestureID*: GestureID 
-    numFingers*: uint32 
+    gestureID*: GestureID
+    numFingers*: uint32
     error*: cfloat
     x*: cfloat ## Normalized center of gesture
     y*: cfloat ## Normalized center of gesture
@@ -445,10 +445,19 @@ type
     ## A 2D point
     x, y: cint
 
+  PointF* = tuple
+    ## A 2D point
+    x, y: cfloat
+
   Rect* = tuple
     ## A rectangle with the origin at the upper left
     x, y: cint
     w, h: cint
+
+  RectF* = tuple
+    ## A rectangle with the origin at the upper left
+    x, y: cfloat
+    w, h: cfloat
 
   GLattr*{.size: sizeof(cint).} = enum
     ## OpenGL configuration attributes
@@ -1017,15 +1026,15 @@ type
       # TODO: Add the forementioned consts
 
     read*: proc (context: RWopsPtr; destination: pointer;
-                  size, maxnum: csize): csize {.
+                  size, maxnum: csize_t): csize_t {.
                   cdecl, tags: [ReadIOEffect], raises: [].}
       ## Read up to `maxnum` objects each of size `size` from the data
       ## stream to the area pointed at by `p`.
       ##
       ## `Return` the number of objects read, or `0` at error or end of file.
 
-    write*: proc (context: RWopsPtr; source: pointer; size: csize;
-                  num: csize): csize {.cdecl, tags: [WriteIOEffect], raises: [].}
+    write*: proc (context: RWopsPtr; source: pointer; size: csize_t;
+                  num: csize_t): csize_t {.cdecl, tags: [WriteIOEffect], raises: [].}
       ## Write exactly `num` objects each of size `size` from the area
       ## pointed at by `p` to data stream.
       ##
@@ -2039,8 +2048,30 @@ proc drawPoint*(renderer: RendererPtr; x, y: cint): SDL_Return {.
   ##
   ## `y` The y coordinate of the point.
 
+proc drawPointF*(renderer: RendererPtr; x, y: cfloat): SDL_Return {.
+  importc: "SDL_RenderDrawPointF", discardable.}
+  ## Draw a point on the current rendering target.
+  ##
+  ## `renderer` The renderer which should draw a point.
+  ##
+  ## `x` The x coordinate of the point.
+  ##
+  ## `y` The y coordinate of the point.
+
 proc drawPoints*(renderer: RendererPtr; points: ptr Point;
   count: cint): SDL_Return {.importc: "SDL_RenderDrawPoints", discardable.}
+  ## Draw multiple points on the current rendering target.
+  ##
+  ## `renderer` The renderer which should draw multiple points.
+  ##
+  ## `points` The points to draw.
+  ##
+  ## `count` The number of points to draw.
+  ##
+  ## `Return` `0` on success, or `-1` on error.
+
+proc drawPointsF*(renderer: RendererPtr; points: ptr PointF;
+  count: cint): SDL_Return {.importc: "SDL_RenderDrawPointsF", discardable.}
   ## Draw multiple points on the current rendering target.
   ##
   ## `renderer` The renderer which should draw multiple points.
@@ -2065,8 +2096,32 @@ proc drawLine*(renderer: RendererPtr; x1, y1, x2, y2: cint): SDL_Return {.
   ##
   ## `y2` The y coordinate of the end point.
 
+proc drawLineF*(renderer: RendererPtr; x1, y1, x2, y2: cfloat): SDL_Return {.
+  importc: "SDL_RenderDrawLineF", discardable.}
+  ## Draw a line on the current rendering target.
+  ##
+  ## `renderer` The renderer which should draw a line.
+  ##
+  ## `x1` The x coordinate of the start point.
+  ##
+  ## `y1` The y coordinate of the start point.
+  ##
+  ## `x2` The x coordinate of the end point.
+  ##
+  ## `y2` The y coordinate of the end point.
+
 proc drawLines*(renderer: RendererPtr; points: ptr Point;
   count: cint): SDL_Return {.importc: "SDL_RenderDrawLines", discardable.}
+  ## Draw a series of connected lines on the current rendering target.
+  ##
+  ## `renderer` The renderer which should draw multiple lines.
+  ##
+  ## `points` The points along the lines.
+  ##
+  ## `count` The number of points, drawing `count-1` lines.
+
+proc drawLinesF*(renderer: RendererPtr; points: ptr PointF;
+  count: cint): SDL_Return {.importc: "SDL_RenderDrawLinesF", discardable.}
   ## Draw a series of connected lines on the current rendering target.
   ##
   ## `renderer` The renderer which should draw multiple lines.
@@ -2078,8 +2133,20 @@ proc drawLines*(renderer: RendererPtr; points: ptr Point;
 proc drawRect*(renderer: RendererPtr; rect: var Rect): SDL_Return{.
   importc: "SDL_RenderDrawRect", discardable.}
 
+proc drawRectF*(renderer: RendererPtr; rect: var RectF): SDL_Return{.
+  importc: "SDL_RenderDrawRectF", discardable.}
+
 proc drawRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return{.
   importc: "SDL_RenderDrawRect", discardable.}
+  ## Draw a rectangle on the current rendering target.
+  ##
+  ## `renderer` The renderer which should draw a rectangle.
+  ##
+  ## `rect` A pointer to the destination rectangle,
+  ## or `nil` to outline the entire rendering target.
+
+proc drawRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return{.
+  importc: "SDL_RenderDrawRectF", discardable.}
   ## Draw a rectangle on the current rendering target.
   ##
   ## `renderer` The renderer which should draw a rectangle.
@@ -2097,8 +2164,21 @@ proc drawRects*(renderer: RendererPtr; rects: ptr Rect;
   ##
   ## `count` The number of rectangles.
 
+proc drawRectsF*(renderer: RendererPtr; rects: ptr RectF;
+  count: cint): SDL_Return {.importc: "SDL_RenderDrawRectsF".}
+  ## Draw some number of rectangles on the current rendering target.
+  ##
+  ## `renderer` The renderer which should draw multiple rectangles.
+  ##
+  ## `rects` A pointer to an array of destination rectangles.
+  ##
+  ## `count` The number of rectangles.
+
 proc fillRect*(renderer: RendererPtr; rect: var Rect): SDL_Return {.
   importc: "SDL_RenderFillRect", discardable.}
+
+proc fillRectF*(renderer: RendererPtr; rect: var RectF): SDL_Return {.
+  importc: "SDL_RenderFillRectF", discardable.}
 
 proc fillRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return {.
   importc: "SDL_RenderFillRect", discardable.}
@@ -2109,8 +2189,28 @@ proc fillRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return {.
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
 
+proc fillRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return {.
+  importc: "SDL_RenderFillRectF", discardable.}
+  ## Fill a rectangle on the current rendering target with the drawing color.
+  ##
+  ## `renderer` The renderer which should fill a rectangle.
+  ##
+  ## `rect` A pointer to the destination rectangle,
+  ## or `nil` for the entire rendering target.
+
 proc fillRects*(renderer: RendererPtr; rects: ptr Rect;
   count: cint): SDL_Return {.importc: "SDL_RenderFillRects", discardable.}
+  ## Fill some number of rectangles on the current rendering target
+  ## with the drawing color.
+  ##
+  ## `renderer` The renderer which should fill multiple rectangles.
+  ##
+  ## `rects` A pointer to an array of destination rectangles.
+  ##
+  ## `count` The number of rectangles.
+
+proc fillRectsF*(renderer: RendererPtr; rects: ptr RectF;
+  count: cint): SDL_Return {.importc: "SDL_RenderFillRectsF", discardable.}
   ## Fill some number of rectangles on the current rendering target
   ## with the drawing color.
   ##
@@ -2135,6 +2235,20 @@ proc copy*(renderer: RendererPtr; texture: TexturePtr;
   ## `dstrect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
 
+proc copyF*(renderer: RendererPtr; texture: TexturePtr;
+  srcrect: ptr Rect, dstrect: ptr RectF): SDL_Return {.
+  importc: "SDL_RenderCopyF", discardable.}
+  ## Copy a portion of the texture to the current rendering target.
+  ##
+  ## `renderer` The renderer which should copy parts of a texture.
+  ##
+  ## `texture` The source texture.
+  ##
+  ## `srcrect` A pointer to the source rectangle,
+  ## or `nil` for the entire texture.
+  ##
+  ## `dstrect` A pointer to the destination rectangle,
+  ## or `nil` for the entire rendering target.
 
 proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
              srcrect, dstrect: var Rect; angle: cdouble; center: ptr Point;
@@ -2144,6 +2258,37 @@ proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
              srcrect, dstrect: ptr Rect; angle: cdouble; center: ptr Point;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyEx", discardable.}
+  ## Copy a portion of the source texture to the current rendering target,
+  ## rotating it by angle around the given center.
+  ##
+  ## `renderer` The renderer which should copy parts of a texture.
+  ##
+  ## `texture` The source texture.
+  ##
+  ## `srcrect` A pointer to the source rectangle,
+  ## or `nil` for the entire texture.
+  ##
+  ## `dstrect` A pointer to the destination rectangle,
+  ## or `nil` for the entire rendering target.
+  ##
+  ## `angle` An angle in degrees that indicates the rotation
+  ## that will be applied to dstrect, rotating it in a clockwise direction.
+  ##
+  ## `center` A pointer to a point indicating the point
+  ## around which `dstrect` will be rotated
+  ## (if `nil`, rotation will be done around `dstrect.w/2`, `dstrect.h/2`).
+  ##
+  ## `flip` `RendererFlip` value stating which flipping actions should be
+  ## performed on the texture.
+
+proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
+             srcrect: ptr Rect, dstrect: var RectF; angle: cdouble; center: ptr PointF;
+             flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
+             importc: "SDL_RenderCopyExF", discardable.}
+proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
+             srcrect: ptr Rect, dstrect: ptr RectF; angle: cdouble; center: ptr PointF;
+             flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
+             importc: "SDL_RenderCopyExF", discardable.}
   ## Copy a portion of the source texture to the current rendering target,
   ## rotating it by angle around the given center.
   ##
@@ -2567,13 +2712,13 @@ proc readLE32*(src: RWopsPtr): uint32 {.importc: "SDL_ReadLE32".}
 proc readBE32*(src: RWopsPtr): uint32 {.importc: "SDL_ReadBE32".}
 proc readLE64*(src: RWopsPtr): uint64 {.importc: "SDL_ReadLE64".}
 proc readBE64*(src: RWopsPtr): uint64 {.importc: "SDL_ReadBE64".}
-proc writeU8*(dst: RWopsPtr; value: uint8): csize {.importc: "SDL_WriteU8".}
-proc writeLE16*(dst: RWopsPtr; value: uint16): csize {.importc: "SDL_WriteLE16".}
-proc writeBE16*(dst: RWopsPtr; value: uint16): csize {.importc: "SDL_WriteBE16".}
-proc writeLE32*(dst: RWopsPtr; value: uint32): csize {.importc: "SDL_WriteLE32".}
-proc writeBE32*(dst: RWopsPtr; value: uint32): csize {.importc: "SDL_WriteBE32".}
-proc writeLE64*(dst: RWopsPtr; value: uint64): csize {.importc: "SDL_WriteLE64".}
-proc writeBE64*(dst: RWopsPtr; value: uint64): csize {.importc: "SDL_WriteBE64".}
+proc writeU8*(dst: RWopsPtr; value: uint8): csize_t {.importc: "SDL_WriteU8".}
+proc writeLE16*(dst: RWopsPtr; value: uint16): csize_t {.importc: "SDL_WriteLE16".}
+proc writeBE16*(dst: RWopsPtr; value: uint16): csize_t {.importc: "SDL_WriteBE16".}
+proc writeLE32*(dst: RWopsPtr; value: uint32): csize_t {.importc: "SDL_WriteLE32".}
+proc writeBE32*(dst: RWopsPtr; value: uint32): csize_t {.importc: "SDL_WriteBE32".}
+proc writeLE64*(dst: RWopsPtr; value: uint64): csize_t {.importc: "SDL_WriteLE64".}
+proc writeBE64*(dst: RWopsPtr; value: uint64): csize_t {.importc: "SDL_WriteBE64".}
 
 proc showMessageBox*(messageboxdata: ptr MessageBoxData;
   buttonid: var cint): cint {.importc: "SDL_ShowMessageBox".}
@@ -3897,7 +4042,15 @@ proc rect*(x, y: cint; w = cint(0), h = cint(0)): Rect =
   result.w = w
   result.h = h
 
+proc rectf*(x, y: cfloat; w = cfloat(0), h = cfloat(0)): RectF =
+  result.x = x
+  result.y = y
+  result.w = w
+  result.h = h
+
 proc point*[T: SomeNumber](x, y: T): Point = (x.cint, y.cint)
+
+proc pointF*[T: SomeNumber](x, y: T): Point = (x.cfloat, y.cfloat)
 
 proc contains*(some: Rect; point: Point): bool =
   return point.x >= some.x and point.x <= (some.x + some.w) and
@@ -3946,14 +4099,14 @@ proc seek*(ctx: RWopsPtr; offset: int64; whence: cint): int64 {.inline.} =
   # TODO: Add `RW_SEEK_SET`, `RW_SEEK_CUR`, `RW_SEEK_END`.
   ctx.seek(ctx, offset, whence)
 
-proc read*(ctx: RWopsPtr; `ptr`: pointer; size, maxnum: csize): csize {.inline.} =
+proc read*(ctx: RWopsPtr; `ptr`: pointer; size, maxnum: csize_t): csize_t {.inline.} =
   ## Read up to `maxnum` objects each of size `size` from the data
   ## stream to the area pointed at by `p`.
   ##
   ## `Return` the number of objects read, or `0` at error or end of file.
   ctx.read(ctx, `ptr`, size, maxnum)
 
-proc write*(ctx: RWopsPtr; `ptr`: pointer; size, num: csize): csize {.inline.} =
+proc write*(ctx: RWopsPtr; `ptr`: pointer; size, num: csize_t): csize_t {.inline.} =
   ## Write exactly `num` objects each of size `size` from the area
   ## pointed at by `p` to data stream.
   ##
