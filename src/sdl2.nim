@@ -4050,7 +4050,7 @@ proc rectf*(x, y: cfloat; w = cfloat(0), h = cfloat(0)): RectF =
 
 proc point*[T: SomeNumber](x, y: T): Point = (x.cint, y.cint)
 
-proc pointF*[T: SomeNumber](x, y: T): Point = (x.cfloat, y.cfloat)
+proc pointF*[T: SomeNumber](x, y: T): PointF = (x.cfloat, y.cfloat)
 
 proc contains*(some: Rect; point: Point): bool =
   return point.x >= some.x and point.x <= (some.x + some.w) and
