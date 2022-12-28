@@ -445,7 +445,7 @@ type
     ## A 2D point
     x, y: cint
 
-  PointF* = tuple
+  PointF* = object
     ## A 2D point
     x, y: cfloat
 
