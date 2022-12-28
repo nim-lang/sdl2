@@ -454,7 +454,7 @@ type
     x, y: cint
     w, h: cint
 
-  RectF* = tuple
+  RectF* = object
     ## A rectangle with the origin at the upper left
     x, y: cfloat
     w, h: cfloat
