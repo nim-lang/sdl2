@@ -456,8 +456,8 @@ type
 
   RectF* = object
     ## A rectangle with the origin at the upper left
-    x, y: cfloat
-    w, h: cfloat
+    x*, y*: cfloat
+    w*, h*: cfloat
 
   GLattr*{.size: sizeof(cint).} = enum
     ## OpenGL configuration attributes
