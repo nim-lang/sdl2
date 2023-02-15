@@ -23,7 +23,7 @@ else:
   elif defined(haiku):
     const LibName* = "libSDL2-2.0.so.0"
   else:
-    const LibName* = "libSDL2.so"
+    const LibName* = "libSDL2(|-2.0).so(|.0)"
 
 {.pop.}
 
