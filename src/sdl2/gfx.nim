@@ -35,7 +35,7 @@ when not defined(SDL_Static):
   elif defined(macosx):
     const LibName = "libSDL2_gfx.dylib"
   else:
-    const LibName = "libSDL2_gfx(|-2.0).so(|.0)"
+    const LibName = "libSDL2_gfx(|-1.0).so(|.0)"
 else:
   static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2_gfx."
 
