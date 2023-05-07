@@ -20,7 +20,7 @@ else:
 import sdl2
 
 type
-  FontPtr* = ptr object{.pure.}
+  FontPtr* {.pure.} = ptr object
     ## The internal structure containing font information
 
 when not defined(SDL_Static):
