@@ -54,7 +54,7 @@ type
     WindowEvent_FocusGained, ## Window has gained keyboard focus
     WindowEvent_FocusLost, ## Window has lost keyboard focus
     WindowEvent_Close,
-    WindowEvent_TakeFocus, 
+    WindowEvent_TakeFocus,
       ## The window manager requests that the window be closed
     WindowEvent_HitTest
       ## Window had a hit test that wasn't `SDL_HITTEST_NORMAL`.
@@ -390,8 +390,8 @@ type
     kind*: EventType ## `DOLLARGESTURE` or `DOLLARRECORD`
     timestamp*: uint32 ## In milliseconds, populated using `getTicks()`
     touchID*: TouchID ## The touch device id
-    gestureID*: GestureID 
-    numFingers*: uint32 
+    gestureID*: GestureID
+    numFingers*: uint32
     error*: cfloat
     x*: cfloat ## Normalized center of gesture
     y*: cfloat ## Normalized center of gesture
@@ -2167,7 +2167,7 @@ proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
   ## `flip` `RendererFlip` value stating which flipping actions should be
   ## performed on the texture.
 
-proc clear*(renderer: RendererPtr): cint {.
+proc clear*(renderer: RendererPtr): SDL_Return {.
   importc: "SDL_RenderClear", discardable.}
   ## Clear the current rendering target with the drawing color.
   ##
