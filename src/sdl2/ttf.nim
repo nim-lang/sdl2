@@ -84,6 +84,7 @@ const
   TTF_HINTING_LIGHT* = 1
   TTF_HINTING_MONO* = 2
   TTF_HINTING_NONE* = 3
+  TTF_HINTING_LIGHT_SUBPIXEL* = 4
 proc getFontHinting*(font: FontPtr): cint {.importc: "TTF_GetFontHinting".}
 
 proc setFontHinting*(font: FontPtr; hinting: cint) {.importc: "TTF_SetFontHinting".}
