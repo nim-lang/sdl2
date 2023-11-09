@@ -154,7 +154,7 @@ proc drawScores(
 ) =
   let
     color = color(255, 255, 255, 0)
-    text = $scores.player & " : " & $scores.opponent
+    text = cstring $scores.player & " : " & $scores.opponent
     surface = ttf.renderTextSolid(font, text, color)
     texture = renderer.createTextureFromSurface(surface)
 

@@ -1,4 +1,4 @@
-import sdl2, sdl2.mixer
+import sdl2, sdl2 / mixer
 
 # sdl init
 sdl2.init(INIT_EVERYTHING)
