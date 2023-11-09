@@ -21,7 +21,7 @@ if isNil(sound2):
     quit("Unable to load sound file")
 
 #channel = mixer.playChannel(-1, sound, 0); #wav
-channel = mixer.playMusic(sound2, 0); #ogg/flac
+channel = sound2.play(0); #ogg/flac
 if channel == -1:
     quit("Unable to play sound")
 

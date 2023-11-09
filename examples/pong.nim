@@ -156,7 +156,7 @@ proc drawScores(
     color = color(255, 255, 255, 0)
     text = $scores.player & " : " & $scores.opponent
     surface = ttf.renderTextSolid(font, text, color)
-    texture = renderer.createTextureFromSurface(surface)
+    texture = renderer.createTexture(surface)
 
   surface.freeSurface
   defer: texture.destroy
