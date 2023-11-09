@@ -7,8 +7,6 @@ export strutils.`%`
 
 
 # Add for people running sdl 2.0.0
-{. deadCodeElim: on .}
-
 {.push warning[user]: off}
 when defined(SDL_Static):
   static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
@@ -3946,14 +3944,14 @@ proc seek*(ctx: RWopsPtr; offset: int64; whence: cint): int64 {.inline.} =
   # TODO: Add `RW_SEEK_SET`, `RW_SEEK_CUR`, `RW_SEEK_END`.
   ctx.seek(ctx, offset, whence)
 
-proc read*(ctx: RWopsPtr; `ptr`: pointer; size, maxnum: csize): csize {.inline.} =
+proc read*(ctx: RWopsPtr; `ptr`: pointer; size, maxnum: csize_t): csize_t {.inline.} =
   ## Read up to `maxnum` objects each of size `size` from the data
   ## stream to the area pointed at by `p`.
   ##
   ## `Return` the number of objects read, or `0` at error or end of file.
   ctx.read(ctx, `ptr`, size, maxnum)
 
-proc write*(ctx: RWopsPtr; `ptr`: pointer; size, num: csize): csize {.inline.} =
+proc write*(ctx: RWopsPtr; `ptr`: pointer; size, num: csize_t): csize_t {.inline.} =
   ## Write exactly `num` objects each of size `size` from the area
   ## pointed at by `p` to data stream.
   ##
