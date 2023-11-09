@@ -292,6 +292,7 @@ proc tcpOpen*(ip: ptr IpAddress): TcpSocket {.importc: "SDLNet_TCP_Open".}
   ##     quit(QuitFailure)
 
 proc tcpAccept*(server: TcpSocket): TcpSocket {.importc: "SDLNet_TCP_Accept".}
+proc accept*(server: TcpSocket): TcpSocket {.importc: "SDLNet_TCP_Accept".}
   ## Accept an incoming connection on the given `server` `TCPsocket`.
   ##
   ## `server` This is the server `TCPsocket` which was previously created
@@ -316,13 +317,15 @@ proc tcpAccept*(server: TcpSocket): TcpSocket {.importc: "SDLNet_TCP_Accept".}
   ##   # accept a connection coming in on server_tcpsock
   ##   var new_tcpsock: TCPsocket
   ##
-  ##   new_tcpsock = net.tcpAccept(server_tcpsock)
+  ##   new_tcpsock = server_tcpsock.accept()
   ##   if new_tcpsock == nil:
-  ##     echo "net.tcpAccept: ", net.getError()
+  ##     echo "accept: ", net.getError()
   ##   else:
   ##     # communicate over new_tcpsock
 
 proc tcpGetPeerAddress*(sock: TcpSocket): ptr IpAddress {.
+  importc: "SDLNet_TCP_GetPeerAddress".}
+proc getPeerAddress*(sock: TcpSocket): ptr IpAddress {.
   importc: "SDLNet_TCP_GetPeerAddress".}
   ## Get the IP address of the remote system associated with the socket.
   ##
@@ -339,14 +342,16 @@ proc tcpGetPeerAddress*(sock: TcpSocket): ptr IpAddress {.
   ##   # var new_tcpsock: TCPsocket
   ##   var remote_ip: ptr IPaddress
   ##
-  ##   remote_ip = net.tcpGetPeerAddress(new_tcpsock)
+  ##   remote_ip = new_tcpsock.getPeerAddress()
   ##   if remote_ip == nil:
-  ##     echo "net.tcpGetPeerAddress: ", net.getError()
+  ##     echo "getPeerAddress: ", net.getError()
   ##     echo "This may be a server socket."
   ##   else:
   ##     # print the info in IPaddress or something else...
 
 proc tcpSend*(sock: TcpSocket; data: pointer; len: cint): cint {.
+  importc: "SDLNet_TCP_Send".}
+proc send*(sock: TcpSocket; data: pointer; len: cint): cint {.
   importc: "SDLNet_TCP_Send".}
   ## Send `len` bytes of `data` over the non-server socket `sock`.
   ##
@@ -368,11 +373,13 @@ proc tcpSend*(sock: TcpSocket; data: pointer; len: cint): cint {.
   ##   var
   ##     msg = ['H', 'e', 'l', 'l', 'o', '!']
   ##
-  ##   if net.tcpSend(sock, addr(msg), msg.len) < msg.len:
-  ##     echo "net.tcpSend: ", net.getError()
+  ##   if sock.send(addr(msg), msg.len) < msg.len:
+  ##     echo "send: ", net.getError()
   ##     # it may be ood to disconnect sock because it is likely invalid now
 
 proc tcpRecv*(sock: TcpSocket; data: pointer; maxlen: cint): cint {.
+  importc: "SDLNet_TCP_Recv".}
+proc recv*(sock: TcpSocket; data: pointer; maxlen: cint): cint {.
   importc: "SDLNet_TCP_Recv".}
   ## Receive up to `maxlen` bytes of data over the non-server socket
   ## `sock`, and store them in the buffer pointed to by `data`.
@@ -413,13 +420,14 @@ proc tcpRecv*(sock: TcpSocket; data: pointer; maxlen: cint): cint {.
   ##   var
   ##     msg: array[MaxLen, char]
   ##
-  ##   if net.tcpRecv(sock, addr(msg[0]), MaxLen) <= 0:
+  ##   if sock.recv(addr(msg[0]), MaxLen) <= 0:
   ##     # an error may have occured, but sometimes you can just ignore it
   ##     # it may be good to disconnect sock because it is likely invalid now
   ##
   ##   echo "Received: ", msg
 
 proc tcpClose*(sock: TcpSocket) {.importc: "SDLNet_TCP_Close".}
+proc close*(sock: TcpSocket) {.importc: "SDLNet_TCP_Close".}
   ## Close a TCP network socket.
   ##
   ## `sock` A valid `TCPsocket`.
@@ -446,7 +454,7 @@ proc allocPacket*(size: cint): ptr UDPpacket {.importc: "SDLNet_AllocPacket".}
   ##
   ## Create (via malloc) a new `UDPpacket` with a data buffer
   ## of `size` bytes.
-  ## The new packet should be freed using `net.freePacket()` when you are
+  ## The new packet should be freed using `destroy()` when you are
   ## done using it.
   ##
   ## `Return` a pointer to a new empty `UDPpacket`.
@@ -462,9 +470,11 @@ proc allocPacket*(size: cint): ptr UDPpacket {.importc: "SDLNet_AllocPacket".}
   ##     # perhaps do something else since you can't make this packet
   ##   else:
   ##     # do stuff with this new packet
-  ##     # net.freePacket this packet when finished with it
+  ##     # destroy this packet when finished with it
 
 proc resizePacket*(packet: ptr UDPpacket; newsize: cint): cint {.
+  importc: "SDLNet_ResizePacket".}
+proc resize*(packet: ptr UDPpacket; newsize: cint): cint {.
   importc: "SDLNet_ResizePacket".}
   ## Resize a single UDP packet `size` bytes long.
   ##
@@ -484,14 +494,15 @@ proc resizePacket*(packet: ptr UDPpacket; newsize: cint): cint {.
   ##   # var packet: ptr UDPpacket
   ##   var newsize: int
   ##
-  ##   newsize = net.resizePacket(packet, 2048)
+  ##   newsize = packet.resize(2048)
   ##   if newsize < 2048:
-  ##     echo "net.resizePacket: ", net.getError()
+  ##     echo "resize: ", net.getError()
   ##     # perhaps do something else since you didn't get the buffer you wanted
   ##   else:
   ##     # do stuff with the resized packet
 
 proc freePacket*(packet: ptr UDPpacket) {.importc: "SDLNet_FreePacket".}
+proc destroy*(packet: ptr UDPpacket) {.importc: "SDLNet_FreePacket".}
   ## Free a single UDP packet.
   ##
   ## `packet` A pointer to the `UDPpacket` to be freed from memory.
@@ -505,7 +516,7 @@ proc freePacket*(packet: ptr UDPpacket) {.importc: "SDLNet_FreePacket".}
   ##   # free a UDPpacket
   ##   # var packet: ptr UDPpacket
   ##
-  ##   net.freePacket(packet)
+  ##   destroy(packet)
   ##   packet = nil # just to help you know that it is freed
 
 proc allocPacketV*(howmany: cint; size: cint): ptr ptr UDPpacket {.
@@ -610,6 +621,8 @@ proc udpOpen*(port: uint16): UDPsocket {.importc: "SDLNet_UDP_Open".}
 
 proc udpSetPacketLoss*(sock: UDPsocket; percent: cint) {.
   importc: "SDLNet_UDP_SetPacketLoss".}
+proc setPacketLoss*(sock: UDPsocket; percent: cint) {.
+  importc: "SDLNet_UDP_SetPacketLoss".}
   ## Bind the address `address` to the requested channel on the UDP socket.
   ##
   ## `sock` the UDPsocket on which to assign the address.
@@ -695,6 +708,7 @@ proc udpBind*(sock: UDPsocket; channel: cint; address: ptr IpAddress): cint {.
   ##     # do something because we failed to bind
 
 proc udpUnbind*(sock: UDPsocket; channel: cint) {.importc: "SDLNet_UDP_Unbind".}
+proc unbind*(sock: UDPsocket; channel: cint) {.importc: "SDLNet_UDP_Unbind".}
   ## Unbind all addresses from the given channel.
   ##
   ## `sock` A valid `UDPsocket` to unbind addresses from.
@@ -710,9 +724,11 @@ proc udpUnbind*(sock: UDPsocket; channel: cint) {.importc: "SDLNet_UDP_Unbind".}
   ##   # unbind all addresses on the UDPsocket channel 0
   ##   # var udpsock: UDPsocket
   ##
-  ##   net.udpUnbind(udpsock, 0)
+  ##   udpsock.unbind(0)
 
 proc udpGetPeerAddress*(sock: UDPsocket; channel: cint): ptr IpAddress {.
+  importc: "SDLNet_UDP_GetPeerAddress".}
+proc getPeerAddress*(sock: UDPsocket; channel: cint): ptr IpAddress {.
   importc: "SDLNet_UDP_GetPeerAddress".}
   ## Get the primary IP address of the remote system associated with the
   ## `socket` and `channel`.
@@ -738,14 +754,16 @@ proc udpGetPeerAddress*(sock: UDPsocket; channel: cint): ptr IpAddress {.
   ##   # var udpsock: UDPsocket
   ##   var address: ptr IPaddress
   ##
-  ##   address = net.udpGetPeerAddress(udpsock, 0)
+  ##   address = udpsock.getPeerAddress(0)
   ##   if address == nil:
-  ##     echo "net.udpGetPeerAddress: ", net.getError()
+  ##     echo "getPeerAddress: ", net.getError()
   ##     # do something because we failed to get the address
   ##   else:
   ##     # perhaps print out address.host and address.port
 
 proc udpSendV*(sock: UDPsocket; packets: ptr ptr UDPpacket;
+               npackets: cint): cint {.importc: "SDLNet_UDP_SendV".}
+proc send*(sock: UDPsocket; packets: ptr ptr UDPpacket;
                npackets: cint): cint {.importc: "SDLNet_UDP_SendV".}
   ## Send a vector of packets to the the channels specified within the packet.
   ##
@@ -757,7 +775,7 @@ proc udpSendV*(sock: UDPsocket; packets: ptr ptr UDPpacket;
   ##
   ## Send `npackets` of `packetV` using the specified `sock` socket.
   ##
-  ## Each packet is sent in the same way as in `net.udpSend()`.
+  ## Each packet is sent in the same way as in `sock.send(packet)`.
   ##
   ## `Note:` Don't forget to set the length of the packets in the `len`
   ## element of the `packets` you are sending!
@@ -777,14 +795,16 @@ proc udpSendV*(sock: UDPsocket; packets: ptr ptr UDPpacket;
   ##   # var packetV: ptr ptr UDPpacket
   ##   var numsent: int
   ##
-  ##   numsent = net.udpSendV(udpsock, packetV, 10)
+  ##   numsent = udpsock.send(packetV, 10)
   ##   if numsent == 0:
-  ##     echo "net.udpSendV: ", net.getError()
+  ##     echo "send: ", net.getError()
   ##     # do something because we failed to send
   ##     # this may just be because no addresses are bound to the channels...
 
 
 proc udpSend*(sock: UDPsocket; channel: cint; packet: ptr UDPpacket): cint {.
+  importc: "SDLNet_UDP_Send".}
+proc send*(sock: UDPsocket; channel: cint; packet: ptr UDPpacket): cint {.
   importc: "SDLNet_UDP_Send".}
   ## Send a single `packet` to the specified `channel`.
   ##
@@ -833,14 +853,14 @@ proc udpSend*(sock: UDPsocket; channel: cint; packet: ptr UDPpacket): cint {.
   ##   # var packet: ptr UDPpacket
   ##   var numsent: int
   ##
-  ##   numsent = net.udpSend(udpsock, packet.channel, packet)
+  ##   numsent = udpsock.send(packet.channel, packet)
   ##   if numsent == 0:
-  ##     echo "net.udpSend: ", net.getError()
+  ##     echo "send: ", net.getError()
   ##     # do something because we failed to send
   ##     # this may just be because no addresses are bound to the channel...
   ##
   ## Here's a way of sending one packet using it's internal channel setting.
-  ## This is actually what `net.udpSend()` ends up calling for you.
+  ## This is actually what `send()` ends up calling for you.
   ##
   ## .. code-block:: nim
   ##   # send a packet using a UDPsocket,
@@ -849,13 +869,15 @@ proc udpSend*(sock: UDPsocket; channel: cint; packet: ptr UDPpacket): cint {.
   ##   # var packet: ptr UDPpacket
   ##   var numsent: int
   ##
-  ##   numsent = net.udpSendV(sock, addr(packet), 1)
+  ##   numsent = sock.send(addr(packet), 1)
   ##   if nusment == 0:
-  ##     echo "net.udpSendV: ", net.getError()
+  ##     echo "send: ", net.getError()
   ##     # do something because we failed to send
   ##     # this may just be because no addresses are bound to the channel...
 
 proc udpRecvV*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint {.
+  importc: "SDLNet_UDP_RecvV".}
+proc recv*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint {.
   importc: "SDLNet_UDP_RecvV".}
   ## Receive a vector of pending packets from the UDP socket.
   ##
@@ -868,7 +890,7 @@ proc udpRecvV*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint {.
   ## `packetV` is a `nil` terminated array. Packets will be received until
   ## the `nil` is reached, or there are none ready to be received.
   ##
-  ## This call is otherwise the same as `net.udpRecv()`.
+  ## This call is otherwise the same as `sock.recv(packet)`.
   ##
   ## The returned packets contain the source address and the channel they
   ## arrived on.  If they did not arrive on a bound channel, the the channel
@@ -890,7 +912,7 @@ proc udpRecvV*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint {.
   ##   # var packetV: ptr ptr UDPpacket
   ##   var numrecv, i: int
   ##
-  ##   numrecv = net.udpRecvV(udpsock, addr(packetV)
+  ##   numrecv = udpsock.recv(addr(packetV))
   ##   if numrecv == -1:
   ##     # handle error, perhaps just print out the net.getError string.
   ##
@@ -898,6 +920,8 @@ proc udpRecvV*(sock: UDPsocket; packets: ptr ptr UDPpacket): cint {.
   ##     # do something with packetV[i]
 
 proc udpRecv*(sock: UDPsocket; packet: ptr UDPpacket): cint {.
+  importc: "SDLNet_UDP_Recv".}
+proc recv*(sock: UDPsocket; packet: ptr UDPpacket): cint {.
   importc: "SDLNet_UDP_Recv".}
   ## Receive a single packet from the UDP socket.
   ##
@@ -938,11 +962,12 @@ proc udpRecv*(sock: UDPsocket; packet: ptr UDPpacket): cint {.
   ##     packet: UDPpacket
   ##     numrecv: int
   ##
-  ##   numrecv = net.udpRecv(udpsock, addr(packet))
+  ##   numrecv = udpsock.recv(addr(packet))
   ##   if numrecv > 0:
   ##     # do something with packet
 
 proc udpClose*(sock: UDPsocket) {.importc: "SDLNet_UDP_Close".}
+proc close*(sock: UDPsocket) {.importc: "SDLNet_UDP_Close".}
   ## Close a UDP network socket.
   ##
   ## `sock` A valid `UDPsocket` to shutdown, close, and free.
@@ -955,7 +980,7 @@ proc udpClose*(sock: UDPsocket) {.importc: "SDLNet_UDP_Close".}
   ## .. code-block:: nim
   ##   # var udpsock: UDPsocket
   ##
-  ##   net.udpClose(udpsock)
+  ##   close(udpsock)
   ##   udpsock = nil # this helps us know that this
   ##                 # UDPsocket is not valid anymore
 
@@ -983,6 +1008,8 @@ proc allocSocketSet*(maxsockets: cint): SocketSet {.
 
 proc addSocket*(set: SocketSet; sock: GenericSocket): cint {.
   importc: "SDLNet_AddSocket".}
+proc incl*(set: SocketSet; sock: GenericSocket): cint {.
+  importc: "SDLNet_AddSocket".}
   ## Add a socket to a set of sockets to be checked for available data.
   ##
   ## `set` The socket set to add this socket to.
@@ -1004,7 +1031,7 @@ proc addSocket*(set: SocketSet; sock: GenericSocket): cint {.
   ##
   ## **See also:**
   ## * `tcpAddSocket proc<#tcpAddSocket,SocketSet,TcpSocket>`_
-  ## * `udpAddSocket proc<#udpAddSocket,SocketSet,UDPSocket>`_
+  ## * `incl proc<#incl,SocketSet,UDPSocket>`_
   ##
   ## .. code-block:: nim
   ##   # add two sockets to a socket set
@@ -1013,17 +1040,19 @@ proc addSocket*(set: SocketSet; sock: GenericSocket): cint {.
   ##   # var tcpsock: TCPsocket
   ##   var numused: int
   ##
-  ##   numused = net.udpAddSocket(sset, udpsock)
+  ##   numused = sset.incl udpsock
   ##   if numused == -1:
-  ##     echo "net.addSocket: ", net.getError()
+  ##     echo "incl: ", net.getError()
   ##     # perhaps you need to restart the set and make it bigger..
   ##
-  ##   numused = net.udpAddSocket(sset, tcpsock)
+  ##   numused = sset.incl tcpsock
   ##   if numused == -1:
-  ##     echo "net.addSocket: ", net.getError()
+  ##     echo "incl: ", net.getError()
   ##     # perhaps you need to restart the set and make it bigger...
 
 proc delSocket*(set: SocketSet; sock: GenericSocket): cint {.
+  importc: "SDLNet_DelSocket".}
+proc excl*(set: SocketSet; sock: GenericSocket): cint {.
   importc: "SDLNet_DelSocket".}
   ## Remove a socket from a set of sockets to be checked for available data.
   ##
@@ -1052,13 +1081,13 @@ proc delSocket*(set: SocketSet; sock: GenericSocket): cint {.
   ##   # tcpsock: TCPsocket
   ##   var numused: int
   ##
-  ##   numused = net.udpDelSocket(sset, udpsock)
+  ##   numused = sset.excl udpsock
   ##   if numused == -1:
-  ##     echo "net.delSocket: ", net.getError()
+  ##     echo "excl: ", net.getError()
   ##
-  ##   numused = net.tcpDelSocket(sset, tcpsock)
+  ##   numused = sset.excl tcpsock
   ##   if numused == -1:
-  ##     echo "net.delSocket: ", net.getError()
+  ##     echo "excl: ", net.getError()
   ##     # perhaps the socket is not in the set
 
 proc checkSockets*(set: SocketSet; timeout: uint32): cint {.
@@ -1100,6 +1129,7 @@ proc checkSockets*(set: SocketSet; timeout: uint32): cint {.
   ##       # and handle the active ones.
 
 proc freeSocketSet*(set: SocketSet) {.importc: "SDLNet_FreeSocketSet".}
+proc destroy*(set: SocketSet) {.importc: "SDLNet_FreeSocketSet".}
   ## Free a set of sockets allocated by `allocSocketSet()`.
   ##
   ## `set` The socket set to free from memory.
@@ -1115,7 +1145,7 @@ proc freeSocketSet*(set: SocketSet) {.importc: "SDLNet_FreeSocketSet".}
   ##   # free a socket set
   ##   # var set: SocketSet
   ##
-  ##   net.freeSocketSet(set)
+  ##   destroy(set)
   ##   set = nil # this helps us remember that this set is not allocated
 
 #*********************************************************************
@@ -1187,15 +1217,23 @@ when not defined(SDL_Static):
 
 proc tcpAddSocket*(set: SocketSet; sock: TcpSocket): cint =
   addSocket(set, cast[GenericSocket](sock))
+proc incl*(set: SocketSet; sock: TcpSocket): cint =
+  addSocket(set, cast[GenericSocket](sock))
 
 proc udpAddSocket*(set: SocketSet; sock: UDPsocket): cint =
+  addSocket(set, cast[GenericSocket](sock))
+proc incl*(set: SocketSet; sock: UDPsocket): cint =
   addSocket(set, cast[GenericSocket](sock))
 
 
 proc tcpDelSocket*(set: SocketSet; sock: TcpSocket): cint {.inline.} =
   delSocket(set, cast[GenericSocket](sock))
+proc excl*(set: SocketSet; sock: TcpSocket): cint {.inline.} =
+  delSocket(set, cast[GenericSocket](sock))
 
 proc udpDelSocket*(set: SocketSet; sock: UDPsocket): cint {.inline.} =
+  delSocket(set, cast[GenericSocket](sock))
+proc excl*(set: SocketSet; sock: UDPsocket): cint {.inline.} =
   delSocket(set, cast[GenericSocket](sock))
 
 proc socketReady* (sock: GenericSocket): bool =
@@ -1245,7 +1283,7 @@ proc socketReady* (sock: GenericSocket): bool =
   ##     echo "There are ", numready, " sockets with activity!"
   ##     # check all sockets with net.socketReady
   ##     # and handle the active ones.
-  ##     if net.udpRecv(udpsock, addr(packet)
+  ##     if udpsock.recv(addr(packet))
   ##     if numpkts > 0:
   ##       # process the packet.
 
