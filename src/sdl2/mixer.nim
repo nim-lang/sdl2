@@ -433,6 +433,7 @@ proc getMusicDecoder*(index: cint): cstring {.importc: "Mix_GetMusicDecoder".}
   ## This string is owned by the SDL_mixer library, do not modify or free it.
   ## It is valid until you call `mixer.closeAudio()` the final time.
 
+proc getMusicType*(music: ptr Music): MusicType {.importc: "Mix_GetMusicType".}
 proc getType*(music: ptr Music): MusicType {.importc: "Mix_GetMusicType".}
   ## Find out the music format of a mixer music, or the currently playing
   ## music, if `music` is `nil`.
