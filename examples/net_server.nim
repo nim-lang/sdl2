@@ -16,10 +16,10 @@ if server.isNil:
 
 var running = true
 while running:
-  let client = server.tcpAccept
+  let client = server.accept()
   if not client.isNil:
 
-    let remote = tcpGetPeerAddress(client)
+    let remote = client.getPeerAddress()
     if remote.isNil:
       quit($net.getError())
     else:
@@ -39,7 +39,7 @@ while running:
           running = false
           break
 
-    client.tcpClose
+    client.close()
 
-server.tcpClose
+server.close()
 net.quit()

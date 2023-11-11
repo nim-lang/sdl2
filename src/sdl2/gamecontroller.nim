@@ -165,9 +165,13 @@ converter toInt*(some: GameControllerAxis): uint8 = uint8(some)
 
 proc gameControllerGetAxisFromString*(pchString: cstring): GameControllerAxis {.
   importc: "SDL_GameControllerGetAxisFromString".}
+proc getAxisFromString*(pchString: cstring): GameControllerAxis {.
+  importc: "SDL_GameControllerGetAxisFromString".}
   ## Turn this string into a axis mapping.
 
 proc gameControllerGetStringForAxis*(axis: GameControllerAxis): cstring {.
+  importc: "SDL_GameControllerGetStringForAxis".}
+proc getStringForAxis*(axis: GameControllerAxis): cstring {.
   importc: "SDL_GameControllerGetStringForAxis".}
   ## Turn this axis enum into a string mapping.
 
@@ -212,10 +216,14 @@ converter toInt*(some: GameControllerButton): uint8 = uint8(some)
 proc gameControllerGetButtonFromString*(
   pchString: cstring): GameControllerButton {.
   importc: "SDL_GameControllerGetButtonFromString".}
+proc getButtonFromString*(pchString: cstring): GameControllerButton {.
+  importc: "SDL_GameControllerGetButtonFromString".}
   ## Turn this string into a button mapping.
 
 proc gameControllerGetStringForButton*(
   button: GameControllerButton): cstring {.
+  importc: "SDL_GameControllerGetStringForButton".}
+proc getStringForButton*(button: GameControllerButton): cstring {.
   importc: "SDL_GameControllerGetStringForButton".}
   ## Turn this button enum into a string mapping.
 
