@@ -577,7 +577,7 @@ type
     fade_level: uint16      ## Level at the end of the fade.
 
 type
-  HapticEffect* = object {.union.}
+  HapticEffect* {.union.} = object
     ## The generic template for any haptic effect.
     ##
     ## All values max at `32767` (`0x7FFF`).

@@ -7,8 +7,6 @@ export strutils.`%`
 
 
 # Add for people running sdl 2.0.0
-{. deadCodeElim: on .}
-
 {.push warning[user]: off}
 when defined(SDL_Static):
   static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
@@ -23,7 +21,7 @@ else:
   elif defined(haiku):
     const LibName* = "libSDL2-2.0.so.0"
   else:
-    const LibName* = "libSDL2.so"
+    const LibName* = "libSDL2(|-2.0).so(|.0)"
 
 {.pop.}
 
@@ -1746,6 +1744,8 @@ proc createTexture*(renderer: RendererPtr; surface: SurfacePtr): TexturePtr {.
 
 proc queryTexture*(texture: TexturePtr; format: ptr uint32;
   access, w, h: ptr cint): SDL_Return {.discardable, importc: "SDL_QueryTexture".}
+proc query*(texture: TexturePtr; format: ptr uint32;
+  access, w, h: ptr cint): SDL_Return {.discardable, importc: "SDL_QueryTexture".}
   ## Query the attributes of a texture.
   ##
   ## `texture` A texture to be queried.
@@ -1764,6 +1764,8 @@ proc queryTexture*(texture: TexturePtr; format: ptr uint32;
 
 proc setTextureColorMod*(texture: TexturePtr; r, g, b: uint8): SDL_Return {.
   importc: "SDL_SetTextureColorMod".}
+proc setColorMod*(texture: TexturePtr; r, g, b: uint8): SDL_Return {.
+  importc: "SDL_SetTextureColorMod".}
   ## Set an additional color value used in render copy operations.
   ##
   ## `texture` The texture to update.
@@ -1778,9 +1780,11 @@ proc setTextureColorMod*(texture: TexturePtr; r, g, b: uint8): SDL_Return {.
   ## color modulation is not supported.
   ##
   ## **See also:**
-  ## * `getTextureColorMod proc<#getTextureColorMod,TexturePtr,uint8,uint8,uint8>`_
+  ## * `getColorMod proc<#getColorMod,TexturePtr,uint8,uint8,uint8>`_
 
 proc getTextureColorMod*(texture: TexturePtr; r, g, b: var uint8): SDL_Return {.
+  importc: "SDL_GetTextureColorMod".}
+proc getColorMod*(texture: TexturePtr; r, g, b: var uint8): SDL_Return {.
   importc: "SDL_GetTextureColorMod".}
   ## Get the additional color value used in render copy operations.
   ##
@@ -1795,9 +1799,11 @@ proc getTextureColorMod*(texture: TexturePtr; r, g, b: var uint8): SDL_Return {.
   ## `Return` `0` on success, or `-1` if the texture is not valid.
   ##
   ## **See also:**
-  ## * `setTextureColorMod proc<#setTextureColorMod,TexturePtr,uint8,uint8,uint8>`_
+  ## * `setColorMod proc<#setColorMod,TexturePtr,uint8,uint8,uint8>`_
 
 proc setTextureAlphaMod*(texture: TexturePtr; alpha: uint8): SDL_Return {.
+  importc: "SDL_SetTextureAlphaMod", discardable.}
+proc setAlphaMod*(texture: TexturePtr; alpha: uint8): SDL_Return {.
   importc: "SDL_SetTextureAlphaMod", discardable.}
   ## Set an additional alpha value used in render copy operations.
   ##
@@ -1809,9 +1815,11 @@ proc setTextureAlphaMod*(texture: TexturePtr; alpha: uint8): SDL_Return {.
   ## alpha modulation is not supported.
   ##
   ## **See also:**
-  ## * `getTextureAlphaMod proc<#getTextureAlphaMod,TexturePtr,uint8>`_
+  ## * `getAlphaMod proc<#getAlphaMod,TexturePtr,uint8>`_
 
 proc getTextureAlphaMod*(texture: TexturePtr; alpha: var uint8): SDL_Return {.
+  importc: "SDL_GetTextureAlphaMod", discardable.}
+proc getAlphaMod*(texture: TexturePtr; alpha: var uint8): SDL_Return {.
   importc: "SDL_GetTextureAlphaMod", discardable.}
   ## Get the additional alpha value used in render copy operations.
   ##
@@ -1822,9 +1830,11 @@ proc getTextureAlphaMod*(texture: TexturePtr; alpha: var uint8): SDL_Return {.
   ## `Return` `0` on success, or `-1` if the texture is not valid.
   ##
   ## **See also:**
-  ## * `setTextureAlphaMod proc<#setTextureAlphaMod,TexturePtr,uint8>`_
+  ## * `setAlphaMod proc<#setAlphaMod,TexturePtr,uint8>`_
 
 proc setTextureBlendMode*(texture: TexturePtr; blendMode: BlendMode): SDL_Return {.
+  importc: "SDL_SetTextureBlendMode", discardable.}
+proc setBlendMode*(texture: TexturePtr; blendMode: BlendMode): SDL_Return {.
   importc: "SDL_SetTextureBlendMode", discardable.}
   ## Set the blend mode used for texture copy operations.
   ##
@@ -1839,9 +1849,11 @@ proc setTextureBlendMode*(texture: TexturePtr; blendMode: BlendMode): SDL_Return
   ## the closest supported mode is chosen.
   ##
   ## **See also:**
-  ## * `getTextureBlendMode proc<#getTextureBlendMode,TexturePtr,BlendMode>`_
+  ## * `getBlendMode proc<#getBlendMode,TexturePtr,BlendMode>`_
 
 proc getTextureBlendMode*(texture: TexturePtr, blendMode: var BlendMode):
+  SDL_Return {.importc: "SDL_GetTextureBlendMode", discardable.}
+proc getBlendMode*(texture: TexturePtr, blendMode: var BlendMode):
   SDL_Return {.importc: "SDL_GetTextureBlendMode", discardable.}
   ## Get the blend mode used for texture copy operations.
   ##
@@ -1852,9 +1864,11 @@ proc getTextureBlendMode*(texture: TexturePtr, blendMode: var BlendMode):
   ## `Return` `0` on success, or `-1` if the texture is not valid.
   ##
   ## **See also:**
-  ## * `setTextureBlendMode proc<#setTextureBlendMode,TexturePtr,BlendMode>`_
+  ## * `setBlendMode proc<#setBlendMode,TexturePtr,BlendMode>`_
 
 proc updateTexture*(texture: TexturePtr; rect: ptr Rect; pixels: pointer;
+  pitch: cint): SDL_Return {.importc: "SDL_UpdateTexture", discardable.}
+proc update*(texture: TexturePtr; rect: ptr Rect; pixels: pointer;
   pitch: cint): SDL_Return {.importc: "SDL_UpdateTexture", discardable.}
   ## Update the given texture rectangle with new pixel data.
   ##
@@ -1869,13 +1883,16 @@ proc updateTexture*(texture: TexturePtr; rect: ptr Rect; pixels: pointer;
   ## including padding between lines.
   ##
   ## The pixel data must be in the format of the texture.
-  ## The pixel format can be queried with `queryTexture()`.
+  ## The pixel format can be queried with `query()`.
   ##
   ## `Return` `0` on success, or `-1` if the texture is not valid.
   ##
   ## **Note:** This is a fairly slow procedure.
 
 proc updateYUVTexture*(texture: TexturePtr; rect: ptr Rect; Yplane: pointer;
+  Ypitch: cint; Uplane: pointer; Upitch: cint; Vplane: pointer; Vpitch: cint):
+  SDL_Return {.importc: "SDL_UpdateYUVTexture", discardable.}
+proc updateYUV*(texture: TexturePtr; rect: ptr Rect; Yplane: pointer;
   Ypitch: cint; Uplane: pointer; Upitch: cint; Vplane: pointer; Vpitch: cint):
   SDL_Return {.importc: "SDL_UpdateYUVTexture", discardable.}
   ## Update a rectangle within a planar YV12 or IYUV texture
@@ -1900,11 +1917,13 @@ proc updateYUVTexture*(texture: TexturePtr; rect: ptr Rect; Yplane: pointer;
   ##
   ## `Return` `0` on success, or `-1` if the texture is not valid.
   ##
-  ## **Note:** You can use `updateTexture()` as long as your pixel data is
+  ## **Note:** You can use `update()` as long as your pixel data is
   ## a contiguous block of Y and U/V planes in the proper order,
   ## but this procedure is available if your pixel data is not contiguous.
 
 proc lockTexture*(texture: TexturePtr; rect: ptr Rect; pixels: ptr pointer;
+  pitch: ptr cint): SDL_Return {.importc: "SDL_LockTexture", discardable.}
+proc lock*(texture: TexturePtr; rect: ptr Rect; pixels: ptr pointer;
   pitch: ptr cint): SDL_Return {.importc: "SDL_LockTexture", discardable.}
   ## Lock a portion of the texture for write-only pixel access.
   ##
@@ -1923,9 +1942,10 @@ proc lockTexture*(texture: TexturePtr; rect: ptr Rect; pixels: ptr pointer;
   ## was not created with `SDL_TEXTUREACCESS_STREAMING`.
   ##
   ## **See also:**
-  ## * `unlockTexture proc<#unlockTexture,TexturePtr>`_
+  ## * `unlock proc<#unlock,TexturePtr>`_
 
 proc unlockTexture*(texture: TexturePtr) {.importc: "SDL_UnlockTexture".}
+proc unlock*(texture: TexturePtr) {.importc: "SDL_UnlockTexture".}
   ## Lock a portion of the texture for write-only pixel access.
   ## Expose it as a SDL surface.
   ##
@@ -1938,13 +1958,13 @@ proc unlockTexture*(texture: TexturePtr) {.importc: "SDL_UnlockTexture".}
   ## `surface` This is filled in with a SDL surface
   ## representing the locked area.
   ## Surface is freed internally after calling
-  ## `sdl.unlockTexture()` or `sdl.destroyTexture()`.
+  ## `unlock()` or `destroy()`.
   ##
   ## `Return` `0` on success, or `-1` if the texture is not valid
   ## or was not created with `SDL_TEXTUREACCESS_STREAMING`.
   ##
   ## **See also:**
-  ## * `lockTexture proc<#lockTexture,TexturePtr,ptr.Rect,ptr.pointer,ptr.cint>`_
+  ## * `lock proc<#lock,TexturePtr,ptr.Rect,ptr.pointer,ptr.cint>`_
 
 proc renderTargetSupported*(renderer: RendererPtr): Bool32 {.
   importc: "SDL_RenderTargetSupported".}
@@ -2312,7 +2332,7 @@ proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
   ## `flip` `RendererFlip` value stating which flipping actions should be
   ## performed on the texture.
 
-proc clear*(renderer: RendererPtr): cint {.
+proc clear*(renderer: RendererPtr): SDL_Return {.
   importc: "SDL_RenderClear", discardable.}
   ## Clear the current rendering target with the drawing color.
   ##
@@ -2397,6 +2417,8 @@ proc freeSurface*(surface: SurfacePtr) {.importc: "SDL_FreeSurface".}
 
 proc setSurfacePalette*(surface: SurfacePtr; palette: ptr Palette): cint {.
   importc:"SDL_SetSurfacePalette".}
+proc setPalette*(surface: SurfacePtr; palette: ptr Palette): cint {.
+  importc:"SDL_SetSurfacePalette".}
   ## Set the palette used by a surface.
   ##
   ## `Return` `0`, or `-1` if the surface format doesn't use a palette.
@@ -2404,12 +2426,13 @@ proc setSurfacePalette*(surface: SurfacePtr; palette: ptr Palette): cint {.
   ## **Note:** A single palette can be shared with many surfaces.
 
 proc lockSurface*(surface: SurfacePtr): cint {.importc: "SDL_LockSurface".}
+proc lock*(surface: SurfacePtr): cint {.importc: "SDL_LockSurface".}
   ## Sets up a surface for directly accessing the pixels.
   ##
-  ## Between calls to `lockSurface()` / `unlockSurface()`, you can write
+  ## Between calls to `lock()` / `unlock()`, you can write
   ## to and read from `surface.pixels`, using the pixel format stored in
   ## `surface.format`.  Once you are done accessing the surface, you should
-  ## use `unlockSurface()` to release it.
+  ## use `unlock()` to release it.
   ##
   ## Not all surfaces require locking.  If `mustLock(surface)` evaluates
   ## to `0`, then you can read and write to the surface at any time, and the
@@ -2418,22 +2441,25 @@ proc lockSurface*(surface: SurfacePtr): cint {.importc: "SDL_LockSurface".}
   ## No operating system or library calls should be made between lock/unlock
   ## pairs, as critical system locks may be held during this time.
   ##
-  ## `lockSurface()` returns `0`, or `-1` if the surface couldn't be locked.
+  ## `lock()` returns `0`, or `-1` if the surface couldn't be locked.
   ##
   ## **See also:**
-  ## * `unlockSurface proc<#unlockSurface,SurfacePtr>`_
+  ## * `unlock proc<#unlock,SurfacePtr>`_
 
 proc unlockSurface*(surface: SurfacePtr) {.importc: "SDL_UnlockSurface".}
+proc unlock*(surface: SurfacePtr) {.importc: "SDL_UnlockSurface".}
   ## **See also:**
-  ## * `lockSurface proc<#lockSurface,SurfacePtr>`_
+  ## * `lock proc<#lock,SurfacePtr>`_
 
 proc loadBMP_RW*(src: RWopsPtr; freesrc: cint): SurfacePtr {.
+  importc: "SDL_LoadBMP_RW".}
+proc loadBMP*(src: RWopsPtr; freesrc: cint): SurfacePtr {.
   importc: "SDL_LoadBMP_RW".}
   ## Load a surface from a seekable SDL data stream (memory or file).
   ##
   ## If `freesrc` is non-zero, the stream will be closed after being read.
   ##
-  ## The new surface should be freed with `freeSurface()`.
+  ## The new surface should be freed with `destroy()`.
   ##
   ## `Return` the new surface, or `nil` if there was an error.
 
@@ -2500,6 +2526,8 @@ proc getColorKey*(surface: SurfacePtr; key: var uint32): cint {.
 
 proc setSurfaceColorMod*(surface: SurfacePtr; r, g, b: uint8): cint {.
   importc: "SDL_SetSurfaceColorMod".}
+proc setColorMod*(surface: SurfacePtr; r, g, b: uint8): cint {.
+  importc: "SDL_SetSurfaceColorMod".}
   ## Set an additional color value used in blit operations.
   ##
   ## `surface` The surface to update.
@@ -2513,9 +2541,11 @@ proc setSurfaceColorMod*(surface: SurfacePtr; r, g, b: uint8): cint {.
   ## `Return` `0` on success, or `-1` if the surface is not valid.
   ##
   ## **See also:**
-  ## * `getSurfaceColorMod proc<#getSurfaceColorMod,SurfacePtr,uint8,uint8,uint8>`_
+  ## * `getColorMod proc<#getColorMod,SurfacePtr,uint8,uint8,uint8>`_
 
 proc getSurfaceColorMod*(surface: SurfacePtr; r, g, b: var uint8): cint {.
+  importc: "SDL_GetSurfaceColorMod".}
+proc getColorMod*(surface: SurfacePtr; r, g, b: var uint8): cint {.
   importc: "SDL_GetSurfaceColorMod".}
   ## Get the additional color value used in blit operations.
   ##
@@ -2530,9 +2560,11 @@ proc getSurfaceColorMod*(surface: SurfacePtr; r, g, b: var uint8): cint {.
   ## `Return` `0` on success, or `-1` if the surface is not valid.
   ##
   ## **See also:**
-  ## * `setSurfaceColorMod proc<#setSurfaceColorMod,SurfacePtr,uint8,uint8,uint8>`_
+  ## * `setColorMod proc<#setColorMod,SurfacePtr,uint8,uint8,uint8>`_
 
 proc setSurfaceAlphaMod*(surface: SurfacePtr; alpha: uint8): cint {.
+  importc: "SDL_SetSurfaceAlphaMod".}
+proc setAlphaMod*(surface: SurfacePtr; alpha: uint8): cint {.
   importc: "SDL_SetSurfaceAlphaMod".}
   ## Set an additional alpha value used in blit operations.
   ##
@@ -2543,9 +2575,11 @@ proc setSurfaceAlphaMod*(surface: SurfacePtr; alpha: uint8): cint {.
   ## `Return` `0` on success, or `-1` if the surface is not valid.
   ##
   ## **See also:**
-  ## * `getSurfaceAlphaMod proc<#getSurfaceAlphaMod,SurfacePtr,uint8>`_
+  ## * `getAlphaMod proc<#getAlphaMod,SurfacePtr,uint8>`_
 
 proc getSurfaceAlphaMod*(surface: SurfacePtr; alpha: var uint8): cint {.
+  importc: "SDL_GetSurfaceAlphaMod".}
+proc getAlphaMod*(surface: SurfacePtr; alpha: var uint8): cint {.
   importc: "SDL_GetSurfaceAlphaMod".}
   ## Get the additional alpha value used in blit operations.
   ##
@@ -2556,9 +2590,11 @@ proc getSurfaceAlphaMod*(surface: SurfacePtr; alpha: var uint8): cint {.
   ## `Return` `0` on success, or `-1` if the surface is not valid.
   ##
   ## **See also:**
-  ## * `setSurfaceAlphaMod proc<#setSurfaceAlphaMod,SurfacePtr,uint8>`_
+  ## * `setAlphaMod proc<#setAlphaMod,SurfacePtr,uint8>`_
 
 proc setSurfaceBlendMode*(surface: SurfacePtr; blendMode: BlendMode): cint {.
+  importc: "SDL_SetSurfaceBlendMode".}
+proc setBlendMode*(surface: SurfacePtr; blendMode: BlendMode): cint {.
   importc: "SDL_SetSurfaceBlendMode".}
   ## Set the blend mode used for blit operations.
   ##
@@ -2569,9 +2605,11 @@ proc setSurfaceBlendMode*(surface: SurfacePtr; blendMode: BlendMode): cint {.
   ## `Return` `0` on success, or `-1` if the parameters are not valid.
   ##
   ## **See also:**
-  ## * `getSurfaceBlendMode proc<#getSurfaceBlendMode,SurfacePtr,ptr.BlendMode>`_
+  ## * `getBlendMode proc<#getBlendMode,SurfacePtr,ptr.BlendMode>`_
 
 proc getSurfaceBlendMode*(surface: SurfacePtr; blendMode: ptr BlendMode): cint {.
+  importc: "SDL_GetSurfaceBlendMode".}
+proc getBlendMode*(surface: SurfacePtr; blendMode: ptr BlendMode): cint {.
   importc: "SDL_GetSurfaceBlendMode".}
   ## Get the blend mode used for blit operations.
   ##
@@ -2582,7 +2620,7 @@ proc getSurfaceBlendMode*(surface: SurfacePtr; blendMode: ptr BlendMode): cint {
   ## `Return` `0` on success, or `-1` if the surface is not valid.
   ##
   ## **See also:**
-  ## * `setSurfaceBlendMode proc<#setSurfaceBlendMode,SurfacePtr,BlendMode>`_
+  ## * `setBlendMode proc<#setBlendMode,SurfacePtr,BlendMode>`_
 
 
 proc setClipRect*(surface: SurfacePtr; rect: ptr Rect): Bool32 {.
@@ -2643,6 +2681,8 @@ proc isClipEnabled*(renderer: RendererPtr): cint {.
 
 proc convertSurface*(src: SurfacePtr; fmt: ptr PixelFormat;
   flags: cint): SurfacePtr {.importc: "SDL_ConvertSurface".}
+proc convert*(src: SurfacePtr; fmt: ptr PixelFormat;
+  flags: cint): SurfacePtr {.importc: "SDL_ConvertSurface".}
   ## Creates a new surface of the specified format, and then copies and maps
   ## the given surface to it so the blit of the converted surface will be as
   ## fast as possible.  If this procedure fails, it returns `nil`.
@@ -2653,6 +2693,8 @@ proc convertSurface*(src: SurfacePtr; fmt: ptr PixelFormat;
   ## surface.
 
 proc convertSurfaceFormat*(src: SurfacePtr; pixel_format,
+  flags: uint32): SurfacePtr {.importc: "SDL_ConvertSurfaceFormat".}
+proc convert*(src: SurfacePtr; pixel_format,
   flags: uint32): SurfacePtr {.importc: "SDL_ConvertSurfaceFormat".}
 
 proc convertPixels*(width, height: cint; src_format: uint32; src: pointer;
@@ -2964,39 +3006,44 @@ proc getWindowFromID*(id: uint32): WindowPtr {.importc: "SDL_GetWindowFromID".}
   ## Get a window from a stored ID, or `nil` if it doesn't exist.
 
 proc showWindow*(window: WindowPtr) {.importc: "SDL_ShowWindow".}
+proc show*(window: WindowPtr) {.importc: "SDL_ShowWindow".}
   ## Show a window.
   ##
   ## **See also:**
-  ## * `hideWindow proc<#hideWindow,WindowPtr>`_
+  ## * `hide proc<#hide,WindowPtr>`_
 
 proc hideWindow*(window: WindowPtr) {.importc: "SDL_HideWindow".}
+proc hide*(window: WindowPtr) {.importc: "SDL_HideWindow".}
   ## Hide a window.
   ##
   ## **See also:**
-  ## * `showWindow proc<#showWindow,WindowPtr>`_
+  ## * `show proc<#show,WindowPtr>`_
 
 proc raiseWindow*(window: WindowPtr) {.importc: "SDL_RaiseWindow".}
   ## Raise a window above other windows and set the input focus.
 
 proc maximizeWindow*(window: WindowPtr) {.importc: "SDL_MaximizeWindow".}
+proc maximize*(window: WindowPtr) {.importc: "SDL_MaximizeWindow".}
   ## Make a window as large as possible.
   ##
   ## **See also:**
-  ## * `restoreWindow proc<#restoreWindow,WindowPtr>`_
+  ## * `restore proc<#restore,WindowPtr>`_
 
 proc minimizeWindow*(window: WindowPtr) {.importc: "SDL_MinimizeWindow".}
+proc minimize*(window: WindowPtr) {.importc: "SDL_MinimizeWindow".}
   ## Minimize a window to an iconic representation.
   ##
   ## **See also:**
-  ## * `restoreWindow proc<#restoreWindow,WindowPtr>`_
+  ## * `restore proc<#restore,WindowPtr>`_
 
 
 proc restoreWindow*(window: WindowPtr) {.importc: "SDL_RestoreWindow".}
+proc restore*(window: WindowPtr) {.importc: "SDL_RestoreWindow".}
   ## Restore the size and position of a minimized or maximized window.
   ##
   ## **See also:**
-  ## * `maximizeWindow proc<#maximizeWindow,WindowPtr>`_
-  ## * `minimizeWindow proc<#minimizeWindow,WindowPtr>`_
+  ## * `maximize proc<#maximize,WindowPtr>`_
+  ## * `minimize proc<#minimize,WindowPtr>`_
 
 
 proc destroyWindow*(window: WindowPtr) {.importc: "SDL_DestroyWindow".}
@@ -3509,6 +3556,8 @@ proc getRelativeMouseState*(x, y: var cint): uint8 {.
   ## mouse deltas since the last call to `getRelativeMouseState()`.
 
 proc warpMouseInWindow*(window: WindowPtr; x, y: cint)  {.
+  importc: "SDL_WarpMouseInWindow".}
+proc warpMouse*(window: WindowPtr; x, y: cint)  {.
   importc: "SDL_WarpMouseInWindow".}
   ## Moves the mouse to the given position within the window.
   ##

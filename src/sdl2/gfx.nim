@@ -35,7 +35,7 @@ when not defined(SDL_Static):
   elif defined(macosx):
     const LibName = "libSDL2_gfx.dylib"
   else:
-    const LibName = "libSDL2_gfx(|-2.0).so(|.0)"
+    const LibName = "libSDL2_gfx(|-1.0).so(|.0)"
 else:
   static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2_gfx."
 
@@ -867,12 +867,12 @@ proc mlStringRGBA*(renderer: RendererPtr; x,y: int16, S: string, R,G,B,A: uint8,
   ## Draw a multi-line string
   var ln = 0
   for L in splitLines(S):
-    renderer.stringRGBA(x,(y + int16(ln * 8) + int16(ln * lineSpacing)),L, R,G,B,A)
+    renderer.stringRGBA(x,(y + int16(ln * 8) + int16(ln * lineSpacing)),cstring L, R,G,B,A)
     inc ln
 proc mlStringRGBA*(renderer: RendererPtr; x,y: int16; S: seq[string]; R,G,B,A: uint8; lineSpacing = 2'i16) =
   var ln = 0
   while ln < S.len:
-    renderer.stringRGBA(x, y + int16(ln * 8 + ln * lineSpacing), S[ln], R,G,B,A)
+    renderer.stringRGBA(x, y + int16(ln * 8 + ln * lineSpacing), cstring S[ln], R,G,B,A)
     inc ln
 
 {.deprecated: [TFPSmanager: FpsManager].}

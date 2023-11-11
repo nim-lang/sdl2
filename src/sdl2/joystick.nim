@@ -88,11 +88,11 @@ proc joystickOpen*(device_index: cint): JoystickPtr {.
   ##
   ## `Return` a joystick identifier, or `nil` if an error occurred.
 
-proc joystickName*(joystick: ptr Joystick): cstring {.importc: "SDL_JoystickName".}
+proc joystickName*(joystick: JoystickPtr): cstring {.importc: "SDL_JoystickName".}
   ## `Return` the name for this currently opened joystick.
   ## If no name can be found, this procedure returns `nil`.
 
-proc name*(joystick: ptr Joystick): cstring {.inline.} =
+proc name*(joystick: JoystickPtr): cstring {.inline.} =
   ## `Return` the name for this currently opened joystick.
   ## If no name can be found, this procedure returns `nil`.
   joystick.joystickName

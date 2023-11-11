@@ -1,6 +1,4 @@
-
-
-import sdl2, sdl2/net
+import sdl2/net
 
 var
   local: IpAddress
@@ -18,10 +16,10 @@ if server.isNil:
 
 var running = true
 while running:
-  let client = server.tcpAccept
+  let client = server.accept()
   if not client.isNil:
 
-    let remote = tcpGetPeerAddress(client)
+    let remote = client.getPeerAddress()
     if remote.isNil:
       quit($net.getError())
     else:
@@ -31,7 +29,7 @@ while running:
     let buf = buffer[0].addr
     while true:
       if client.tcpRecv(buf, 512) > 0:
-        let s = $buf
+        let s = $cast[cstring](buf)
         echo "<< ", s
         if s == "exit":
           echo "disconnecting.."
@@ -41,7 +39,7 @@ while running:
           running = false
           break
 
-    client.tcpClose
+    client.close()
 
-server.tcpClose
+server.close()
 net.quit()

@@ -49,6 +49,7 @@ proc loadTyped_RW*(src: RWopsPtr; freesrc: cint;
 proc load*(file: cstring): SurfacePtr {.importc: "IMG_Load".}
 proc load_RW*(src: RWopsPtr;
               freesrc: cint): SurfacePtr {.importc: "IMG_Load_RW".}
+proc load*(src: RWopsPtr; freesrc: cint): SurfacePtr {.importc: "IMG_Load_RW".}
   ## Load an image directly into a render texture.
 
 proc loadTexture*(renderer: RendererPtr;
@@ -56,10 +57,18 @@ proc loadTexture*(renderer: RendererPtr;
 proc loadTexture_RW*(renderer: RendererPtr; src: RWopsPtr;
                      freesrc: cint): TexturePtr {.
   importc: "IMG_LoadTexture_RW".}
+proc loadTexture*(renderer: RendererPtr; src: RWopsPtr;
+                  freesrc: cint): TexturePtr {.
+  importc: "IMG_LoadTexture_RW".}
 proc loadTextureTyped_RW*(renderer: RendererPtr;
                           src: RWopsPtr;
                           freesrc: cint;
                           `type`: cstring): TexturePtr {.
+  importc: "IMG_LoadTextureTyped_RW".}
+proc loadTexture*(renderer: RendererPtr;
+                  src: RWopsPtr;
+                  freesrc: cint;
+                  `type`: cstring): TexturePtr {.
   importc: "IMG_LoadTextureTyped_RW".}
 
 # Functions to detect a file type, given a seekable source
@@ -79,21 +88,37 @@ proc isXV*(src: RWopsPtr): cint {.importc: "IMG_isXV".}
 proc isWEBP*(src: RWopsPtr): cint {.importc: "IMG_isWEBP".}
 # Individual loading functions
 proc loadICO_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadICO_RW".}
+proc loadICO*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadICO_RW".}
 proc loadCUR_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadCUR_RW".}
+proc loadCUR*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadCUR_RW".}
 proc loadBMP_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadBMP_RW".}
+proc loadBMP*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadBMP_RW".}
 proc loadGIF_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadGIF_RW".}
+proc loadGIF*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadGIF_RW".}
 proc loadJPG_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadJPG_RW".}
+proc loadJPG*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadJPG_RW".}
 proc loadLBM_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadLBM_RW".}
+proc loadLBM*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadLBM_RW".}
 proc loadPCX_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadPCX_RW".}
+proc loadPCX*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadPCX_RW".}
 proc loadPNG_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadPNG_RW".}
+proc loadPNG*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadPNG_RW".}
 proc loadPNM_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadPNM_RW".}
+proc loadPNM*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadPNM_RW".}
 proc loadTGA_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadTGA_RW".}
+proc loadTGA*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadTGA_RW".}
 proc loadTIF_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadTIF_RW".}
+proc loadTIF*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadTIF_RW".}
 proc loadXCF_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXCF_RW".}
+proc loadXCF*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXCF_RW".}
 proc loadXPM_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXPM_RW".}
+proc loadXPM*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXPM_RW".}
 proc loadXV_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXV_RW".}
+proc loadXV(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXV_RW".}
 proc loadWEBP_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadWEBP_RW".}
+proc loadWEBP*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadWEBP_RW".}
 proc readXPMFromArray*(xpm: cstringArray): SurfacePtr {.importc: "IMG_ReadXPMFromArray".}
+proc readXPM*(xpm: cstringArray): SurfacePtr {.importc: "IMG_ReadXPMFromArray".}
 # Saving functions
 proc savePNG*(surface: SurfacePtr, file: cstring): cint {.importc: "IMG_SavePNG".}
 

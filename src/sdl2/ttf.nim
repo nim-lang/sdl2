@@ -5,8 +5,6 @@
 ## Unicode is hard, we learn as we go, and we apologize for adding to the
 ## confusion.
 
-{.deadCodeElim: on.}
-
 when not defined(SDL_Static):
   when defined(windows):
     const LibName* = "SDL2_ttf.dll"
@@ -20,7 +18,7 @@ else:
 import sdl2
 
 type
-  FontPtr* = ptr object{.pure.}
+  FontPtr* {.pure.} = ptr object
     ## The internal structure containing font information
 
 when not defined(SDL_Static):
@@ -74,9 +72,13 @@ const
   TTF_STYLE_STRIKETHROUGH* = 0x00000008
 
 proc getFontStyle*(font: FontPtr): cint  {.importc: "TTF_GetFontStyle".}
+proc getStyle*(font: FontPtr): cint  {.importc: "TTF_GetFontStyle".}
 proc setFontStyle*(font: FontPtr; style: cint) {.importc: "TTF_SetFontStyle".}
+proc setStyle*(font: FontPtr; style: cint) {.importc: "TTF_SetFontStyle".}
 proc getFontOutline*(font: FontPtr): cint {.importc: "TTF_GetFontOutline".}
+proc getOutline*(font: FontPtr): cint {.importc: "TTF_GetFontOutline".}
 proc setFontOutline*(font: FontPtr; outline: cint) {.importc: "TTF_SetFontOutline".}
+proc setOutline*(font: FontPtr; outline: cint) {.importc: "TTF_SetFontOutline".}
 
 # Set and retrieve FreeType hinter settings
 const
@@ -84,37 +86,45 @@ const
   TTF_HINTING_LIGHT* = 1
   TTF_HINTING_MONO* = 2
   TTF_HINTING_NONE* = 3
+  TTF_HINTING_LIGHT_SUBPIXEL* = 4
 proc getFontHinting*(font: FontPtr): cint {.importc: "TTF_GetFontHinting".}
+proc getHinting*(font: FontPtr): cint {.importc: "TTF_GetFontHinting".}
 
 proc setFontHinting*(font: FontPtr; hinting: cint) {.importc: "TTF_SetFontHinting".}
+proc setHinting*(font: FontPtr; hinting: cint) {.importc: "TTF_SetFontHinting".}
 
 proc fontHeight*(font: FontPtr): cint {.importc: "TTF_FontHeight".}
+proc height*(font: FontPtr): cint {.importc: "TTF_FontHeight".}
   ## Get the total height of the font - usually equal to point size.
 
 proc fontAscent*(font: FontPtr): cint {.importc: "TTF_FontAscent".}
+proc ascent*(font: FontPtr): cint {.importc: "TTF_FontAscent".}
   ## Get the offset from the baseline to the top of the font.
   ##
   ## This is a positive value, relative to the baseline.
 
 proc fontDescent*(font: FontPtr): cint {.importc: "TTF_FontDescent".}
+proc descent*(font: FontPtr): cint {.importc: "TTF_FontDescent".}
   ## Get the offset from the baseline to the bottom of the font.
   ##
   ## This is a negative value, relative to the baseline.
 
 proc fontLineSkip*(font: FontPtr): cint {.importc: "TTF_FontLineSkip".}
+proc lineSkip*(font: FontPtr): cint {.importc: "TTF_FontLineSkip".}
   ## Get the recommended spacing between lines of text for this font.
 
 proc getFontKerning*(font: FontPtr): cint {.importc: "TTF_GetFontKerning".}
+proc getKerning*(font: FontPtr): cint {.importc: "TTF_GetFontKerning".}
   ## Get whether or not kerning is allowed for this font.
 
 proc setFontKerning*(font: FontPtr; allowed: cint) {.importc: "TTF_SetFontKerning".}
+proc setKerning*(font: FontPtr; allowed: cint) {.importc: "TTF_SetFontKerning".}
   ## Set whether or not kerning is allowed for this font.
 
 proc fontFaces*(font: FontPtr): clong {.importc: "TTF_FontFaces".}
   ## Get the number of faces of the font.
 
-proc fontFaceIsFixedWidth*(font: FontPtr): cint {.
-  importc: "TTF_FontFaceIsFixedWidth".}
+proc fontFaceIsFixedWidth*(font: FontPtr): cint {.importc: "TTF_FontFaceIsFixedWidth".}
   ## Get the font face attributes, if any.
 
 proc fontFaceFamilyName*(font: FontPtr): cstring {.importc: "TTF_FontFaceFamilyName".}

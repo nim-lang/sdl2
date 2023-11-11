@@ -20,7 +20,6 @@
 
 ## Multi-channel audio mixer library.
 
-{.deadCodeElim: on.}
 # Dynamically link to the correct library for our system:
 
 when not defined(SDL_Static):
@@ -36,7 +35,7 @@ else:
 when not defined(SDL_Static):
   {.push callConv:cdecl, dynlib: LibName.}
 
-import sdl2, sdl2.audio
+import sdl2, sdl2 / audio
 
 when system.cpuEndian == littleEndian: # SDL_BYTEORDER == SDL_LIL_ENDIAN
   const
@@ -366,6 +365,7 @@ proc freeChunk*(chunk: ptr Chunk) {.importc: "Mix_FreeChunk".}
   ## `Note:` It's a bad idea to free a chunk that is still being played...
 
 proc freeMusic*(music: ptr Music) {.importc: "Mix_FreeMusic".}
+proc destroy*(music: ptr Music) {.importc: "Mix_FreeMusic".}
   ## Free the loaded `music`.
   ##
   ## `music` Pointer to `mixer.Music` to free.
@@ -433,6 +433,7 @@ proc getMusicDecoder*(index: cint): cstring {.importc: "Mix_GetMusicDecoder".}
   ## It is valid until you call `mixer.closeAudio()` the final time.
 
 proc getMusicType*(music: ptr Music): MusicType {.importc: "Mix_GetMusicType".}
+proc getType*(music: ptr Music): MusicType {.importc: "Mix_GetMusicType".}
   ## Find out the music format of a mixer music, or the currently playing
   ## music, if `music` is `nil`.
   ##
@@ -1084,6 +1085,7 @@ template playChannel*(channel, chunk, loops: untyped): untyped =
   playChannelTimed(channel, chunk, loops, - 1)
 
 proc playMusic*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
+proc play*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
   ## Play the loaded `music` `loops` times through from start to finish.
   ##
   ## `music` Pointer to `mixer.Music` to play.
@@ -1098,6 +1100,8 @@ proc playMusic*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".
   ## `Return` `0` on success, or `-1` on errors.
 
 proc fadeInMusic*(music: ptr Music; loops: cint; ms: cint): cint {.
+  importc: "Mix_FadeInMusic".}
+proc fadeIn*(music: ptr Music; loops: cint; ms: cint): cint {.
   importc: "Mix_FadeInMusic".}
   ## Fade in over `ms` milliseconds of time, the loaded `music`,
   ## playing it `loops` times through from start to finish.
@@ -1119,6 +1123,8 @@ proc fadeInMusic*(music: ptr Music; loops: cint; ms: cint): cint {.
   ## `Return` `0` on success, or `-1` on errors.
 
 proc fadeInMusicPos*(music: ptr Music; loops: cint; ms: cint;
+                     position: cdouble): cint {.importc: "Mix_FadeInMusicPos".}
+proc fadeInPos*(music: ptr Music; loops: cint; ms: cint;
                      position: cdouble): cint {.importc: "Mix_FadeInMusicPos".}
   ## Fade in over `ms` milliseconds of time, the loaded `music`,
   ## playing it `loops` times through from start to finish.
