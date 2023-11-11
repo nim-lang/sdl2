@@ -447,7 +447,7 @@ type
 
   PointF* = object
     ## A 2D point
-    x, y: cfloat
+    x*, y*: cfloat
 
   Rect* = tuple
     ## A rectangle with the origin at the upper left
