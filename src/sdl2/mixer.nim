@@ -20,7 +20,6 @@
 
 ## Multi-channel audio mixer library.
 
-{.deadCodeElim: on.}
 # Dynamically link to the correct library for our system:
 
 when not defined(SDL_Static):
@@ -36,7 +35,7 @@ else:
 when not defined(SDL_Static):
   {.push callConv:cdecl, dynlib: LibName.}
 
-import sdl2, sdl2.audio
+import sdl2, sdl2 / audio
 
 when system.cpuEndian == littleEndian: # SDL_BYTEORDER == SDL_LIL_ENDIAN
   const

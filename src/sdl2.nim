@@ -7,8 +7,6 @@ export strutils.`%`
 
 
 # Add for people running sdl 2.0.0
-{. deadCodeElim: on .}
-
 {.push warning[user]: off}
 when defined(SDL_Static):
   static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
@@ -1017,15 +1015,15 @@ type
       # TODO: Add the forementioned consts
 
     read*: proc (context: RWopsPtr; destination: pointer;
-                  size, maxnum: csize): csize {.
+                  size, maxnum: csize_t): csize_t {.
                   cdecl, tags: [ReadIOEffect], raises: [].}
       ## Read up to `maxnum` objects each of size `size` from the data
       ## stream to the area pointed at by `p`.
       ##
       ## `Return` the number of objects read, or `0` at error or end of file.
 
-    write*: proc (context: RWopsPtr; source: pointer; size: csize;
-                  num: csize): csize {.cdecl, tags: [WriteIOEffect], raises: [].}
+    write*: proc (context: RWopsPtr; source: pointer; size: csize_t;
+                  num: csize_t): csize_t {.cdecl, tags: [WriteIOEffect], raises: [].}
       ## Write exactly `num` objects each of size `size` from the area
       ## pointed at by `p` to data stream.
       ##
@@ -2611,13 +2609,13 @@ proc readLE32*(src: RWopsPtr): uint32 {.importc: "SDL_ReadLE32".}
 proc readBE32*(src: RWopsPtr): uint32 {.importc: "SDL_ReadBE32".}
 proc readLE64*(src: RWopsPtr): uint64 {.importc: "SDL_ReadLE64".}
 proc readBE64*(src: RWopsPtr): uint64 {.importc: "SDL_ReadBE64".}
-proc writeU8*(dst: RWopsPtr; value: uint8): csize {.importc: "SDL_WriteU8".}
-proc writeLE16*(dst: RWopsPtr; value: uint16): csize {.importc: "SDL_WriteLE16".}
-proc writeBE16*(dst: RWopsPtr; value: uint16): csize {.importc: "SDL_WriteBE16".}
-proc writeLE32*(dst: RWopsPtr; value: uint32): csize {.importc: "SDL_WriteLE32".}
-proc writeBE32*(dst: RWopsPtr; value: uint32): csize {.importc: "SDL_WriteBE32".}
-proc writeLE64*(dst: RWopsPtr; value: uint64): csize {.importc: "SDL_WriteLE64".}
-proc writeBE64*(dst: RWopsPtr; value: uint64): csize {.importc: "SDL_WriteBE64".}
+proc writeU8*(dst: RWopsPtr; value: uint8): csize_t {.importc: "SDL_WriteU8".}
+proc writeLE16*(dst: RWopsPtr; value: uint16): csize_t {.importc: "SDL_WriteLE16".}
+proc writeBE16*(dst: RWopsPtr; value: uint16): csize_t {.importc: "SDL_WriteBE16".}
+proc writeLE32*(dst: RWopsPtr; value: uint32): csize_t {.importc: "SDL_WriteLE32".}
+proc writeBE32*(dst: RWopsPtr; value: uint32): csize_t {.importc: "SDL_WriteBE32".}
+proc writeLE64*(dst: RWopsPtr; value: uint64): csize_t {.importc: "SDL_WriteLE64".}
+proc writeBE64*(dst: RWopsPtr; value: uint64): csize_t {.importc: "SDL_WriteBE64".}
 
 proc showMessageBox*(messageboxdata: ptr MessageBoxData;
   buttonid: var cint): cint {.importc: "SDL_ShowMessageBox".}
@@ -3997,14 +3995,14 @@ proc seek*(ctx: RWopsPtr; offset: int64; whence: cint): int64 {.inline.} =
   # TODO: Add `RW_SEEK_SET`, `RW_SEEK_CUR`, `RW_SEEK_END`.
   ctx.seek(ctx, offset, whence)
 
-proc read*(ctx: RWopsPtr; `ptr`: pointer; size, maxnum: csize): csize {.inline.} =
+proc read*(ctx: RWopsPtr; `ptr`: pointer; size, maxnum: csize_t): csize_t {.inline.} =
   ## Read up to `maxnum` objects each of size `size` from the data
   ## stream to the area pointed at by `p`.
   ##
   ## `Return` the number of objects read, or `0` at error or end of file.
   ctx.read(ctx, `ptr`, size, maxnum)
 
-proc write*(ctx: RWopsPtr; `ptr`: pointer; size, num: csize): csize {.inline.} =
+proc write*(ctx: RWopsPtr; `ptr`: pointer; size, num: csize_t): csize_t {.inline.} =
   ## Write exactly `num` objects each of size `size` from the area
   ## pointed at by `p` to data stream.
   ##

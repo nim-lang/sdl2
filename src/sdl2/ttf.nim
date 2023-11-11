@@ -5,8 +5,6 @@
 ## Unicode is hard, we learn as we go, and we apologize for adding to the
 ## confusion.
 
-{.deadCodeElim: on.}
-
 when not defined(SDL_Static):
   when defined(windows):
     const LibName* = "SDL2_ttf.dll"

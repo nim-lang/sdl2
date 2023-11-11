@@ -1,6 +1,4 @@
-
-
-import sdl2, sdl2/net
+import sdl2/net
 
 var
   local: IpAddress
@@ -30,8 +28,8 @@ while running:
     var buffer: array[513,char]
     let buf = buffer[0].addr
     while true:
-      if client.recv(buf, 512) > 0:
-        let s = $buf
+      if client.tcpRecv(buf, 512) > 0:
+        let s = $cast[cstring](buf)
         echo "<< ", s
         if s == "exit":
           echo "disconnecting.."

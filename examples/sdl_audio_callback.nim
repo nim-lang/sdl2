@@ -18,7 +18,6 @@ let Volume = 0.1          # [0..1]
 var x = 0
 
 # Variables
-var buffer: array[RQBufferSizeInBytes*16, int16] # Allocate a safe amount of memory
 var obtained: AudioSpec # Actual audio parameters SDL returns
 
 # Generate a sine wave
@@ -32,22 +31,6 @@ proc AudioCallback_1(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} 
   for i in 0..int16(obtained.samples)-1:
       cast[ptr int16](cast[int](stream) + i * RQBytesPerSample)[] = SineAmplitude()
       inc(x)
-
-# Write amplitude to own buffer, then copy buffer with copyMem()
-proc AudioCallback_2(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} =
-  for i in 0..int16(obtained.samples)-1:
-      buffer[i] = SineAmplitude()
-      inc(x)
-  copyMem(stream, addr(buffer[0]), RQBytesPerSample*int16(obtained.samples))
-
-# Write amplitude to own buffer, reset hardware buffer with 0, then output buffer with MixAudio()
-proc AudioCallback_3(userdata: pointer; stream: ptr uint8; len: cint) {.cdecl.} =
-  for i in 0..int16(obtained.samples-1):
-      buffer[i] = SineAmplitude()
-      inc(x)
-  for i in 0..int16(obtained.samples-1):
-    (cast[ptr int16](cast[int](stream) + i * RQBytesPerSample ))[] = 0
-  mixAudio(stream, cast[ptr uint8](addr(buffer[0])), uint32(RQBytesPerSample*int(obtained.samples)), SDL_MIX_MAXVOLUME)
 
 proc main() =
   # Init audio playback
