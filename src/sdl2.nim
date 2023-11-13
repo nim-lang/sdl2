@@ -2068,7 +2068,7 @@ proc drawPoint*(renderer: RendererPtr; x, y: cint): SDL_Return {.
   ##
   ## `y` The y coordinate of the point.
 
-proc drawPointF*(renderer: RendererPtr; x, y: cfloat): SDL_Return {.
+proc drawPoint*(renderer: RendererPtr; x, y: cfloat): SDL_Return {.
   importc: "SDL_RenderDrawPointF", discardable.}
   ## Draw a point on the current rendering target.
   ##
@@ -2090,7 +2090,12 @@ proc drawPoints*(renderer: RendererPtr; points: ptr Point;
   ##
   ## `Return` `0` on success, or `-1` on error.
 
-proc drawPointsF*(renderer: RendererPtr; points: ptr PointF;
+proc drawPoints*(renderer: RendererPtr;
+  points: openarray[Point]): SDL_Return {.inline, discardable.} =
+  ## Draw multiple points on the current rendering target.
+  drawPoints(renderer, points[0].unsafeAddr, points.len.cint)
+
+proc drawPoints*(renderer: RendererPtr; points: ptr PointF;
   count: cint): SDL_Return {.importc: "SDL_RenderDrawPointsF", discardable.}
   ## Draw multiple points on the current rendering target.
   ##
@@ -2101,6 +2106,10 @@ proc drawPointsF*(renderer: RendererPtr; points: ptr PointF;
   ## `count` The number of points to draw.
   ##
   ## `Return` `0` on success, or `-1` on error.
+proc drawPoints*(renderer: RendererPtr;
+  points: openarray[PointF]): SDL_Return {.inline, discardable.} =
+  ## Draw multiple points on the current rendering target.
+  drawPoints(renderer, points[0].unsafeAddr, points.len.cint)
 
 proc drawLine*(renderer: RendererPtr; x1, y1, x2, y2: cint): SDL_Return {.
   importc: "SDL_RenderDrawLine", discardable.}
@@ -2116,7 +2125,7 @@ proc drawLine*(renderer: RendererPtr; x1, y1, x2, y2: cint): SDL_Return {.
   ##
   ## `y2` The y coordinate of the end point.
 
-proc drawLineF*(renderer: RendererPtr; x1, y1, x2, y2: cfloat): SDL_Return {.
+proc drawLine*(renderer: RendererPtr; x1, y1, x2, y2: cfloat): SDL_Return {.
   importc: "SDL_RenderDrawLineF", discardable.}
   ## Draw a line on the current rendering target.
   ##
@@ -2140,7 +2149,12 @@ proc drawLines*(renderer: RendererPtr; points: ptr Point;
   ##
   ## `count` The number of points, drawing `count-1` lines.
 
-proc drawLinesF*(renderer: RendererPtr; points: ptr PointF;
+proc drawLines*(renderer: RendererPtr;
+  points: openarray[Point]): SDL_Return {.inline, discardable.} =
+  ## Draw a series of connected lines on the current rendering target.
+  drawLines(renderer, points[0].unsafeAddr, points.len.cint)
+
+proc drawLines*(renderer: RendererPtr; points: ptr PointF;
   count: cint): SDL_Return {.importc: "SDL_RenderDrawLinesF", discardable.}
   ## Draw a series of connected lines on the current rendering target.
   ##
@@ -2150,11 +2164,10 @@ proc drawLinesF*(renderer: RendererPtr; points: ptr PointF;
   ##
   ## `count` The number of points, drawing `count-1` lines.
 
-proc drawRect*(renderer: RendererPtr; rect: var Rect): SDL_Return{.
-  importc: "SDL_RenderDrawRect", discardable.}
-
-proc drawRectF*(renderer: RendererPtr; rect: var RectF): SDL_Return{.
-  importc: "SDL_RenderDrawRectF", discardable.}
+proc drawLines*(renderer: RendererPtr;
+  points: openarray[PointF]): SDL_Return {.inline, discardable.} =
+  ## Draw a series of connected lines on the current rendering target.
+  drawLines(renderer, points[0].unsafeAddr, points.len.cint)
 
 proc drawRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return{.
   importc: "SDL_RenderDrawRect", discardable.}
@@ -2165,7 +2178,10 @@ proc drawRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return{.
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` to outline the entire rendering target.
 
-proc drawRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return{.
+proc drawRect*(renderer: RendererPtr; rect: Rect): SDL_Return {.inline, discardable.} =
+  drawRect(renderer, rect.unsafeAddr)
+
+proc drawRect*(renderer: RendererPtr; rect: ptr RectF): SDL_Return {.
   importc: "SDL_RenderDrawRectF", discardable.}
   ## Draw a rectangle on the current rendering target.
   ##
@@ -2173,6 +2189,9 @@ proc drawRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return{.
   ##
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` to outline the entire rendering target.
+
+proc drawRect*(renderer: RendererPtr; rect: RectF): SDL_Return {.inline, discardable.} =
+  drawRect(renderer, rect.unsafeAddr)
 
 proc drawRects*(renderer: RendererPtr; rects: ptr Rect;
   count: cint): SDL_Return {.importc: "SDL_RenderDrawRects".}
@@ -2184,21 +2203,16 @@ proc drawRects*(renderer: RendererPtr; rects: ptr Rect;
   ##
   ## `count` The number of rectangles.
 
-proc drawRectsF*(renderer: RendererPtr; rects: ptr RectF;
-  count: cint): SDL_Return {.importc: "SDL_RenderDrawRectsF".}
+proc drawRects*(renderer: RendererPtr; rects: openarray[Rect]): SDL_Return {.inline.} =
   ## Draw some number of rectangles on the current rendering target.
-  ##
-  ## `renderer` The renderer which should draw multiple rectangles.
-  ##
-  ## `rects` A pointer to an array of destination rectangles.
-  ##
-  ## `count` The number of rectangles.
+  drawRects(renderer, rects[0].unsafeAddr, rects.len.cint)
 
-proc fillRect*(renderer: RendererPtr; rect: var Rect): SDL_Return {.
-  importc: "SDL_RenderFillRect", discardable.}
+proc drawRects*(renderer: RendererPtr; rects: ptr RectF;
+  count: cint): SDL_Return {.importc: "SDL_RenderDrawRectsF".}
 
-proc fillRectF*(renderer: RendererPtr; rect: var RectF): SDL_Return {.
-  importc: "SDL_RenderFillRectF", discardable.}
+proc drawRects*(renderer: RendererPtr; rects: openarray[RectF]): SDL_Return {.inline.} =
+  ## Draw some number of rectangles on the current rendering target.
+  drawRects(renderer, rects[0].unsafeAddr, rects.len.cint)
 
 proc fillRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return {.
   importc: "SDL_RenderFillRect", discardable.}
@@ -2209,7 +2223,11 @@ proc fillRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return {.
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
 
-proc fillRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return {.
+proc fillRect*(renderer: RendererPtr; rect: Rect): SDL_Return {.inline, discardable.} =
+  ## Fill a rectangle on the current rendering target with the drawing color.
+  fillRect(renderer, rect.unsafeAddr)
+
+proc fillRect*(renderer: RendererPtr; rect: ptr RectF): SDL_Return {.
   importc: "SDL_RenderFillRectF", discardable.}
   ## Fill a rectangle on the current rendering target with the drawing color.
   ##
@@ -2217,6 +2235,10 @@ proc fillRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return {.
   ##
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
+
+proc fillRect*(renderer: RendererPtr; rect: RectF): SDL_Return {.inline, discardable.} =
+  ## Fill a rectangle on the current rendering target with the drawing color.
+  fillRect(renderer, rect.unsafeAddr)
 
 proc fillRects*(renderer: RendererPtr; rects: ptr Rect;
   count: cint): SDL_Return {.importc: "SDL_RenderFillRects", discardable.}
@@ -2229,7 +2251,12 @@ proc fillRects*(renderer: RendererPtr; rects: ptr Rect;
   ##
   ## `count` The number of rectangles.
 
-proc fillRectsF*(renderer: RendererPtr; rects: ptr RectF;
+proc fillRects*(renderer: RendererPtr; rects: openarray[Rect]): SDL_Return {.inline, discardable.} =
+  ## Fill some number of rectangles on the current rendering target
+  ## with the drawing color.
+  fillRects(renderer, rects[0].unsafeAddr, rects.len.cint)
+
+proc fillRects*(renderer: RendererPtr; rects: ptr RectF;
   count: cint): SDL_Return {.importc: "SDL_RenderFillRectsF", discardable.}
   ## Fill some number of rectangles on the current rendering target
   ## with the drawing color.
@@ -2239,6 +2266,11 @@ proc fillRectsF*(renderer: RendererPtr; rects: ptr RectF;
   ## `rects` A pointer to an array of destination rectangles.
   ##
   ## `count` The number of rectangles.
+
+proc fillRects*(renderer: RendererPtr, rects: openarray[RectF]): SDL_Return {.inline, discardable.} =
+  ## Fill some number of rectangles on the current rendering target
+  ## with the drawing color.
+  fillRects(renderer, rects[0].unsafeAddr, rects.len.cint)
 
 proc copy*(renderer: RendererPtr; texture: TexturePtr;
   srcrect, dstrect: ptr Rect): SDL_Return {.
@@ -2255,7 +2287,12 @@ proc copy*(renderer: RendererPtr; texture: TexturePtr;
   ## `dstrect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
 
-proc copyF*(renderer: RendererPtr; texture: TexturePtr;
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
+  srcrect, dstrect: Rect): SDL_Return {.inline, discardable.} =
+  ## Copy a portion of the texture to the current rendering target.
+  copy(renderer, texture, srcrect.unsafeAddr, dstrect.unsafeAddr)
+
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
   srcrect: ptr Rect, dstrect: ptr RectF): SDL_Return {.
   importc: "SDL_RenderCopyF", discardable.}
   ## Copy a portion of the texture to the current rendering target.
@@ -2270,11 +2307,16 @@ proc copyF*(renderer: RendererPtr; texture: TexturePtr;
   ## `dstrect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
 
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
+  srcrect: Rect, dstrect: RectF): SDL_Return {.inline, discardable.} =
+  ## Copy a portion of the texture to the current rendering target.
+  copy(renderer, texture, srcrect.unsafeAddr, dstrect.unsafeAddr)
+
 proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
              srcrect, dstrect: var Rect; angle: cdouble; center: ptr Point;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyEx", discardable.}
-proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
              srcrect, dstrect: ptr Rect; angle: cdouble; center: ptr Point;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyEx", discardable.}
@@ -2301,11 +2343,14 @@ proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
   ## `flip` `RendererFlip` value stating which flipping actions should be
   ## performed on the texture.
 
-proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
-             srcrect: ptr Rect, dstrect: var RectF; angle: cdouble; center: ptr PointF;
-             flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
-             importc: "SDL_RenderCopyExF", discardable.}
-proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
+             srcrect, dstrect: Rect; angle: cdouble; center: Point;
+             flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.inline, discardable.} =
+  ## Copy a portion of the source texture to the current rendering target,
+  ## rotating it by angle around the given center.
+  copy(renderer, texture, srcrect.unsafeAddr, dstrect.unsafeAddr, angle, center.unsafeAddr, flip)
+
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
              srcrect: ptr Rect, dstrect: ptr RectF; angle: cdouble; center: ptr PointF;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyExF", discardable.}
@@ -2332,6 +2377,11 @@ proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
   ## `flip` `RendererFlip` value stating which flipping actions should be
   ## performed on the texture.
 
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
+             srcrect: Rect, dstrect: RectF; angle: cdouble; center: PointF;
+             flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.inline, discardable.} =
+  copy(renderer, texture, srcrect.unsafeAddr, dstrect.unsafeAddr, angle, center.unsafeAddr, flip)
+
 proc clear*(renderer: RendererPtr): SDL_Return {.
   importc: "SDL_RenderClear", discardable.}
   ## Clear the current rendering target with the drawing color.
@@ -2339,9 +2389,6 @@ proc clear*(renderer: RendererPtr): SDL_Return {.
   ## This procedure clears the entire rendering target, ignoring the viewport,
   ## and the clip rectangle.
 
-
-proc readPixels*(renderer: RendererPtr; rect: var Rect; format: cint;
-  pixels: pointer; pitch: cint): cint {.importc: "SDL_RenderReadPixels".}
 proc readPixels*(renderer: RendererPtr; rect: ptr Rect; format: cint;
   pixels: pointer; pitch: cint): cint {.importc: "SDL_RenderReadPixels".}
   ## Read pixels from the current rendering target.
@@ -2362,6 +2409,10 @@ proc readPixels*(renderer: RendererPtr; rect: ptr Rect; format: cint;
   ##
   ## `Warning:` This is a very slow operation,
   ## and should not be used frequently.
+
+proc readPixels*(renderer: RendererPtr; rect: Rect; format: cint;
+  pixels: pointer; pitch: cint): cint {.inline.} =
+  readPixels(renderer, rect.unsafeAddr, format, pixels, pitch)
 
 proc present*(renderer: RendererPtr) {.importc: "SDL_RenderPresent".}
   ## Update the screen with rendering performed.
@@ -2424,6 +2475,10 @@ proc setPalette*(surface: SurfacePtr; palette: ptr Palette): cint {.
   ## `Return` `0`, or `-1` if the surface format doesn't use a palette.
   ##
   ## **Note:** A single palette can be shared with many surfaces.
+
+proc setPalette*(surface: SurfacePtr; palette: Palette): cint {.inline.} =
+  ## Set the palette used by a surface.
+  setPalette(surface, palette.unsafeAddr)
 
 proc lockSurface*(surface: SurfacePtr): cint {.importc: "SDL_LockSurface".}
 proc lock*(surface: SurfacePtr): cint {.importc: "SDL_LockSurface".}
@@ -2634,6 +2689,8 @@ proc setClipRect*(surface: SurfacePtr; rect: ptr Rect): Bool32 {.
   ##
   ## Note that blits are automatically clipped to the edges of the source
   ## and destination surfaces.
+proc setClipRect*(surface: SurfacePtr; rect: Rect): Bool32 {.inline.} =
+  setClipRect(surface, rect.unsafeAddr)
 
 proc getClipRect*(surface: SurfacePtr; rect: ptr Rect) {.
   importc: "SDL_GetClipRect".}
@@ -2642,6 +2699,8 @@ proc getClipRect*(surface: SurfacePtr; rect: ptr Rect) {.
   ## `rect` must be a pointer to a valid rectangle which will be filled
   ## with the correct values.
 
+proc getClipRect*(surface: SurfacePtr; rect: var Rect) {.
+  importc: "SDL_GetClipRect".}
 
 proc setClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   importc: "SDL_RenderSetClipRect".}
@@ -2657,6 +2716,9 @@ proc setClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   ## **See also:**
   ## * `getClipRect proc<#getClipRect,RendererPtr,ptr.Rect>`_
 
+proc setClipRect*(renderer: RendererPtr; rect: Rect): cint {.inline.} =
+  setClipRect(renderer, rect.unsafeAddr)
+
 proc getClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   importc: "SDL_RenderGetClipRect".}
   ## Get the clip rectangle for the current target.
@@ -2668,6 +2730,9 @@ proc getClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   ##
   ## **See also:**
   ## * `setClipRect proc<#setClipRect,SurfacePtr,ptr.Rect>`_
+
+proc getClipRect*(renderer: RendererPtr; rect: var Rect): cint {.
+  importc: "SDL_RenderGetClipRect".}
 
 proc isClipEnabled*(renderer: RendererPtr): cint {.
   importc: "SDL_RenderIsClipEnabled".}
@@ -2692,6 +2757,9 @@ proc convert*(src: SurfacePtr; fmt: ptr PixelFormat;
   ## SDL will try to RLE accelerate colorkey and alpha blits in the resulting
   ## surface.
 
+proc convert*(src: SurfacePtr; fmt: PixelFormat; flags: cint): SurfacePtr {.inline.} =
+  convert(src, fmt, flags)
+
 proc convertSurfaceFormat*(src: SurfacePtr; pixel_format,
   flags: uint32): SurfacePtr {.importc: "SDL_ConvertSurfaceFormat".}
 proc convert*(src: SurfacePtr; pixel_format,
@@ -2713,19 +2781,36 @@ proc fillRect*(dst: SurfacePtr; rect: ptr Rect; color: uint32): SDL_Return {.
   ##
   ## `Return` `0` on success, or `-1` on error.
 
+proc fillRect*(dst: SurfacePtr; rect: Rect; color: uint32): SDL_Return {.inline, discardable.} =
+  fillRect(dst, rect.unsafeAddr, color)
+
 proc fillRects*(dst: SurfacePtr; rects: ptr Rect; count: cint;
                     color: uint32): cint {.importc: "SDL_FillRects".}
+
+proc fillRects*(dst: SurfacePtr; rects: openarray[Rect]; color: uint32): cint {.inline.} =
+  fillRects(dst, rects[0].unsafeAddr, rects.len.cint, color)
 
 proc upperBlit*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
   dstrect: ptr Rect): SDL_Return {.importc: "SDL_UpperBlit".}
   ## This is the public blit procedure, `blitSurface()`, and it performs
   ## rectangle validation and clipping before passing it to `lowerBlit()`.
 
+proc upperBlit*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline.} =
+  ## This is the public blit procedure, `blitSurface()`, and it performs
+  ## rectangle validation and clipping before passing it to `lowerBlit()`.
+  upperBlit(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
+
 proc lowerBlit*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
   dstrect: ptr Rect): SDL_Return {.importc: "SDL_LowerBlit".}
   ## This is a semi-private blit procedure and it performs low-level surface
   ## blitting only.
 
+proc lowerBlit*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline.} =
+  ## This is a semi-private blit procedure and it performs low-level surface
+  ## blitting only.
+  lowerBlit(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
 
 proc softStretch*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
   dstrect: ptr Rect): SDL_Return {.importc: "SDL_SoftStretch".}
@@ -2734,6 +2819,13 @@ proc softStretch*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
   ##
   ## **Note:** This procedure uses a static buffer, and is not thread-safe.
 
+proc softStretch*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline.} =
+  ## Perform a fast, low quality, stretch blit between two surfaces of the
+  ## same pixel format.
+  ##
+  ## **Note:** This procedure uses a static buffer, and is not thread-safe.
+  softStretch(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
 
 proc upperBlitScaled*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
   dstrect: ptr Rect): SDL_Return {.importc: "SDL_UpperBlitScaled".}
@@ -2741,11 +2833,21 @@ proc upperBlitScaled*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
   ## and it performs rectangle validation and clipping before
   ## passing it to `lowerBlitScaled()`.
 
+proc upperBlitScaled*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline.} =
+  ## This is the public scaled blit procedure, `blitScaled()`,
+  ## and it performs rectangle validation and clipping before
+  ## passing it to `lowerBlitScaled()`.
+  upperBlitScaled(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
+
 proc lowerBlitScaled*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
   dstrect: ptr Rect): SDL_Return {.importc: "SDL_LowerBlitScaled".}
   ## This is a semi-private blit procedure and it performs low-level surface
   ## scaled blitting only.
 
+proc lowerBlitScaled*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline.} =
+  lowerBlitScaled(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
 
 proc readU8*(src: RWopsPtr): uint8 {.importc: "SDL_ReadU8".}
 proc readLE16*(src: RWopsPtr): uint16 {.importc: "SDL_ReadLE16".}
