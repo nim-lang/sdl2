@@ -1039,7 +1039,7 @@ type
       ## `Return` the number of objects written,
       ## or `0` at error or end of file.
 
-    close*: proc (context: RWopsPtr): cint {.cdecl, tags: [WriteIOEffect].}
+    close*: proc (context: RWopsPtr): SDL_Return {.cdecl, tags: [WriteIOEffect].}
       ## Close and free an allocated RWops object.
       ##
       ## `Return` `0` if successful,
@@ -1373,7 +1373,7 @@ proc updateSurface*(window: WindowPtr): SDL_Return  {.importc: "SDL_UpdateWindow
   ## * `updateSurfaceRects proc<#updateSurfaceRects,WindowPtr,ptr.Rect,cint>`_
 
 proc updateSurfaceRects*(window: WindowPtr; rects: ptr Rect;
-  numrects: cint): SDL_Return  {.importc: "SDL_UpdateWindowSurfaceRects", discardable.}
+  numrects: cint): SDL_Return {.importc: "SDL_UpdateWindowSurfaceRects", discardable.}
   ## Copy a number of rectangles on the window surface to the screen.
   ##
   ## `Return` `0` on success, or `-1` on error.
@@ -1381,6 +1381,10 @@ proc updateSurfaceRects*(window: WindowPtr; rects: ptr Rect;
   ## **See also:**
   ## * `getSurface proc<#getSurface,WindowPtr>`_
   ## * `updateSurface proc<#updateSurface,WindowPtr>`_
+proc updateSurfaceRects*(window: WindowPtr;
+                         rects: openarray[Rect]): SDL_Return {.inline, discardable.} =
+  ## Copy a number of rectangles on the window surface to the screen.
+  updateSurfaceRects(window, rects[0].unsafeAddr, rects.len.cint)
 
 proc setGrab*(window: WindowPtr; grabbed: Bool32) {.importc: "SDL_SetWindowGrab".}
   ## Set a window's input grab mode.
@@ -1694,8 +1698,14 @@ proc getRenderer*(window: WindowPtr): RendererPtr {.
 proc getRendererInfo*(renderer: RendererPtr; info: RendererInfoPtr): cint {.
   importc: "SDL_GetRendererInfo".}
   ## Get information about a rendering context.
+proc getInfo*(renderer: RendererPtr; info: RendererInfoPtr): cint {.
+  importc: "SDL_GetRendererInfo".}
+  ## Get information about a rendering context.
 
 proc getRendererOutputSize*(renderer: RendererPtr, w: ptr cint, h: ptr cint): cint {.
+  importc: "SDL_GetRendererOutputSize".}
+  ## Get the output size in pixels of a rendering context.
+proc getOutputSize*(renderer: RendererPtr, w: ptr cint, h: ptr cint): cint {.
   importc: "SDL_GetRendererOutputSize".}
   ## Get the output size in pixels of a rendering context.
 
