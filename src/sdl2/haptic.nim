@@ -861,7 +861,7 @@ proc newEffect*(haptic: HapticPtr, effect: ptr HapticEffect): cint {.
   ## * `destroyEffect proc<#destroyEffect,HapticPtr,cint>`_
 
 proc updateEffect*(haptic: HapticPtr, effect: cint,
-  data: ptr HapticEffect): cint {.importc: "SDL_HapticUpdateEffect".}
+  data: ptr HapticEffect): SDL_Return {.importc: "SDL_HapticUpdateEffect", discardable.}
   ## Updates the properties of an effect.
   ##
   ## Can be used dynamically, although behavior when dynamically changing
@@ -883,7 +883,7 @@ proc updateEffect*(haptic: HapticPtr, effect: cint,
   ## * `destroyEffect proc<#destroyEffect,HapticPtr,cint>`_
 
 proc runEffect*(haptic: HapticPtr, effect: cint,
-                iterations: uint32): cint {.importc: "SDL_HapticRunEffect".}
+                iterations: uint32): SDL_Return {.importc: "SDL_HapticRunEffect", discardable.}
   ## Runs the haptic effect on its associated haptic device.
   ##
   ## If iterations are `HAPTIC_INFINITY`, it'll run the effect over and over
@@ -906,7 +906,7 @@ proc runEffect*(haptic: HapticPtr, effect: cint,
   ## * `getEffectStatus proc<#getEffectStatus,HapticPtr,cint>`_
 
 proc stopEffect*(haptic: HapticPtr,
-                 effect: cint): cint {.importc: "SDL_HapticStopEffect".}
+                 effect: cint): SDL_Return {.importc: "SDL_HapticStopEffect", discardable.}
   ## Stops the haptic effect on its associated haptic device.
   ##
   ## `haptic` Haptic device to stop the effect on.
@@ -951,7 +951,7 @@ proc getEffectStatus*(haptic: HapticPtr, effect: cint): cint {.
   ## * `stopEffect proc<#stopEffect,HapticPtr,cint>`_
 
 proc setGain*(haptic: HapticPtr,
-              gain: int): cint {.importc: "SDL_HapticSetGain".}
+              gain: int): SDL_Return {.importc: "SDL_HapticSetGain", discardable.}
   ## Sets the global gain of the device.
   ##
   ## Device must support the `HAPTIC_GAIN` feature.
@@ -970,8 +970,8 @@ proc setGain*(haptic: HapticPtr,
   ## **See also:**
   ## * `query proc<#query,HapticPtr>`_
 
-proc setAutocenter*(haptic: HapticPtr, autocenter: int): cint {.
-  importc: "SDL_HapticSetAutocenter".}
+proc setAutocenter*(haptic: HapticPtr, autocenter: int): SDL_Return {.
+  importc: "SDL_HapticSetAutocenter", discardable.}
   ## Sets the global autocenter of the device.
   ##
   ## Autocenter should be between `0` and `100`.
@@ -988,7 +988,7 @@ proc setAutocenter*(haptic: HapticPtr, autocenter: int): cint {.
   ## **See also:**
   ## * `query proc<#query,HapticPtr>`_
 
-proc pause*(haptic: HapticPtr): cint {.importc: "SDL_HapticPause".}
+proc pause*(haptic: HapticPtr): SDL_Return {.importc: "SDL_HapticPause", discardable.}
   ## Pauses a haptic device.
   ##
   ## Device must support the `HAPTIC_PAUSE` feature.
@@ -1004,7 +1004,7 @@ proc pause*(haptic: HapticPtr): cint {.importc: "SDL_HapticPause".}
   ## **See also:**
   ## * `unpause proc<#unpause,HapticPtr>`_
 
-proc unpause*(haptic: HapticPtr): cint {.importc: "SDL_HapticUnpause".}
+proc unpause*(haptic: HapticPtr): SDL_Return {.importc: "SDL_HapticUnpause", discardable.}
   ## Unpauses a haptic device.
   ##
   ## Call to unpause after `pause()`.
@@ -1016,7 +1016,7 @@ proc unpause*(haptic: HapticPtr): cint {.importc: "SDL_HapticUnpause".}
   ## **See also:**
   ## * `pause proc<#pause,HapticPtr>`_
 
-proc stopAll*(haptic: HapticPtr): cint {.importc: "SDL_HapticStopAll".}
+proc stopAll*(haptic: HapticPtr): SDL_Return {.importc: "SDL_HapticStopAll", discardable.}
   ## Stops all the currently playing effects on a haptic device.
   ##
   ## `haptic` Haptic device to stop.
@@ -1037,7 +1037,7 @@ proc rumbleSupported*(haptic: HapticPtr): cint {.
   ## * `rumblePlay proc<#rumblePlay,HapticPtr,float,uint32>`_
   ## * `rumbleStop proc<#rumbleStop,HapticPtr>`_
 
-proc rumbleInit*(haptic: HapticPtr): cint {.importc: "SDL_HapticRumbleInit".}
+proc rumbleInit*(haptic: HapticPtr): SDL_Return {.importc: "SDL_HapticRumbleInit", discardable.}
   ## Initializes the haptic device for simple rumble playback.
   ##
   ## `haptic` Haptic device to initialize for simple rumble playback.
@@ -1050,8 +1050,8 @@ proc rumbleInit*(haptic: HapticPtr): cint {.importc: "SDL_HapticRumbleInit".}
   ## * `rumblePlay proc<#rumblePlay,HapticPtr,float,uint32>`_
   ## * `rumbleStop proc<#rumbleStop,HapticPtr>`_
 
-proc rumblePlay*(haptic: HapticPtr, strength: float, length: uint32): cint {.
-  importc: "SDL_HapticRumblePlay".}
+proc rumblePlay*(haptic: HapticPtr, strength: float, length: uint32): SDL_Return {.
+  importc: "SDL_HapticRumblePlay", discardable.}
   ## Runs simple rumble on a haptic device
   ##
   ## `haptic` Haptic device to play rumble effect on.
@@ -1067,7 +1067,7 @@ proc rumblePlay*(haptic: HapticPtr, strength: float, length: uint32): cint {.
   ## * `rumbleInit proc<#rumbleInit,HapticPtr>`_
   ## * `rumbleStop proc<#rumbleStop,HapticPtr>`_
 
-proc rumbleStop*(haptic: HapticPtr):cint {.importc: "SDL_HapticRumbleStop".}
+proc rumbleStop*(haptic: HapticPtr): SDL_Return {.importc: "SDL_HapticRumbleStop", discardable.}
   ## Stops the simple rumble on a haptic device.
   ##
   ## `haptic` Haptic to stop the rumble on.

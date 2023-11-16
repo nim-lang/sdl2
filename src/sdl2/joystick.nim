@@ -258,15 +258,15 @@ proc getHat*(joystick: JoystickPtr, hat: cint): uint8 {.inline.} =
   ## * SDL_HAT_LEFTDOWN
   joystick.joystickGetHat(hat)
 
-proc joystickGetBall*(joystick: JoystickPtr, ball: cint, dx: ptr cint, dy: ptr cint): cint {.
-  importc: "SDL_JoystickGetBall".}
+proc joystickGetBall*(joystick: JoystickPtr, ball: cint, dx: ptr cint, dy: ptr cint): SDL_Return {.
+  importc: "SDL_JoystickGetBall", discardable.}
   ## Get the ball axis change since the last poll.
   ##
   ## `Return` `0`, or `-1` if you passed it invalid parameters.
   ##
   ## The ball indices start at index `0`.
 
-proc getBall*(joystick: JoystickPtr, ball: cint, dx: ptr cint, dy: ptr cint): cint {.inline.} =
+proc getBall*(joystick: JoystickPtr, ball: cint, dx: ptr cint, dy: ptr cint): SDL_Return {.inline, discardable.} =
   ## Get the ball axis change since the last poll.
   ##
   ## `Return` `0`, or `-1` if you passed it invalid parameters.
