@@ -607,6 +607,7 @@ const # WindowFlags
 
 converter toBool*(some: Bool32): bool = bool(some)
 converter toBool*(some: SDL_Return): bool = some == SdlSuccess
+converter toCint*(some: SDL_Return): cint = some.cint
 converter toCint*(some: TextureAccess): cint = some.cint
 
 # pixel format flags
