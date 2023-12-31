@@ -67,6 +67,33 @@ when defined(SDL_Static):
 else:
   {.push callConv: cdecl, dynlib: LibName.}
 
+  proc gameControllerAddMappingsFromRW*(rw: RWopsPtr,
+    freerw: cint): cint {.importc: "SDL_GameControllerAddMappingsFromRW".}
+    ##
+    ## Load a set of Game Controller mappings from a seekable SDL data stream.
+    ##
+    ## You can call this function several times, if needed, to load different
+    ## database files.
+    ##
+    ## If a new mapping is loaded for an already known controller GUID, the later
+    ## version will overwrite the one currently loaded.
+    ##
+    ## Mappings not belonging to the current platform or with no platform field
+    ## specified will be ignored (i.e. mappings for Linux will be ignored in
+    ## Windows, etc).
+    ##
+    ## This function will load the text database entirely in memory before
+    ## processing it, so take this into consideration if you are in a memory
+    ## constrained environment.
+    ##
+    ## `Return` the number of mappings added or -1 on error
+
+  template gameControllerAddMappingsFromFile*(filename: untyped): untyped =
+    gameControllerAddMappingsFromRW(rwFromFile(filename, "rb"), 1)
+    ## Load a set of mappings from a file, filtered by the current `GetPlatform`
+    ##
+    ## Convenience macro.
+
 proc gameControllerAddMapping*(mappingString: cstring): cint {.
   importc: "SDL_GameControllerAddMapping".}
   ## Add or update an existing mapping configuration.
@@ -110,6 +137,12 @@ proc gameControllerOpen*(joystickIndex: cint): GameControllerPtr {.
   ## used there instead.
   ##
   ## `Return` a controller identifier, or `nil` if an error occurred.
+
+proc gameControllerFromInstanceID*(joyid: JoystickID): GameControllerPtr {.
+  importc: "SDL_GameControllerFromInstanceID".}
+  ## Get the GameControllerPtr associated with an instance id.
+  ##
+  ## Returns an GameControllerPtr on success or `nil` on failure.
 
 proc name*(gameController: GameControllerPtr): cstring {.
   importc: "SDL_GameControllerName".}
@@ -240,6 +273,86 @@ proc getButton*(
   ## Get the current state of a button on a game controller.
   ##
   ## The button indices start at index `0`.
+
+proc gameControllerRumble*(gamecontroller: GameControllerPtr,
+  lowFrequencyRumble, highFrequencyRUmble: uint16,
+  durationMs: uint32): SDL_Return {.
+  importc: "SDL_GameControllerRumble".}
+  ##
+  ## Start a rumble effect on a game controller.
+  ##
+  ## Each call to this function cancels any previous rumble effect, and calling
+  ## it with 0 intensity stops any rumbling.
+  ##
+  ## `Returns` 0, or -1 if rumble isn't supported on this controller
+
+proc gameControllerRumbleTriggers*(gamecontroller: GameControllerPtr,
+  leftRumble, rightRue: uint16, durationMs: Uint32): cint {.
+  importc: "SDL_GameControllerRumbleTriggers".}
+  ## Start a rumble effect in the game controller's triggers.
+  ##
+  ## Each call to this function cancels any previous trigger rumble effect, and
+  ## calling it with 0 intensity stops any rumbling.
+  ##
+  ## Note that this is rumbling of the _triggers_ and not the game controller as
+  ## a whole. This is currently only supported on Xbox One controllers. If you
+  ## want the (more common) whole-controller rumble, use
+  ## `gameControllerRumble` instead.
+  ##
+  ## `Returns` 0, or -1 if trigger rumble isn't supported on this controller
+
+proc gameControllerHasLED*(gamecontroller: GameControllerPtr): Bool32 {.
+  importc: "SDL_GameControllerHasLED".}
+  ## Query whether a game controller has an LED.
+  ##
+  ## \returns SDL_TRUE, or SDL_FALSE if this controller does not have a
+  ##          modifiable LED
+
+proc gameControllerHasRumble*(gamecontroller: GameControllerPtr): Bool32 {.
+  importc: "SDL_GameControllerHasRumble".}
+  ## Query whether a game controller has rumble support.
+  ##
+  ## `Returns` `True32`, or `False32` if this controller does not have rumble
+  ##           support
+
+proc gameControllerHasRumbleTriggers*(gamecontroller: GameControllerPtr) {.
+  importc: "SDL_GameControllerHasRumbleTriggers".}
+  ## Query whether a game controller has rumble support on triggers.
+  ##
+  ## `Returns` `True32`, or `False32` if this controller does not have trigger
+  ##           rumble support
+
+proc gameControllerSetLED*(gamecontroller: GameControllerPtr, red, green,
+    blue: uint8) {.
+  importc: "SDL_GameControllerSetLED".}
+  ## Update a game controller's LED color.
+  ##
+  ## `Returns` 0, or -1 if this controller does not have a modifiable LED
+
+proc gameControllerSendEffect*(gamecontroller: GameControllerPtr, data: pointer,
+    size: cint): cint {.
+  importc: "SDL_GameControllerSendEffect".}
+  ## Send a controller specific effect packet
+  ##
+  ## `Returns` 0, or -1 if this controller or driver doesn't support effect
+  ##           packets
+
+proc gameControllerGetAppleSFSymbolsNameForButton*(
+  gamecontroller: GameControllerPtr, button: GameControllerButton): cstring {.
+  importc: "SDL_GameControllerGetAppleSFSymbolsNameForButton".}
+  ## Return the sfSymbolsName for a given button on a game controller on Apple
+  ## platforms.
+  ##
+  ## `Returns` the sfSymbolsName or `nil` if the name can't be found
+
+
+proc gameControllerGetAppleSFSymbolsNameForAxis*(
+  gamecontroller: GameControllerPtr, axis: GameControllerAxis): cstring {.
+  importc: "SDL_GameControllerGetAppleSFSymbolsNameForAxis".}
+  ## Return the sfSymbolsName for a given axis on a game controller on Apple
+  ## platforms.
+  ##
+  ## `Returns` the sfSymbolsName or `nil` if the name can't be found
 
 proc close*(gameController: GameControllerPtr) {.
   importc: "SDL_GameControllerClose".}
