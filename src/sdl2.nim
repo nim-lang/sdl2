@@ -1109,6 +1109,37 @@ proc getLogicalSize*(renderer: RendererPtr; w, h: var cint) {.
   ## * `setLogicalSize proc<#setLogicalSize,RendererPtr,cint,cint>`_
 
 
+proc setIntegerScale*(renderer: RendererPtr; enable: Bool32): cint {.
+  importc: "SDL_RenderSetIntegerScale".}
+  ## Set whether to force integer scales for resolution-independent rendering.
+  ##
+  ## This function restricts the logical viewport to integer values - that is,
+  ## when a resolution is between two multiples of a logical size, the viewport
+  ## size is rounded down to the lower multiple.
+  ##
+  ## `renderer` the renderer for which integer scaling should be set
+  ## `enable` enable or disable the integer scaling for rendering
+  ##
+  ## `Return` 0 on success or a negative error code on failure
+  ##
+  ## ** See also:*
+  ## * `getIntegerScale proc<#getIntegerScale,RendererPtr>`_
+  ## * `setLogicalSize proc<#setLogicalSize,RendererPtr,cint,cint>`_
+
+
+proc getIntegerScale*(renderer: RendererPtr): Bool32 {.
+  importc: "SDL_RenderGetIntegerScale".}
+  ## Get whether integer scales are forced for resolution-independent rendering.
+  ##
+  ## `renderer` the renderer from which integer scaling should be queried
+  ##
+  ## `Return` `True32` if integer scales are forced or `False32` if not and on
+  ##          failure
+  ##
+  ## ** See also:*
+  ## * `setIntegerScale proc<#setIntegerScale,RendererPtr,Bool32>`_
+
+
 proc setDrawColor*(renderer: RendererPtr; r, g, b: uint8, a = 255'u8):
   SDL_Return {.importc: "SDL_SetRenderDrawColor", discardable.}
   ## Set the color used for drawing operations (Rect, Line and Clear).
