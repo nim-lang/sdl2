@@ -22,7 +22,7 @@ freely, subject to the following restrictions:
 ## Include file for SDL joystick event handling
 ##
 ## The term "device_index" identifies currently plugged in joystick devices
-## between 0 and SDL_NumJoysticks, with the exact joystick behind a 
+## between 0 and SDL_NumJoysticks, with the exact joystick behind a
 ## device_index changing as joysticks are plugged and unplugged.
 ##
 ## The term "instance_id" is the current instantiation of a joystick device in
@@ -31,7 +31,7 @@ freely, subject to the following restrictions:
 ## a joystick plugged in.
 ##
 ## The term JoystickGUID is a stable 128-bit identifier for a joystick device
-## that does not change over time, it identifies class of the device 
+## that does not change over time, it identifies class of the device
 ## (a X360 wired controller for example). This identifier is platform dependent.
 ##
 ## In order to use these functions, `init()` must have been called with
@@ -149,7 +149,7 @@ proc joystickGetAttached*(joystick: JoystickPtr): Bool32 {.
   ## `Return` `true` if the joystick has been opened and currently
   ## connected, or `false` if it has not.
 
-proc getAttached* (joystick: JoystickPtr): Bool32 {.inline.} =
+proc getAttached*(joystick: JoystickPtr): Bool32 {.inline.} =
   ## `Return` `true` if the joystick has been opened and currently
   ## connected, or `false` if it has not.
   joystick.joystickGetAttached
@@ -168,7 +168,7 @@ proc joystickNumAxes*(joystick: JoystickPtr): cint {.
   importc: "SDL_JoystickNumAxes".}
   ## Get the number of general axis controls on a joystick.
 
-proc numAxes* (joystick: JoystickPtr): cint {.inline.} =
+proc numAxes*(joystick: JoystickPtr): cint {.inline.} =
   ## Get the number of general axis controls on a joystick.
   joystick.joystickNumAxes
 
@@ -302,7 +302,7 @@ proc joystickGetButton*(joystick: JoystickPtr, button: cint): uint8 {.
   ##
   ## The button indices start at index `0`.
 
-proc getButton* (joystick: JoystickPtr, button: cint): uint8 {.inline.} =
+proc getButton*(joystick: JoystickPtr, button: cint): uint8 {.inline.} =
   ## Get the current state of a button on a joystick.
   ##
   ## The button indices start at index `0`.
@@ -379,7 +379,7 @@ proc joystickCurrentPowerLevel*(joystick: JoystickPtr): JoystickGuid {.
 proc joystickClose*(joystick: JoystickPtr) {.importc: "SDL_JoystickClose".}
   ## Close a joystick previously opened with `joystickOpen()`.
 
-proc close* (joystick: JoystickPtr) {.inline.} =
+proc close*(joystick: JoystickPtr) {.inline.} =
   ## Close a joystick previously opened with `joystickOpen()`.
   joystick.joystickClose()
 
