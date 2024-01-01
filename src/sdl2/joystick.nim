@@ -22,7 +22,7 @@ freely, subject to the following restrictions:
 ## Include file for SDL joystick event handling
 ##
 ## The term "device_index" identifies currently plugged in joystick devices
-## between 0 and SDL_NumJoysticks, with the exact joystick behind a 
+## between 0 and SDL_NumJoysticks, with the exact joystick behind a
 ## device_index changing as joysticks are plugged and unplugged.
 ##
 ## The term "instance_id" is the current instantiation of a joystick device in
@@ -31,7 +31,7 @@ freely, subject to the following restrictions:
 ## a joystick plugged in.
 ##
 ## The term JoystickGUID is a stable 128-bit identifier for a joystick device
-## that does not change over time, it identifies class of the device 
+## that does not change over time, it identifies class of the device
 ## (a X360 wired controller for example). This identifier is platform dependent.
 ##
 ## In order to use these functions, `init()` must have been called with
@@ -60,6 +60,28 @@ type
     ##
     ## The ID value starts at `0` and increments from there.
     ## The value `-1` is an invalid ID.
+  JoystickType* = enum
+    SDL_JOYSTICK_TYPE_UNKNOWN,
+    SDL_JOYSTICK_TYPE_GAMECONTROLLER,
+    SDL_JOYSTICK_TYPE_WHEEL,
+    SDL_JOYSTICK_TYPE_ARCADE_STICK,
+    SDL_JOYSTICK_TYPE_FLIGHT_STICK,
+    SDL_JOYSTICK_TYPE_DANCE_PAD,
+    SDL_JOYSTICK_TYPE_GUITAR,
+    SDL_JOYSTICK_TYPE_DRUM_KIT,
+    SDL_JOYSTICK_TYPE_ARCADE_PAD,
+    SDL_JOYSTICK_TYPE_THROTTLE
+  JoystickPowerLevel* = enum
+    SDL_JOYSTICK_POWER_UNKNOWN = -1,
+    SDL_JOYSTICK_POWER_EMPTY,  # <= 5%
+    SDL_JOYSTICK_POWER_LOW,    # <= 20%
+    SDL_JOYSTICK_POWER_MEDIUM, # <= 70%
+    SDL_JOYSTICK_POWER_FULL,   # <= 100%
+    SDL_JOYSTICK_POWER_WIRED,
+    SDL_JOYSTICK_POWER_MAX
+
+const
+  SDL_IPHONE_MAX_GFORCE*: cfloat = 5.0
 
 when defined(SDL_Static):
   static: echo "SDL_Static option is deprecated and will soon be removed. Instead please use --dynlibOverride:SDL2."
@@ -127,7 +149,7 @@ proc joystickGetAttached*(joystick: JoystickPtr): Bool32 {.
   ## `Return` `true` if the joystick has been opened and currently
   ## connected, or `false` if it has not.
 
-proc getAttached* (joystick: JoystickPtr): Bool32 {.inline.} =
+proc getAttached*(joystick: JoystickPtr): Bool32 {.inline.} =
   ## `Return` `true` if the joystick has been opened and currently
   ## connected, or `false` if it has not.
   joystick.joystickGetAttached
@@ -146,7 +168,7 @@ proc joystickNumAxes*(joystick: JoystickPtr): cint {.
   importc: "SDL_JoystickNumAxes".}
   ## Get the number of general axis controls on a joystick.
 
-proc numAxes* (joystick: JoystickPtr): cint {.inline.} =
+proc numAxes*(joystick: JoystickPtr): cint {.inline.} =
   ## Get the number of general axis controls on a joystick.
   joystick.joystickNumAxes
 
@@ -280,16 +302,84 @@ proc joystickGetButton*(joystick: JoystickPtr, button: cint): uint8 {.
   ##
   ## The button indices start at index `0`.
 
-proc getButton* (joystick: JoystickPtr, button: cint): uint8 {.inline.} =
+proc getButton*(joystick: JoystickPtr, button: cint): uint8 {.inline.} =
   ## Get the current state of a button on a joystick.
   ##
   ## The button indices start at index `0`.
   joystick.joystickGetButton(button)
 
+proc joystickRumble*(gamecontroller: JoystickPtr, lowFrequencyRumble,
+  highFrequencyRUmble: uint16, durationMs: uint32): SDL_Return {.
+  importc: "SDL_JoystickRumble".}
+  ## Start a rumble effect.
+  ##
+  ## Each call to this function cancels any previous rumble effect, and calling
+  ## it with 0 intensity stops any rumbling.
+  ##
+  ## `Return` 0, or -1 if rumble isn't supported on this joystick
+
+proc joystickRumbleTriggers*(joystick: JoystickPtr, leftRumble,
+  rightRumble: uint16, durationMs: uint32): cint {.
+  importc: "SDL_JoystickRumbleTriggers".}
+  ## Start a rumble effect in the joystick's triggers
+  ##
+  ## Each call to this function cancels any previous trigger rumble effect, and
+  ## calling it with 0 intensity stops any rumbling.
+  ##
+  ## Note that this is rumbling of the _triggers_ and not the game controller as
+  ## a whole. This is currently only supported on Xbox One controllers. If you
+  ## want the (more common) whole-controller rumble, use `joystickRumble`
+  ## instead.
+  ##
+  ## `Return` 0, or -1 if trigger rumble isn't supported on this joystick
+
+proc joystickHasLED*(joystick: JoystickPtr): Bool32 {.
+  importc: "SDL_JoystickHasLED".}
+  ## Query whether a joystick has an LED.
+  ##
+  ## An example of a joystick LED is the light on the back of a PlayStation 4's
+  ## DualShock 4 controller.
+  ##
+  ## `Return` True32 if the joystick has a modifiable LED, False32 otherwise.
+
+proc joystickHasRumble*(joystick: JoystickPtr): Bool32 {.
+  importc: "SDL_JoystickHasRumble".}
+  ## Query whether a joystick has rumble support.
+  ##
+  ## `Return` True32 if the joystick has rumble, False32 otherwise.
+
+proc joystickHasRumbleTriggers*(joystick: JoystickPtr): Bool32 {.
+  importc: "SDL_JoystickHasRumbleTriggers".}
+  ## Query whether a joystick has rumble support on triggers.
+  ##
+  ## `Return` True32 if the joystick has trigger rumble, False32 otherwise.
+
+proc joystickSetLED*(joystick: JoystickPtr, red, green, blue: uint8): cint {.
+  importc: "SDL_JoystickSetLED".}
+  ## Update a joystick's LED color.
+  ##
+  ## An example of a joystick LED is the light on the back of a PlayStation 4's
+  ## DualShock 4 controller.
+  ##
+  ## `Return` 0 on success, -1 if this joystick does not have a modifiable LED
+
+proc joystickSendEffect*(joystick: JoystickPtr, data: pointer,
+    size: cint): cint {.importc: "SDL_JoystickSendEffect".}
+  ## Send a joystick specific effect packet
+  ##
+  ## `Return` 0, or -1 if this joystick or driver doesn't support effect packets
+
+proc joystickCurrentPowerLevel*(joystick: JoystickPtr): JoystickGuid {.
+  importc: "SDL_JoystickCurrentPowerLevel".}
+  ## Get the battery level of a joystick as JoystickPowerLevel.
+  ##
+  ## `Return` the current battery level as JoystickPowerLevel on success or
+  ##          `SDL_JOYSTICK_POWER_UNKNOWN` if it is unknown
+
 proc joystickClose*(joystick: JoystickPtr) {.importc: "SDL_JoystickClose".}
   ## Close a joystick previously opened with `joystickOpen()`.
 
-proc close* (joystick: JoystickPtr) {.inline.} =
+proc close*(joystick: JoystickPtr) {.inline.} =
   ## Close a joystick previously opened with `joystickOpen()`.
   joystick.joystickClose()
 
