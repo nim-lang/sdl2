@@ -607,6 +607,7 @@ const # WindowFlags
 
 converter toBool*(some: Bool32): bool = bool(some)
 converter toBool*(some: SDL_Return): bool = some == SdlSuccess
+converter toCint*(some: SDL_Return): cint = some.cint
 converter toCint*(some: TextureAccess): cint = some.cint
 
 # pixel format flags
@@ -1039,7 +1040,7 @@ type
       ## `Return` the number of objects written,
       ## or `0` at error or end of file.
 
-    close*: proc (context: RWopsPtr): cint {.cdecl, tags: [WriteIOEffect].}
+    close*: proc (context: RWopsPtr): SDL_Return {.cdecl, tags: [WriteIOEffect].}
       ## Close and free an allocated RWops object.
       ##
       ## `Return` `0` if successful,
@@ -1219,7 +1220,7 @@ proc destroy*(renderer: RendererPtr) {.importc: "SDL_DestroyRenderer".}
 proc getDisplayIndex*(window: WindowPtr): cint {.importc: "SDL_GetWindowDisplayIndex".}
 
 proc setDisplayMode*(window: WindowPtr;
-  mode: ptr DisplayMode): SDL_Return {.importc: "SDL_SetWindowDisplayMode".}
+  mode: ptr DisplayMode): SDL_Return {.importc: "SDL_SetWindowDisplayMode", discardable.}
 
 proc getDisplayMode*(window: WindowPtr; mode: var DisplayMode): cint  {.
   importc: "SDL_GetWindowDisplayMode".}
@@ -1370,7 +1371,7 @@ proc setBordered*(window: WindowPtr; bordered: Bool32) {.importc: "SDL_SetWindow
   ## * `getFlags proc<#getFlags,WindowPtr>`_
 
 proc setFullscreen*(window: WindowPtr;
-  fullscreen: uint32): SDL_Return {.importc: "SDL_SetWindowFullscreen".}
+  fullscreen: uint32): SDL_Return {.importc: "SDL_SetWindowFullscreen", discardable.}
   ## Set a window's fullscreen state.
   ##
   ## `Return` `0` on success, or `-1` if setting the display mode failed.
@@ -1394,7 +1395,7 @@ proc getSurface*(window: WindowPtr): SurfacePtr {.importc: "SDL_GetWindowSurface
   ## * `updateSurface proc<#updateSurface,WindowPtr>`_
   ## * `updateSurfaceRects proc<#updateSurfaceRects,WindowPtr,ptr.Rect,cint>`_
 
-proc updateSurface*(window: WindowPtr): SDL_Return  {.importc: "SDL_UpdateWindowSurface".}
+proc updateSurface*(window: WindowPtr): SDL_Return  {.importc: "SDL_UpdateWindowSurface", discardable.}
   ## Copy the window surface to the screen.
   ##
   ## `Return` `0` on success, or `-1` on error.
@@ -1404,7 +1405,7 @@ proc updateSurface*(window: WindowPtr): SDL_Return  {.importc: "SDL_UpdateWindow
   ## * `updateSurfaceRects proc<#updateSurfaceRects,WindowPtr,ptr.Rect,cint>`_
 
 proc updateSurfaceRects*(window: WindowPtr; rects: ptr Rect;
-  numrects: cint): SDL_Return  {.importc: "SDL_UpdateWindowSurfaceRects".}
+  numrects: cint): SDL_Return {.importc: "SDL_UpdateWindowSurfaceRects", discardable.}
   ## Copy a number of rectangles on the window surface to the screen.
   ##
   ## `Return` `0` on success, or `-1` on error.
@@ -1412,6 +1413,10 @@ proc updateSurfaceRects*(window: WindowPtr; rects: ptr Rect;
   ## **See also:**
   ## * `getSurface proc<#getSurface,WindowPtr>`_
   ## * `updateSurface proc<#updateSurface,WindowPtr>`_
+proc updateSurfaceRects*(window: WindowPtr;
+                         rects: openarray[Rect]): SDL_Return {.inline, discardable.} =
+  ## Copy a number of rectangles on the window surface to the screen.
+  updateSurfaceRects(window, rects[0].unsafeAddr, rects.len.cint)
 
 proc setGrab*(window: WindowPtr; grabbed: Bool32) {.importc: "SDL_SetWindowGrab".}
   ## Set a window's input grab mode.
@@ -1435,7 +1440,7 @@ proc getGrab*(window: WindowPtr): Bool32 {.importc: "SDL_GetWindowGrab".}
   ## * `setGrab proc<#setGrab,WindowPtr,Bool32>`_
 
 proc setBrightness*(window: WindowPtr;
-  brightness: cfloat): SDL_Return {.importc: "SDL_SetWindowBrightness".}
+  brightness: cfloat): SDL_Return {.importc: "SDL_SetWindowBrightness", discardable.}
   ## Set the brightness (gamma correction) for a window.
   ##
   ## `Return` `0` on success,
@@ -1454,7 +1459,7 @@ proc getBrightness*(window: WindowPtr): cfloat {.importc: "SDL_GetWindowBrightne
   ## * `setBrightness proc<#setBrightness,WindowPtr,cfloat>`_
 
 proc setGammaRamp*(window: WindowPtr;
-  red, green, blue: ptr uint16): SDL_Return {.importc: "SDL_SetWindowGammaRamp".}
+  red, green, blue: ptr uint16): SDL_Return {.importc: "SDL_SetWindowGammaRamp", discardable.}
   ## Set the gamma ramp for a window.
   ##
   ## `window` The window for which the gamma ramp should be set.
@@ -1478,7 +1483,7 @@ proc setGammaRamp*(window: WindowPtr;
 
 proc getGammaRamp*(window: WindowPtr; red: ptr uint16;
                   green: ptr uint16;
-                  blue: ptr uint16): cint {.importc: "SDL_GetWindowGammaRamp".}
+                  blue: ptr uint16): SDL_Return {.importc: "SDL_GetWindowGammaRamp", discardable.}
   ## Get the gamma ramp for a window.
   ##
   ## `window` The window from which the gamma ramp should be queried.
@@ -1658,7 +1663,7 @@ proc getNumRenderDrivers*(): cint {.importc: "SDL_GetNumRenderDrivers".}
   ## * `createRenderer proc<#createRenderer,WindowPtr,cint,cint>`_
 
 proc getRenderDriverInfo*(index: cint; info: var RendererInfo): SDL_Return {.
-  importc: "SDL_GetRenderDriverInfo".}
+  importc: "SDL_GetRenderDriverInfo", discardable.}
   ## Get information about a specific 2D rendering driver
   ## for the current display.
   ##
@@ -1674,7 +1679,7 @@ proc getRenderDriverInfo*(index: cint; info: var RendererInfo): SDL_Return {.
 
 proc createWindowAndRenderer*(width, height: cint; window_flags: uint32;
   window: var WindowPtr; renderer: var RendererPtr): SDL_Return {.
-  importc: "SDL_CreateWindowAndRenderer".}
+  importc: "SDL_CreateWindowAndRenderer", discardable.}
   ## Create a window and default renderer.
   ##
   ## `width` The width of the window.
@@ -1725,8 +1730,14 @@ proc getRenderer*(window: WindowPtr): RendererPtr {.
 proc getRendererInfo*(renderer: RendererPtr; info: RendererInfoPtr): cint {.
   importc: "SDL_GetRendererInfo".}
   ## Get information about a rendering context.
+proc getInfo*(renderer: RendererPtr; info: RendererInfoPtr): cint {.
+  importc: "SDL_GetRendererInfo".}
+  ## Get information about a rendering context.
 
 proc getRendererOutputSize*(renderer: RendererPtr, w: ptr cint, h: ptr cint): cint {.
+  importc: "SDL_GetRendererOutputSize".}
+  ## Get the output size in pixels of a rendering context.
+proc getOutputSize*(renderer: RendererPtr, w: ptr cint, h: ptr cint): cint {.
   importc: "SDL_GetRendererOutputSize".}
   ## Get the output size in pixels of a rendering context.
 
@@ -1794,9 +1805,9 @@ proc query*(texture: TexturePtr; format: ptr uint32;
 
 
 proc setTextureColorMod*(texture: TexturePtr; r, g, b: uint8): SDL_Return {.
-  importc: "SDL_SetTextureColorMod".}
+  importc: "SDL_SetTextureColorMod", discardable.}
 proc setColorMod*(texture: TexturePtr; r, g, b: uint8): SDL_Return {.
-  importc: "SDL_SetTextureColorMod".}
+  importc: "SDL_SetTextureColorMod", discardable.}
   ## Set an additional color value used in render copy operations.
   ##
   ## `texture` The texture to update.
@@ -1814,9 +1825,9 @@ proc setColorMod*(texture: TexturePtr; r, g, b: uint8): SDL_Return {.
   ## * `getColorMod proc<#getColorMod,TexturePtr,uint8,uint8,uint8>`_
 
 proc getTextureColorMod*(texture: TexturePtr; r, g, b: var uint8): SDL_Return {.
-  importc: "SDL_GetTextureColorMod".}
+  importc: "SDL_GetTextureColorMod", discardable.}
 proc getColorMod*(texture: TexturePtr; r, g, b: var uint8): SDL_Return {.
-  importc: "SDL_GetTextureColorMod".}
+  importc: "SDL_GetTextureColorMod", discardable.}
   ## Get the additional color value used in render copy operations.
   ##
   ## `texture` The texture to query.
@@ -2099,7 +2110,7 @@ proc drawPoint*(renderer: RendererPtr; x, y: cint): SDL_Return {.
   ##
   ## `y` The y coordinate of the point.
 
-proc drawPointF*(renderer: RendererPtr; x, y: cfloat): SDL_Return {.
+proc drawPoint*(renderer: RendererPtr; x, y: cfloat): SDL_Return {.
   importc: "SDL_RenderDrawPointF", discardable.}
   ## Draw a point on the current rendering target.
   ##
@@ -2121,7 +2132,12 @@ proc drawPoints*(renderer: RendererPtr; points: ptr Point;
   ##
   ## `Return` `0` on success, or `-1` on error.
 
-proc drawPointsF*(renderer: RendererPtr; points: ptr PointF;
+proc drawPoints*(renderer: RendererPtr;
+  points: openarray[Point]): SDL_Return {.inline, discardable.} =
+  ## Draw multiple points on the current rendering target.
+  drawPoints(renderer, points[0].unsafeAddr, points.len.cint)
+
+proc drawPoints*(renderer: RendererPtr; points: ptr PointF;
   count: cint): SDL_Return {.importc: "SDL_RenderDrawPointsF", discardable.}
   ## Draw multiple points on the current rendering target.
   ##
@@ -2132,6 +2148,10 @@ proc drawPointsF*(renderer: RendererPtr; points: ptr PointF;
   ## `count` The number of points to draw.
   ##
   ## `Return` `0` on success, or `-1` on error.
+proc drawPoints*(renderer: RendererPtr;
+  points: openarray[PointF]): SDL_Return {.inline, discardable.} =
+  ## Draw multiple points on the current rendering target.
+  drawPoints(renderer, points[0].unsafeAddr, points.len.cint)
 
 proc drawLine*(renderer: RendererPtr; x1, y1, x2, y2: cint): SDL_Return {.
   importc: "SDL_RenderDrawLine", discardable.}
@@ -2147,7 +2167,7 @@ proc drawLine*(renderer: RendererPtr; x1, y1, x2, y2: cint): SDL_Return {.
   ##
   ## `y2` The y coordinate of the end point.
 
-proc drawLineF*(renderer: RendererPtr; x1, y1, x2, y2: cfloat): SDL_Return {.
+proc drawLine*(renderer: RendererPtr; x1, y1, x2, y2: cfloat): SDL_Return {.
   importc: "SDL_RenderDrawLineF", discardable.}
   ## Draw a line on the current rendering target.
   ##
@@ -2171,7 +2191,12 @@ proc drawLines*(renderer: RendererPtr; points: ptr Point;
   ##
   ## `count` The number of points, drawing `count-1` lines.
 
-proc drawLinesF*(renderer: RendererPtr; points: ptr PointF;
+proc drawLines*(renderer: RendererPtr;
+  points: openarray[Point]): SDL_Return {.inline, discardable.} =
+  ## Draw a series of connected lines on the current rendering target.
+  drawLines(renderer, points[0].unsafeAddr, points.len.cint)
+
+proc drawLines*(renderer: RendererPtr; points: ptr PointF;
   count: cint): SDL_Return {.importc: "SDL_RenderDrawLinesF", discardable.}
   ## Draw a series of connected lines on the current rendering target.
   ##
@@ -2181,11 +2206,10 @@ proc drawLinesF*(renderer: RendererPtr; points: ptr PointF;
   ##
   ## `count` The number of points, drawing `count-1` lines.
 
-proc drawRect*(renderer: RendererPtr; rect: var Rect): SDL_Return{.
-  importc: "SDL_RenderDrawRect", discardable.}
-
-proc drawRectF*(renderer: RendererPtr; rect: var RectF): SDL_Return{.
-  importc: "SDL_RenderDrawRectF", discardable.}
+proc drawLines*(renderer: RendererPtr;
+  points: openarray[PointF]): SDL_Return {.inline, discardable.} =
+  ## Draw a series of connected lines on the current rendering target.
+  drawLines(renderer, points[0].unsafeAddr, points.len.cint)
 
 proc drawRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return{.
   importc: "SDL_RenderDrawRect", discardable.}
@@ -2196,7 +2220,10 @@ proc drawRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return{.
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` to outline the entire rendering target.
 
-proc drawRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return{.
+proc drawRect*(renderer: RendererPtr; rect: Rect): SDL_Return {.inline, discardable.} =
+  drawRect(renderer, rect.unsafeAddr)
+
+proc drawRect*(renderer: RendererPtr; rect: ptr RectF): SDL_Return {.
   importc: "SDL_RenderDrawRectF", discardable.}
   ## Draw a rectangle on the current rendering target.
   ##
@@ -2205,8 +2232,11 @@ proc drawRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return{.
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` to outline the entire rendering target.
 
+proc drawRect*(renderer: RendererPtr; rect: RectF): SDL_Return {.inline, discardable.} =
+  drawRect(renderer, rect.unsafeAddr)
+
 proc drawRects*(renderer: RendererPtr; rects: ptr Rect;
-  count: cint): SDL_Return {.importc: "SDL_RenderDrawRects".}
+  count: cint): SDL_Return {.importc: "SDL_RenderDrawRects", discardable.}
   ## Draw some number of rectangles on the current rendering target.
   ##
   ## `renderer` The renderer which should draw multiple rectangles.
@@ -2215,21 +2245,16 @@ proc drawRects*(renderer: RendererPtr; rects: ptr Rect;
   ##
   ## `count` The number of rectangles.
 
-proc drawRectsF*(renderer: RendererPtr; rects: ptr RectF;
-  count: cint): SDL_Return {.importc: "SDL_RenderDrawRectsF".}
+proc drawRects*(renderer: RendererPtr; rects: openarray[Rect]): SDL_Return {.inline, discardable.} =
   ## Draw some number of rectangles on the current rendering target.
-  ##
-  ## `renderer` The renderer which should draw multiple rectangles.
-  ##
-  ## `rects` A pointer to an array of destination rectangles.
-  ##
-  ## `count` The number of rectangles.
+  drawRects(renderer, rects[0].unsafeAddr, rects.len.cint)
 
-proc fillRect*(renderer: RendererPtr; rect: var Rect): SDL_Return {.
-  importc: "SDL_RenderFillRect", discardable.}
+proc drawRects*(renderer: RendererPtr; rects: ptr RectF;
+  count: cint): SDL_Return {.importc: "SDL_RenderDrawRectsF", discardable.}
 
-proc fillRectF*(renderer: RendererPtr; rect: var RectF): SDL_Return {.
-  importc: "SDL_RenderFillRectF", discardable.}
+proc drawRects*(renderer: RendererPtr; rects: openarray[RectF]): SDL_Return {.inline, discardable.} =
+  ## Draw some number of rectangles on the current rendering target.
+  drawRects(renderer, rects[0].unsafeAddr, rects.len.cint)
 
 proc fillRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return {.
   importc: "SDL_RenderFillRect", discardable.}
@@ -2240,7 +2265,11 @@ proc fillRect*(renderer: RendererPtr; rect: ptr Rect = nil): SDL_Return {.
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
 
-proc fillRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return {.
+proc fillRect*(renderer: RendererPtr; rect: Rect): SDL_Return {.inline, discardable.} =
+  ## Fill a rectangle on the current rendering target with the drawing color.
+  fillRect(renderer, rect.unsafeAddr)
+
+proc fillRect*(renderer: RendererPtr; rect: ptr RectF): SDL_Return {.
   importc: "SDL_RenderFillRectF", discardable.}
   ## Fill a rectangle on the current rendering target with the drawing color.
   ##
@@ -2248,6 +2277,10 @@ proc fillRectF*(renderer: RendererPtr; rect: ptr RectF = nil): SDL_Return {.
   ##
   ## `rect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
+
+proc fillRect*(renderer: RendererPtr; rect: RectF): SDL_Return {.inline, discardable.} =
+  ## Fill a rectangle on the current rendering target with the drawing color.
+  fillRect(renderer, rect.unsafeAddr)
 
 proc fillRects*(renderer: RendererPtr; rects: ptr Rect;
   count: cint): SDL_Return {.importc: "SDL_RenderFillRects", discardable.}
@@ -2260,7 +2293,12 @@ proc fillRects*(renderer: RendererPtr; rects: ptr Rect;
   ##
   ## `count` The number of rectangles.
 
-proc fillRectsF*(renderer: RendererPtr; rects: ptr RectF;
+proc fillRects*(renderer: RendererPtr; rects: openarray[Rect]): SDL_Return {.inline, discardable.} =
+  ## Fill some number of rectangles on the current rendering target
+  ## with the drawing color.
+  fillRects(renderer, rects[0].unsafeAddr, rects.len.cint)
+
+proc fillRects*(renderer: RendererPtr; rects: ptr RectF;
   count: cint): SDL_Return {.importc: "SDL_RenderFillRectsF", discardable.}
   ## Fill some number of rectangles on the current rendering target
   ## with the drawing color.
@@ -2270,6 +2308,11 @@ proc fillRectsF*(renderer: RendererPtr; rects: ptr RectF;
   ## `rects` A pointer to an array of destination rectangles.
   ##
   ## `count` The number of rectangles.
+
+proc fillRects*(renderer: RendererPtr, rects: openarray[RectF]): SDL_Return {.inline, discardable.} =
+  ## Fill some number of rectangles on the current rendering target
+  ## with the drawing color.
+  fillRects(renderer, rects[0].unsafeAddr, rects.len.cint)
 
 proc copy*(renderer: RendererPtr; texture: TexturePtr;
   srcrect, dstrect: ptr Rect): SDL_Return {.
@@ -2286,7 +2329,12 @@ proc copy*(renderer: RendererPtr; texture: TexturePtr;
   ## `dstrect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
 
-proc copyF*(renderer: RendererPtr; texture: TexturePtr;
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
+  srcrect, dstrect: Rect): SDL_Return {.inline, discardable.} =
+  ## Copy a portion of the texture to the current rendering target.
+  copy(renderer, texture, srcrect.unsafeAddr, dstrect.unsafeAddr)
+
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
   srcrect: ptr Rect, dstrect: ptr RectF): SDL_Return {.
   importc: "SDL_RenderCopyF", discardable.}
   ## Copy a portion of the texture to the current rendering target.
@@ -2301,11 +2349,16 @@ proc copyF*(renderer: RendererPtr; texture: TexturePtr;
   ## `dstrect` A pointer to the destination rectangle,
   ## or `nil` for the entire rendering target.
 
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
+  srcrect: Rect, dstrect: RectF): SDL_Return {.inline, discardable.} =
+  ## Copy a portion of the texture to the current rendering target.
+  copy(renderer, texture, srcrect.unsafeAddr, dstrect.unsafeAddr)
+
 proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
              srcrect, dstrect: var Rect; angle: cdouble; center: ptr Point;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyEx", discardable.}
-proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
              srcrect, dstrect: ptr Rect; angle: cdouble; center: ptr Point;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyEx", discardable.}
@@ -2332,11 +2385,14 @@ proc copyEx*(renderer: RendererPtr; texture: TexturePtr;
   ## `flip` `RendererFlip` value stating which flipping actions should be
   ## performed on the texture.
 
-proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
-             srcrect: ptr Rect, dstrect: var RectF; angle: cdouble; center: ptr PointF;
-             flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
-             importc: "SDL_RenderCopyExF", discardable.}
-proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
+             srcrect, dstrect: Rect; angle: cdouble; center: Point;
+             flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.inline, discardable.} =
+  ## Copy a portion of the source texture to the current rendering target,
+  ## rotating it by angle around the given center.
+  copy(renderer, texture, srcrect.unsafeAddr, dstrect.unsafeAddr, angle, center.unsafeAddr, flip)
+
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
              srcrect: ptr Rect, dstrect: ptr RectF; angle: cdouble; center: ptr PointF;
              flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.
              importc: "SDL_RenderCopyExF", discardable.}
@@ -2363,6 +2419,11 @@ proc copyExF*(renderer: RendererPtr; texture: TexturePtr;
   ## `flip` `RendererFlip` value stating which flipping actions should be
   ## performed on the texture.
 
+proc copy*(renderer: RendererPtr; texture: TexturePtr;
+             srcrect: Rect, dstrect: RectF; angle: cdouble; center: PointF;
+             flip: RendererFlip = SDL_FLIP_NONE): SDL_Return {.inline, discardable.} =
+  copy(renderer, texture, srcrect.unsafeAddr, dstrect.unsafeAddr, angle, center.unsafeAddr, flip)
+
 proc clear*(renderer: RendererPtr): SDL_Return {.
   importc: "SDL_RenderClear", discardable.}
   ## Clear the current rendering target with the drawing color.
@@ -2370,11 +2431,8 @@ proc clear*(renderer: RendererPtr): SDL_Return {.
   ## This procedure clears the entire rendering target, ignoring the viewport,
   ## and the clip rectangle.
 
-
-proc readPixels*(renderer: RendererPtr; rect: var Rect; format: cint;
-  pixels: pointer; pitch: cint): cint {.importc: "SDL_RenderReadPixels".}
 proc readPixels*(renderer: RendererPtr; rect: ptr Rect; format: cint;
-  pixels: pointer; pitch: cint): cint {.importc: "SDL_RenderReadPixels".}
+  pixels: pointer; pitch: cint): SDL_Return {.importc: "SDL_RenderReadPixels", discardable.}
   ## Read pixels from the current rendering target.
   ##
   ## `renderer` The renderer from which pixels should be read.
@@ -2394,12 +2452,16 @@ proc readPixels*(renderer: RendererPtr; rect: ptr Rect; format: cint;
   ## `Warning:` This is a very slow operation,
   ## and should not be used frequently.
 
+proc readPixels*(renderer: RendererPtr; rect: Rect; format: cint;
+  pixels: pointer; pitch: cint): SDL_Return {.inline, discardable.} =
+  readPixels(renderer, rect.unsafeAddr, format, pixels, pitch)
+
 proc present*(renderer: RendererPtr) {.importc: "SDL_RenderPresent".}
   ## Update the screen with rendering performed.
 
 
-proc glBindTexture*(texture: TexturePtr; texw, texh: var cfloat): cint {.
-  importc: "SDL_GL_BindTexture".}
+proc glBindTexture*(texture: TexturePtr; texw, texh: var cfloat): SDL_Return {.
+  importc: "SDL_GL_BindTexture", discardable.}
   ## Bind the texture to the current OpenGL/ES/ES2 context for use
   ## with OpenGL instructions.
   ##
@@ -2456,8 +2518,12 @@ proc setPalette*(surface: SurfacePtr; palette: ptr Palette): cint {.
   ##
   ## **Note:** A single palette can be shared with many surfaces.
 
-proc lockSurface*(surface: SurfacePtr): cint {.importc: "SDL_LockSurface".}
-proc lock*(surface: SurfacePtr): cint {.importc: "SDL_LockSurface".}
+proc setPalette*(surface: SurfacePtr; palette: Palette): cint {.inline.} =
+  ## Set the palette used by a surface.
+  setPalette(surface, palette.unsafeAddr)
+
+proc lockSurface*(surface: SurfacePtr): SDL_Return {.importc: "SDL_LockSurface", discardable.}
+proc lock*(surface: SurfacePtr): SDL_Return {.importc: "SDL_LockSurface", discardable.}
   ## Sets up a surface for directly accessing the pixels.
   ##
   ## Between calls to `lock()` / `unlock()`, you can write
@@ -2505,7 +2571,7 @@ proc freeRW*(area: RWopsPtr) {.importc: "SDL_FreeRW".}
 
 
 proc saveBMP_RW*(surface: SurfacePtr; dst: RWopsPtr;
-                 freedst: cint): SDL_Return {.importc: "SDL_SaveBMP_RW".}
+                 freedst: cint): SDL_Return {.importc: "SDL_SaveBMP_RW", discardable.}
   ## Save a surface to a seekable SDL data stream (memory or file).
   ##
   ## Surfaces with a 24-bit, 32-bit and paletted 8-bit format get saved in the
@@ -2519,8 +2585,8 @@ proc saveBMP_RW*(surface: SurfacePtr; dst: RWopsPtr;
   ## `Return` `0` if successful or `-1` if there was an error.
 
 
-proc setSurfaceRLE*(surface: SurfacePtr; flag: cint): cint {.
-  importc:"SDL_SetSurfaceRLE".}
+proc setSurfaceRLE*(surface: SurfacePtr; flag: cint): SDL_Return {.
+  importc:"SDL_SetSurfaceRLE", discardable.}
   ## Sets the RLE acceleration hint for a surface.
   ##
   ## `Return` `0` on success, or `-1` if the surface is not valid.
@@ -2529,8 +2595,8 @@ proc setSurfaceRLE*(surface: SurfacePtr; flag: cint): cint {.
   ## much faster, but the surface must be locked before directly
   ## accessing the pixels.
 
-proc setColorKey*(surface: SurfacePtr; flag: cint; key: uint32): cint {.
-  importc: "SDL_SetColorKey".}
+proc setColorKey*(surface: SurfacePtr; flag: cint; key: uint32): SDL_Return {.
+  importc: "SDL_SetColorKey", discardable.}
   ## Sets the color key (transparent pixel) in a blittable surface.
   ##
   ## `surface` The surface to update.
@@ -2543,8 +2609,8 @@ proc setColorKey*(surface: SurfacePtr; flag: cint; key: uint32): cint {.
   ##
   ## You can pass `SDL_RLEACCEL` to enable RLE accelerated blits.
 
-proc getColorKey*(surface: SurfacePtr; key: var uint32): cint {.
-  importc: "SDL_GetColorKey".}
+proc getColorKey*(surface: SurfacePtr; key: var uint32): SDL_Return {.
+  importc: "SDL_GetColorKey", discardable.}
   ## Gets the color key (transparent pixel) in a blittable surface.
   ##
   ## `surface` The surface to update.
@@ -2555,10 +2621,10 @@ proc getColorKey*(surface: SurfacePtr; key: var uint32): cint {.
   ## `Return` `0` on success, or `-1` if the surface is not valid or
   ## colorkey is not enabled.
 
-proc setSurfaceColorMod*(surface: SurfacePtr; r, g, b: uint8): cint {.
-  importc: "SDL_SetSurfaceColorMod".}
-proc setColorMod*(surface: SurfacePtr; r, g, b: uint8): cint {.
-  importc: "SDL_SetSurfaceColorMod".}
+proc setSurfaceColorMod*(surface: SurfacePtr; r, g, b: uint8): SDL_Return {.
+  importc: "SDL_SetSurfaceColorMod", discardable.}
+proc setColorMod*(surface: SurfacePtr; r, g, b: uint8): SDL_Return {.
+  importc: "SDL_SetSurfaceColorMod", discardable.}
   ## Set an additional color value used in blit operations.
   ##
   ## `surface` The surface to update.
@@ -2574,10 +2640,10 @@ proc setColorMod*(surface: SurfacePtr; r, g, b: uint8): cint {.
   ## **See also:**
   ## * `getColorMod proc<#getColorMod,SurfacePtr,uint8,uint8,uint8>`_
 
-proc getSurfaceColorMod*(surface: SurfacePtr; r, g, b: var uint8): cint {.
-  importc: "SDL_GetSurfaceColorMod".}
-proc getColorMod*(surface: SurfacePtr; r, g, b: var uint8): cint {.
-  importc: "SDL_GetSurfaceColorMod".}
+proc getSurfaceColorMod*(surface: SurfacePtr; r, g, b: var uint8): SDL_Return {.
+  importc: "SDL_GetSurfaceColorMod", discardable.}
+proc getColorMod*(surface: SurfacePtr; r, g, b: var uint8): SDL_Return {.
+  importc: "SDL_GetSurfaceColorMod", discardable.}
   ## Get the additional color value used in blit operations.
   ##
   ## `surface` The surface to query.
@@ -2593,10 +2659,10 @@ proc getColorMod*(surface: SurfacePtr; r, g, b: var uint8): cint {.
   ## **See also:**
   ## * `setColorMod proc<#setColorMod,SurfacePtr,uint8,uint8,uint8>`_
 
-proc setSurfaceAlphaMod*(surface: SurfacePtr; alpha: uint8): cint {.
-  importc: "SDL_SetSurfaceAlphaMod".}
-proc setAlphaMod*(surface: SurfacePtr; alpha: uint8): cint {.
-  importc: "SDL_SetSurfaceAlphaMod".}
+proc setSurfaceAlphaMod*(surface: SurfacePtr; alpha: uint8): SDL_Return {.
+  importc: "SDL_SetSurfaceAlphaMod", discardable.}
+proc setAlphaMod*(surface: SurfacePtr; alpha: uint8): SDL_Return {.
+  importc: "SDL_SetSurfaceAlphaMod", discardable.}
   ## Set an additional alpha value used in blit operations.
   ##
   ## `surface` The surface to update.
@@ -2608,10 +2674,10 @@ proc setAlphaMod*(surface: SurfacePtr; alpha: uint8): cint {.
   ## **See also:**
   ## * `getAlphaMod proc<#getAlphaMod,SurfacePtr,uint8>`_
 
-proc getSurfaceAlphaMod*(surface: SurfacePtr; alpha: var uint8): cint {.
-  importc: "SDL_GetSurfaceAlphaMod".}
-proc getAlphaMod*(surface: SurfacePtr; alpha: var uint8): cint {.
-  importc: "SDL_GetSurfaceAlphaMod".}
+proc getSurfaceAlphaMod*(surface: SurfacePtr; alpha: var uint8): SDL_Return {.
+  importc: "SDL_GetSurfaceAlphaMod", discardable.}
+proc getAlphaMod*(surface: SurfacePtr; alpha: var uint8): SDL_Return {.
+  importc: "SDL_GetSurfaceAlphaMod", discardable.}
   ## Get the additional alpha value used in blit operations.
   ##
   ## `surface` The surface to query.
@@ -2623,10 +2689,10 @@ proc getAlphaMod*(surface: SurfacePtr; alpha: var uint8): cint {.
   ## **See also:**
   ## * `setAlphaMod proc<#setAlphaMod,SurfacePtr,uint8>`_
 
-proc setSurfaceBlendMode*(surface: SurfacePtr; blendMode: BlendMode): cint {.
-  importc: "SDL_SetSurfaceBlendMode".}
-proc setBlendMode*(surface: SurfacePtr; blendMode: BlendMode): cint {.
-  importc: "SDL_SetSurfaceBlendMode".}
+proc setSurfaceBlendMode*(surface: SurfacePtr; blendMode: BlendMode): SDL_Return {.
+  importc: "SDL_SetSurfaceBlendMode", discardable.}
+proc setBlendMode*(surface: SurfacePtr; blendMode: BlendMode): SDL_Return {.
+  importc: "SDL_SetSurfaceBlendMode", discardable.}
   ## Set the blend mode used for blit operations.
   ##
   ## `surface` The surface to update.
@@ -2638,10 +2704,10 @@ proc setBlendMode*(surface: SurfacePtr; blendMode: BlendMode): cint {.
   ## **See also:**
   ## * `getBlendMode proc<#getBlendMode,SurfacePtr,ptr.BlendMode>`_
 
-proc getSurfaceBlendMode*(surface: SurfacePtr; blendMode: ptr BlendMode): cint {.
-  importc: "SDL_GetSurfaceBlendMode".}
-proc getBlendMode*(surface: SurfacePtr; blendMode: ptr BlendMode): cint {.
-  importc: "SDL_GetSurfaceBlendMode".}
+proc getSurfaceBlendMode*(surface: SurfacePtr; blendMode: ptr BlendMode): SDL_Return {.
+  importc: "SDL_GetSurfaceBlendMode", discardable.}
+proc getBlendMode*(surface: SurfacePtr; blendMode: ptr BlendMode): SDL_Return {.
+  importc: "SDL_GetSurfaceBlendMode", discardable.}
   ## Get the blend mode used for blit operations.
   ##
   ## `surface`   The surface to query.
@@ -2665,6 +2731,8 @@ proc setClipRect*(surface: SurfacePtr; rect: ptr Rect): Bool32 {.
   ##
   ## Note that blits are automatically clipped to the edges of the source
   ## and destination surfaces.
+proc setClipRect*(surface: SurfacePtr; rect: Rect): Bool32 {.inline.} =
+  setClipRect(surface, rect.unsafeAddr)
 
 proc getClipRect*(surface: SurfacePtr; rect: ptr Rect) {.
   importc: "SDL_GetClipRect".}
@@ -2673,9 +2741,11 @@ proc getClipRect*(surface: SurfacePtr; rect: ptr Rect) {.
   ## `rect` must be a pointer to a valid rectangle which will be filled
   ## with the correct values.
 
+proc getClipRect*(surface: SurfacePtr; rect: var Rect) {.
+  importc: "SDL_GetClipRect".}
 
-proc setClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
-  importc: "SDL_RenderSetClipRect".}
+proc setClipRect*(renderer: RendererPtr; rect: ptr Rect): SDL_Return {.
+  importc: "SDL_RenderSetClipRect", discardable.}
   ## Set the clip rectangle for the current target.
   ##
   ## `renderer` The renderer for which clip rectangle should be set.
@@ -2688,7 +2758,10 @@ proc setClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   ## **See also:**
   ## * `getClipRect proc<#getClipRect,RendererPtr,ptr.Rect>`_
 
-proc getClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
+proc setClipRect*(renderer: RendererPtr; rect: Rect): SDL_Return {.inline, discardable.} =
+  setClipRect(renderer, rect.unsafeAddr)
+
+proc getClipRect*(renderer: RendererPtr; rect: ptr Rect) {.
   importc: "SDL_RenderGetClipRect".}
   ## Get the clip rectangle for the current target.
   ##
@@ -2700,7 +2773,10 @@ proc getClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   ## **See also:**
   ## * `setClipRect proc<#setClipRect,SurfacePtr,ptr.Rect>`_
 
-proc isClipEnabled*(renderer: RendererPtr): cint {.
+proc getClipRect*(renderer: RendererPtr; rect: var Rect) {.
+  importc: "SDL_RenderGetClipRect".}
+
+proc isClipEnabled*(renderer: RendererPtr): Bool32 {.
   importc: "SDL_RenderIsClipEnabled".}
   ## Get whether clipping is enabled on the given renderer.
   ##
@@ -2723,14 +2799,17 @@ proc convert*(src: SurfacePtr; fmt: ptr PixelFormat;
   ## SDL will try to RLE accelerate colorkey and alpha blits in the resulting
   ## surface.
 
+proc convert*(src: SurfacePtr; fmt: PixelFormat; flags: cint): SurfacePtr {.inline.} =
+  convert(src, fmt, flags)
+
 proc convertSurfaceFormat*(src: SurfacePtr; pixel_format,
   flags: uint32): SurfacePtr {.importc: "SDL_ConvertSurfaceFormat".}
 proc convert*(src: SurfacePtr; pixel_format,
   flags: uint32): SurfacePtr {.importc: "SDL_ConvertSurfaceFormat".}
 
 proc convertPixels*(width, height: cint; src_format: uint32; src: pointer;
-  src_pitch: cint; dst_format: uint32; dst: pointer; dst_pitch: cint): cint {.
-  importc: "SDL_ConvertPixels".}
+  src_pitch: cint; dst_format: uint32; dst: pointer; dst_pitch: cint): SDL_Return {.
+  importc: "SDL_ConvertPixels", discardable.}
   ## Copy a block of pixels of one format to another format.
   ##
   ## `Return` `0` on success, or `-1` if there was an error.
@@ -2744,39 +2823,73 @@ proc fillRect*(dst: SurfacePtr; rect: ptr Rect; color: uint32): SDL_Return {.
   ##
   ## `Return` `0` on success, or `-1` on error.
 
+proc fillRect*(dst: SurfacePtr; rect: Rect; color: uint32): SDL_Return {.inline, discardable.} =
+  fillRect(dst, rect.unsafeAddr, color)
+
 proc fillRects*(dst: SurfacePtr; rects: ptr Rect; count: cint;
                     color: uint32): cint {.importc: "SDL_FillRects".}
 
+proc fillRects*(dst: SurfacePtr; rects: openarray[Rect]; color: uint32): cint {.inline.} =
+  fillRects(dst, rects[0].unsafeAddr, rects.len.cint, color)
+
 proc upperBlit*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
-  dstrect: ptr Rect): SDL_Return {.importc: "SDL_UpperBlit".}
+  dstrect: ptr Rect): SDL_Return {.importc: "SDL_UpperBlit", discardable.}
   ## This is the public blit procedure, `blitSurface()`, and it performs
   ## rectangle validation and clipping before passing it to `lowerBlit()`.
 
+proc upperBlit*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline, discardable.} =
+  ## This is the public blit procedure, `blitSurface()`, and it performs
+  ## rectangle validation and clipping before passing it to `lowerBlit()`.
+  upperBlit(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
+
 proc lowerBlit*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
-  dstrect: ptr Rect): SDL_Return {.importc: "SDL_LowerBlit".}
+  dstrect: ptr Rect): SDL_Return {.importc: "SDL_LowerBlit", discardable.}
   ## This is a semi-private blit procedure and it performs low-level surface
   ## blitting only.
 
+proc lowerBlit*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline, discardable.} =
+  ## This is a semi-private blit procedure and it performs low-level surface
+  ## blitting only.
+  lowerBlit(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
 
 proc softStretch*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
-  dstrect: ptr Rect): SDL_Return {.importc: "SDL_SoftStretch".}
+  dstrect: ptr Rect): SDL_Return {.importc: "SDL_SoftStretch", discardable.}
   ## Perform a fast, low quality, stretch blit between two surfaces of the
   ## same pixel format.
   ##
   ## **Note:** This procedure uses a static buffer, and is not thread-safe.
 
+proc softStretch*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline, discardable.} =
+  ## Perform a fast, low quality, stretch blit between two surfaces of the
+  ## same pixel format.
+  ##
+  ## **Note:** This procedure uses a static buffer, and is not thread-safe.
+  softStretch(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
 
 proc upperBlitScaled*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
-  dstrect: ptr Rect): SDL_Return {.importc: "SDL_UpperBlitScaled".}
+  dstrect: ptr Rect): SDL_Return {.importc: "SDL_UpperBlitScaled", discardable.}
   ## This is the public scaled blit procedure, `blitScaled()`,
   ## and it performs rectangle validation and clipping before
   ## passing it to `lowerBlitScaled()`.
 
+proc upperBlitScaled*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline, discardable.} =
+  ## This is the public scaled blit procedure, `blitScaled()`,
+  ## and it performs rectangle validation and clipping before
+  ## passing it to `lowerBlitScaled()`.
+  upperBlitScaled(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
+
 proc lowerBlitScaled*(src: SurfacePtr; srcrect: ptr Rect; dst: SurfacePtr;
-  dstrect: ptr Rect): SDL_Return {.importc: "SDL_LowerBlitScaled".}
+  dstrect: ptr Rect): SDL_Return {.importc: "SDL_LowerBlitScaled", discardable.}
   ## This is a semi-private blit procedure and it performs low-level surface
   ## scaled blitting only.
 
+proc lowerBlitScaled*(src: SurfacePtr; srcrect: Rect; dst: SurfacePtr;
+  dstrect: Rect): SDL_Return {.inline, discardable.} =
+  lowerBlitScaled(src, srcrect.unsafeAddr, dst, dstrect.unsafeAddr)
 
 proc readU8*(src: RWopsPtr): uint8 {.importc: "SDL_ReadU8".}
 proc readLE16*(src: RWopsPtr): uint16 {.importc: "SDL_ReadLE16".}
@@ -2794,7 +2907,7 @@ proc writeLE64*(dst: RWopsPtr; value: uint64): csize_t {.importc: "SDL_WriteLE64
 proc writeBE64*(dst: RWopsPtr; value: uint64): csize_t {.importc: "SDL_WriteBE64".}
 
 proc showMessageBox*(messageboxdata: ptr MessageBoxData;
-  buttonid: var cint): cint {.importc: "SDL_ShowMessageBox".}
+  buttonid: var cint): SDL_Return {.importc: "SDL_ShowMessageBox", discardable.}
   ## Create a modal message box.
   ##
   ## `messageboxdata` The `MessageBoxData` object with title, text, etc.
@@ -2810,7 +2923,7 @@ proc showMessageBox*(messageboxdata: ptr MessageBoxData;
   ## closes the messagebox.
 
 proc showSimpleMessageBox*(flags: uint32; title, message: cstring;
-  window: WindowPtr): cint {.importc: "SDL_ShowSimpleMessageBox".}
+  window: WindowPtr): SDL_Return {.importc: "SDL_ShowSimpleMessageBox", discardable.}
   ## Create a simple modal message box.
   ##
   ## `flags` `MessageBoxFlags`
@@ -2843,7 +2956,7 @@ proc getVideoDriver*(index: cint): cstring {.importc: "SDL_GetVideoDriver".}
   ## **See also:**
   ## * `getNumVideoDrivers proc<#getNumVideoDrivers>`_
 
-proc videoInit*(driver_name: cstring): SDL_Return {.importc: "SDL_VideoInit".}
+proc videoInit*(driver_name: cstring): SDL_Return {.importc: "SDL_VideoInit", discardable.}
   ## Initialize the video subsystem, optionally specifying a video driver.
   ##
   ## `driver_name` Initialize a specific driver by name, or `nil` for the
@@ -2883,7 +2996,7 @@ proc getNumVideoDisplays*(): cint {.importc: "SDL_GetNumVideoDisplays".}
   ## * `getDisplayBounds proc<#getDisplayBounds,cint,Rect>`_
 
 proc getDisplayBounds*(displayIndex: cint; rect: var Rect): SDL_Return {.
-  importc: "SDL_GetDisplayBounds".}
+  importc: "SDL_GetDisplayBounds", discardable.}
   ## Get the desktop area represented by a display,
   ## with the primary display located at `0,0`.
   ##
@@ -2949,7 +3062,7 @@ proc getClosestDisplayMode*(displayIndex: cint; mode: ptr DisplayMode;
   ## * `getDisplayMode proc<#getDisplayMode,WindowPtr,DisplayMode>`_
 
 proc getDisplayDPI*(displayIndex: cint;
-  ddpi, hdpi, vdpi: ptr cfloat): SDL_Return {.importc: "SDL_GetDisplayDPI".}
+  ddpi, hdpi, vdpi: ptr cfloat): SDL_Return {.importc: "SDL_GetDisplayDPI", discardable.}
   ## Get the dots/pixels-per-inch for a display.
   ##
   ## **Note:** Diagonal, horizontal and vertical DPI can all be optionally
@@ -3161,21 +3274,21 @@ proc glUnloadLibrary* {.importc: "SDL_GL_UnloadLibrary".}
   ## **See also:**
   ## * `glLoadLibrary proc<#glLoadLibrary,cstring>`_
 
-proc glExtensionSupported*(extension: cstring): bool {.
+proc glExtensionSupported*(extension: cstring): Bool32 {.
   importc: "SDL_GL_ExtensionSupported".}
   ## `Return` `true` if an OpenGL extension is supported
   ## for the current context.
 
 
-proc glSetAttribute*(attr: GLattr; value: cint): cint {.
-  importc: "SDL_GL_SetAttribute".}
+proc glSetAttribute*(attr: GLattr; value: cint): SDL_Return {.
+  importc: "SDL_GL_SetAttribute", discardable.}
   ## Set an OpenGL window attribute before window creation.
   ##
   ## `Return` `0` on success, or `-1` if the attribute could not be set.
 
 
-proc glGetAttribute*(attr: GLattr; value: var cint): cint {.
-  importc: "SDL_GL_GetAttribute".}
+proc glGetAttribute*(attr: GLattr; value: var cint): SDL_Return {.
+  importc: "SDL_GL_GetAttribute", discardable.}
   ## Get the actual value for an attribute from the current context.
   ##
   ## `Return` `0` on success,
@@ -3223,8 +3336,8 @@ proc glGetDrawableSize*(window: WindowPtr; w,h: var cint) {.
   ## * `createWindow proc<#createWindow,cstring,cint,cint,cint,cint,uint32>`_
   # TODO: Add `HINT_VIDEO_HIGHDPI_DISABLED`
 
-proc glSetSwapInterval*(interval: cint): cint {.
-  importc: "SDL_GL_SetSwapInterval".}
+proc glSetSwapInterval*(interval: cint): SDL_Return {.
+  importc: "SDL_GL_SetSwapInterval", discardable.}
   ## Set the swap interval for the current OpenGL context.
   ##
   ## `interval` `0` for immediate updates, `1` for updates synchronized
@@ -3268,8 +3381,8 @@ type VulkanInstance* = VkHandle
 type VulkanSurface* = VkNonDispatchableHandle
 
 
-proc vulkanLoadLibrary*(path: cstring): cint {.
-  importc: "SDL_Vulkan_LoadLibrary".}
+proc vulkanLoadLibrary*(path: cstring): SDL_Return {.
+  importc: "SDL_Vulkan_LoadLibrary", discardable.}
   ## Dynamically load a Vulkan loader library.
   ##
   ## `path` The platform dependent Vulkan loader library name, or `nil`.
@@ -3518,7 +3631,7 @@ proc startTextInput* {.importc: "SDL_StartTextInput".}
   ## * `setTextInputRect proc<#setTextInputRect,ptr.Rect>`_
   ## * `hasScreenKeyboardSupport proc<#hasScreenKeyboardSupport>`_
 
-proc isTextInputActive*: bool {.importc: "SDL_IsTextInputActive".}
+proc isTextInputActive*: Bool32 {.importc: "SDL_IsTextInputActive".}
   ## Return whether or not Unicode text input events are enabled.
   ##
   ## **See also:**
@@ -3542,7 +3655,7 @@ proc setTextInputRect*(rect: ptr Rect) {.importc: "SDL_SetTextInputRect".}
   ## **See also:**
   ## * `startTextInput proc<#startTextInput>`_
 
-proc hasScreenKeyboardSupport*: bool {.importc: "SDL_HasScreenKeyboardSupport".}
+proc hasScreenKeyboardSupport*: Bool32 {.importc: "SDL_HasScreenKeyboardSupport".}
   ## Returns whether the platform has some screen keyboard support.
   ##
   ## `Return` `true` if some keyboard support is available else `false`.
@@ -3553,7 +3666,7 @@ proc hasScreenKeyboardSupport*: bool {.importc: "SDL_HasScreenKeyboardSupport".}
   ## **See also:**
   ## * `isScreenKeyboardShown proc<#isScreenKeyboardShown,WindowPtr>`_
 
-proc isScreenKeyboardShown*(window: WindowPtr): bool {.importc: "SDL_IsScreenKeyboardShown".}
+proc isScreenKeyboardShown*(window: WindowPtr): Bool32 {.importc: "SDL_IsScreenKeyboardShown".}
   ## Returns whether the screen keyboard is shown for given window.
   ##
   ## `window` The window for which screen keyboard should be queried.
@@ -3602,7 +3715,7 @@ proc warpMouse*(window: WindowPtr; x, y: cint)  {.
   ## **Note:** This procedure generates a mouse motion event.
 
 proc setRelativeMouseMode*(enabled: Bool32): SDL_Return  {.
-  importc: "SDL_SetRelativeMouseMode".}
+  importc: "SDL_SetRelativeMouseMode", discardable.}
   ## Set relative mouse mode.
   ##
   ## `enabled` Whether or not to enable relative mode
@@ -3620,7 +3733,7 @@ proc setRelativeMouseMode*(enabled: Bool32): SDL_Return  {.
   ## * `getRelativeMouseMode proc<#getRelativeMouseMode>`_
 
 proc captureMouse*(enabled: Bool32): SDL_Return {.
-  importc: "SDL_CaptureMouse" .}
+  importc: "SDL_CaptureMouse", discardable.}
   ## Capture the mouse, to track input outside an SDL window.
   ##
   ## `enabled` Whether or not to enable capturing
@@ -3894,7 +4007,7 @@ proc getPixelFormatName*(format: uint32): cstring {.
   ## Get the human readable name of a pixel format
 
 proc pixelFormatEnumToMasks*(format: uint32; bpp: var cint;
-  Rmask, Gmask, Bmask, Amask: var uint32): bool {.
+  Rmask, Gmask, Bmask, Amask: var uint32): Bool32 {.
   importc: "SDL_PixelFormatEnumToMasks".}
   ## Convert one of the enumerated pixel formats to a bpp and RGBA masks.
   ## Returns `true` or `false` if the conversion wasn't possible.
@@ -4025,18 +4138,18 @@ elif defined(iPhone) or defined(ios):
     callback: VoidCallback, callbackParam: pointer): cint {.
     importc: "SDL_iPhoneSetAnimationCallback".}
 
-  proc iPhoneSetEventPump*(enabled: bool) {.importc: "SDL_iPhoneSetEventPump".}
+  proc iPhoneSetEventPump*(enabled: Bool32) {.importc: "SDL_iPhoneSetEventPump".}
 
-  proc iPhoneKeyboardShow*(window:WindowPtr): cint {.
+  proc iPhoneKeyboardShow*(window: WindowPtr): cint {.
     importc: "SDL_iPhoneKeyboardShow".}
 
-  proc iPhoneKeyboardHide*(window:WindowPtr): cint {.
+  proc iPhoneKeyboardHide*(window: WindowPtr): cint {.
     importc: "SDL_iPhoneKeyboardHide".}
 
-  proc iPhoneKeyboardIsShown*(window:WindowPtr): bool {.
+  proc iPhoneKeyboardIsShown*(window: WindowPtr): Bool32 {.
     importc: "SDL_iPhoneKeyboardIsShown".}
 
-  proc iPhoneKeyboardToggle*(window:WindowPtr): cint {.
+  proc iPhoneKeyboardToggle*(window: WindowPtr): cint {.
     importc: "SDL_iPhoneKeyboardToggle".}
 
 elif defined(android):
@@ -4147,12 +4260,12 @@ const
     ##
     ## By default nearest pixel sampling is used.
 
-proc setHint*(name: cstring, value: cstring): bool {.importc: "SDL_SetHint".}
+proc setHint*(name: cstring, value: cstring): Bool32 {.importc: "SDL_SetHint".}
   ## Set a hint with normal priority.
   ##
   ## `Return` `true` if the hint was set, `false` otherwise.
 
-proc setHintWithPriority*(name: cstring, value: cstring, priority: cint): bool {.
+proc setHintWithPriority*(name: cstring, value: cstring, priority: cint): Bool32 {.
   importc: "SDL_SetHintWithPriority".}
   ## Set a hint with a specific priority.
   ##
@@ -4193,7 +4306,7 @@ proc write*(ctx: RWopsPtr; `ptr`: pointer; size, num: csize_t): csize_t {.inline
   ## `Return` the number of objects written, or `0` at error or end of file.
   ctx.write(ctx, `ptr`, size, num)
 
-proc close*(ctx: RWopsPtr): cint {.inline.} =
+proc close*(ctx: RWopsPtr): SDL_Return {.inline, discardable.} =
   ## Close and free an allocated `sdl.RWops` object.
   ##
   ## `Return` `0` if successful or `-1` on write error when flushing data.
