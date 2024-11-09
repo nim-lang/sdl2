@@ -67,7 +67,7 @@ when defined(SDL_Static):
 else:
   {.push callConv: cdecl, dynlib: LibName.}
 
-  proc gameControllerAddMappingsFromRW*(rw: RWopsPtr,
+  proc addMappingsFromRW*(rw: RWopsPtr,
     freerw: cint): cint {.importc: "SDL_GameControllerAddMappingsFromRW".}
     ##
     ## Load a set of Game Controller mappings from a seekable SDL data stream.
@@ -88,19 +88,19 @@ else:
     ##
     ## `Return` the number of mappings added or -1 on error
 
-  template gameControllerAddMappingsFromFile*(filename: untyped): untyped =
+  template addMappingsFromFile*(filename: untyped): untyped =
     gameControllerAddMappingsFromRW(rwFromFile(filename, "rb"), 1)
     ## Load a set of mappings from a file, filtered by the current `GetPlatform`
     ##
     ## Convenience macro.
 
-proc gameControllerAddMapping*(mappingString: cstring): cint {.
+proc addMapping*(mappingString: cstring): cint {.
   importc: "SDL_GameControllerAddMapping".}
   ## Add or update an existing mapping configuration.
   ##
   ## `Return` `1` if mapping is added, `0` if updated, `-1` on error.
 
-proc gameControllerMappingForGUID*(guid: JoystickGuid): cstring {.
+proc mappingForGUID*(guid: JoystickGuid): cstring {.
   importc: "SDL_GameControllerMappingForGUID".}
   ## Get a mapping string for a GUID.
   ##
@@ -118,14 +118,14 @@ proc isGameController*(joystickIndex: cint): Bool32 {.
   importc: "SDL_IsGameController".}
   ## Is the joystick on this index supported by the game controller interface?
 
-proc gameControllerNameForIndex*(joystickIndex: cint): cstring {.
+proc nameForIndex*(joystickIndex: cint): cstring {.
   importc: "SDL_GameControllerNameForIndex".}
   ## Get the implementation dependent name of a game controller.
   ##
   ## This can be called before any controllers are opened.
   ## If no name can be found, this procedure returns `nil`.
 
-proc gameControllerOpen*(joystickIndex: cint): GameControllerPtr {.
+proc open*(joystickIndex: cint): GameControllerPtr {.
   importc: "SDL_GameControllerOpen".}
   ## Open a game controller for use.
   ##
@@ -138,7 +138,7 @@ proc gameControllerOpen*(joystickIndex: cint): GameControllerPtr {.
   ##
   ## `Return` a controller identifier, or `nil` if an error occurred.
 
-proc gameControllerFromInstanceID*(joyid: JoystickID): GameControllerPtr {.
+proc fromInstanceID*(joyid: JoystickID): GameControllerPtr {.
   importc: "SDL_GameControllerFromInstanceID".}
   ## Get the GameControllerPtr associated with an instance id.
   ##
@@ -157,7 +157,7 @@ proc getJoystick*(gameController: GameControllerPtr): JoystickPtr {.
   importc: "SDL_GameControllerGetJoystick".}
   ## Get the underlying joystick object used by a controller.
 
-proc gameControllerEventState*(state: cint): cint {.
+proc eventState*(state: cint): cint {.
   importc: "SDL_GameControllerEventState".}
   ## Enable/disable controller event polling.
   ##
@@ -168,7 +168,7 @@ proc gameControllerEventState*(state: cint): cint {.
   ## The state can be one of `SDL_QUERY`, `SDL_ENABLE` or `SDL_IGNORE`.
 
 
-proc gameControllerUpdate*() {.importc: "SDL_GameControllerUpdate".}
+proc update*() {.importc: "SDL_GameControllerUpdate".}
   ## Update the current state of the open game controllers.
   ##
   ## This is called automatically by the event loop if any game controller
@@ -196,13 +196,13 @@ type
 
 converter toInt*(some: GameControllerAxis): uint8 = uint8(some)
 
-proc gameControllerGetAxisFromString*(pchString: cstring): GameControllerAxis {.
+proc getAxisFromString*(pchString: cstring): GameControllerAxis {.
   importc: "SDL_GameControllerGetAxisFromString".}
 proc getAxisFromString*(pchString: cstring): GameControllerAxis {.
   importc: "SDL_GameControllerGetAxisFromString".}
   ## Turn this string into a axis mapping.
 
-proc gameControllerGetStringForAxis*(axis: GameControllerAxis): cstring {.
+proc getStringForAxis*(axis: GameControllerAxis): cstring {.
   importc: "SDL_GameControllerGetStringForAxis".}
 proc getStringForAxis*(axis: GameControllerAxis): cstring {.
   importc: "SDL_GameControllerGetStringForAxis".}
@@ -246,14 +246,14 @@ type
 
 converter toInt*(some: GameControllerButton): uint8 = uint8(some)
 
-proc gameControllerGetButtonFromString*(
+proc getButtonFromString*(
   pchString: cstring): GameControllerButton {.
   importc: "SDL_GameControllerGetButtonFromString".}
 proc getButtonFromString*(pchString: cstring): GameControllerButton {.
   importc: "SDL_GameControllerGetButtonFromString".}
   ## Turn this string into a button mapping.
 
-proc gameControllerGetStringForButton*(
+proc getStringForButton*(
   button: GameControllerButton): cstring {.
   importc: "SDL_GameControllerGetStringForButton".}
 proc getStringForButton*(button: GameControllerButton): cstring {.
@@ -274,7 +274,7 @@ proc getButton*(
   ##
   ## The button indices start at index `0`.
 
-proc gameControllerRumble*(gamecontroller: GameControllerPtr,
+proc rumble*(gamecontroller: GameControllerPtr,
   lowFrequencyRumble, highFrequencyRUmble: uint16,
   durationMs: uint32): SDL_Return {.
   importc: "SDL_GameControllerRumble".}
@@ -286,7 +286,7 @@ proc gameControllerRumble*(gamecontroller: GameControllerPtr,
   ##
   ## `Returns` 0, or -1 if rumble isn't supported on this controller
 
-proc gameControllerRumbleTriggers*(gamecontroller: GameControllerPtr,
+proc rumbleTriggers*(gamecontroller: GameControllerPtr,
   leftRumble, rightRue: uint16, durationMs: Uint32): cint {.
   importc: "SDL_GameControllerRumbleTriggers".}
   ## Start a rumble effect in the game controller's triggers.
@@ -301,35 +301,35 @@ proc gameControllerRumbleTriggers*(gamecontroller: GameControllerPtr,
   ##
   ## `Returns` 0, or -1 if trigger rumble isn't supported on this controller
 
-proc gameControllerHasLED*(gamecontroller: GameControllerPtr): Bool32 {.
+proc hasLED*(gamecontroller: GameControllerPtr): Bool32 {.
   importc: "SDL_GameControllerHasLED".}
   ## Query whether a game controller has an LED.
   ##
   ## \returns SDL_TRUE, or SDL_FALSE if this controller does not have a
   ##          modifiable LED
 
-proc gameControllerHasRumble*(gamecontroller: GameControllerPtr): Bool32 {.
+proc hasRumble*(gamecontroller: GameControllerPtr): Bool32 {.
   importc: "SDL_GameControllerHasRumble".}
   ## Query whether a game controller has rumble support.
   ##
   ## `Returns` `True32`, or `False32` if this controller does not have rumble
   ##           support
 
-proc gameControllerHasRumbleTriggers*(gamecontroller: GameControllerPtr) {.
+proc hasRumbleTriggers*(gamecontroller: GameControllerPtr) {.
   importc: "SDL_GameControllerHasRumbleTriggers".}
   ## Query whether a game controller has rumble support on triggers.
   ##
   ## `Returns` `True32`, or `False32` if this controller does not have trigger
   ##           rumble support
 
-proc gameControllerSetLED*(gamecontroller: GameControllerPtr, red, green,
+proc setLED*(gamecontroller: GameControllerPtr, red, green,
     blue: uint8) {.
   importc: "SDL_GameControllerSetLED".}
   ## Update a game controller's LED color.
   ##
   ## `Returns` 0, or -1 if this controller does not have a modifiable LED
 
-proc gameControllerSendEffect*(gamecontroller: GameControllerPtr, data: pointer,
+proc sendEffect*(gamecontroller: GameControllerPtr, data: pointer,
     size: cint): cint {.
   importc: "SDL_GameControllerSendEffect".}
   ## Send a controller specific effect packet
@@ -337,7 +337,7 @@ proc gameControllerSendEffect*(gamecontroller: GameControllerPtr, data: pointer,
   ## `Returns` 0, or -1 if this controller or driver doesn't support effect
   ##           packets
 
-proc gameControllerGetAppleSFSymbolsNameForButton*(
+proc getAppleSFSymbolsNameForButton*(
   gamecontroller: GameControllerPtr, button: GameControllerButton): cstring {.
   importc: "SDL_GameControllerGetAppleSFSymbolsNameForButton".}
   ## Return the sfSymbolsName for a given button on a game controller on Apple
@@ -346,7 +346,7 @@ proc gameControllerGetAppleSFSymbolsNameForButton*(
   ## `Returns` the sfSymbolsName or `nil` if the name can't be found
 
 
-proc gameControllerGetAppleSFSymbolsNameForAxis*(
+proc getAppleSFSymbolsNameForAxis*(
   gamecontroller: GameControllerPtr, axis: GameControllerAxis): cstring {.
   importc: "SDL_GameControllerGetAppleSFSymbolsNameForAxis".}
   ## Return the sfSymbolsName for a given axis on a game controller on Apple
