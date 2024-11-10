@@ -67,7 +67,7 @@ when defined(SDL_Static):
 else:
   {.push callConv: cdecl, dynlib: LibName.}
 
-  proc addMappingsFromRW*(rw: RWopsPtr,
+  proc gameControllerAddMappingsFromRW*(rw: RWopsPtr,
     freerw: cint): cint {.importc: "SDL_GameControllerAddMappingsFromRW".}
     ##
     ## Load a set of Game Controller mappings from a seekable SDL data stream.
@@ -88,19 +88,19 @@ else:
     ##
     ## `Return` the number of mappings added or -1 on error
 
-  template addMappingsFromFile*(filename: untyped): untyped =
+  template gameControllerAddMappingsFromFile*(filename: untyped): untyped =
     gameControllerAddMappingsFromRW(rwFromFile(filename, "rb"), 1)
     ## Load a set of mappings from a file, filtered by the current `GetPlatform`
     ##
     ## Convenience macro.
 
-proc addMapping*(mappingString: cstring): cint {.
+proc gameControllerAddMapping*(mappingString: cstring): cint {.
   importc: "SDL_GameControllerAddMapping".}
   ## Add or update an existing mapping configuration.
   ##
   ## `Return` `1` if mapping is added, `0` if updated, `-1` on error.
 
-proc mappingForGUID*(guid: JoystickGuid): cstring {.
+proc gameControllerMappingForGUID*(guid: JoystickGuid): cstring {.
   importc: "SDL_GameControllerMappingForGUID".}
   ## Get a mapping string for a GUID.
   ##
@@ -118,14 +118,14 @@ proc isGameController*(joystickIndex: cint): Bool32 {.
   importc: "SDL_IsGameController".}
   ## Is the joystick on this index supported by the game controller interface?
 
-proc nameForIndex*(joystickIndex: cint): cstring {.
+proc gameControllerNameForIndex*(joystickIndex: cint): cstring {.
   importc: "SDL_GameControllerNameForIndex".}
   ## Get the implementation dependent name of a game controller.
   ##
   ## This can be called before any controllers are opened.
   ## If no name can be found, this procedure returns `nil`.
 
-proc open*(joystickIndex: cint): GameControllerPtr {.
+proc gameControllerOpen*(joystickIndex: cint): GameControllerPtr {.
   importc: "SDL_GameControllerOpen".}
   ## Open a game controller for use.
   ##
@@ -138,7 +138,7 @@ proc open*(joystickIndex: cint): GameControllerPtr {.
   ##
   ## `Return` a controller identifier, or `nil` if an error occurred.
 
-proc fromInstanceID*(joyid: JoystickID): GameControllerPtr {.
+proc gameControllerFromInstanceID*(joyid: JoystickID): GameControllerPtr {.
   importc: "SDL_GameControllerFromInstanceID".}
   ## Get the GameControllerPtr associated with an instance id.
   ##
@@ -157,7 +157,7 @@ proc getJoystick*(gameController: GameControllerPtr): JoystickPtr {.
   importc: "SDL_GameControllerGetJoystick".}
   ## Get the underlying joystick object used by a controller.
 
-proc eventState*(state: cint): cint {.
+proc gameControllerEventState*(state: cint): cint {.
   importc: "SDL_GameControllerEventState".}
   ## Enable/disable controller event polling.
   ##
@@ -168,7 +168,7 @@ proc eventState*(state: cint): cint {.
   ## The state can be one of `SDL_QUERY`, `SDL_ENABLE` or `SDL_IGNORE`.
 
 
-proc update*() {.importc: "SDL_GameControllerUpdate".}
+proc gameControllerUpdate*() {.importc: "SDL_GameControllerUpdate".}
   ## Update the current state of the open game controllers.
   ##
   ## This is called automatically by the event loop if any game controller
@@ -196,13 +196,13 @@ type
 
 converter toInt*(some: GameControllerAxis): uint8 = uint8(some)
 
-proc getAxisFromString*(pchString: cstring): GameControllerAxis {.
+proc gameControllerGetAxisFromString*(pchString: cstring): GameControllerAxis {.
   importc: "SDL_GameControllerGetAxisFromString".}
 proc getAxisFromString*(pchString: cstring): GameControllerAxis {.
   importc: "SDL_GameControllerGetAxisFromString".}
   ## Turn this string into a axis mapping.
 
-proc getStringForAxis*(axis: GameControllerAxis): cstring {.
+proc gameControllerGetStringForAxis*(axis: GameControllerAxis): cstring {.
   importc: "SDL_GameControllerGetStringForAxis".}
 proc getStringForAxis*(axis: GameControllerAxis): cstring {.
   importc: "SDL_GameControllerGetStringForAxis".}
@@ -246,14 +246,14 @@ type
 
 converter toInt*(some: GameControllerButton): uint8 = uint8(some)
 
-proc getButtonFromString*(
+proc gameControllerGetButtonFromString*(
   pchString: cstring): GameControllerButton {.
   importc: "SDL_GameControllerGetButtonFromString".}
 proc getButtonFromString*(pchString: cstring): GameControllerButton {.
   importc: "SDL_GameControllerGetButtonFromString".}
   ## Turn this string into a button mapping.
 
-proc getStringForButton*(
+proc gameControllerGetStringForButton*(
   button: GameControllerButton): cstring {.
   importc: "SDL_GameControllerGetStringForButton".}
 proc getStringForButton*(button: GameControllerButton): cstring {.
