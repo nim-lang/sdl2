@@ -274,7 +274,7 @@ proc getButton*(
   ##
   ## The button indices start at index `0`.
 
-proc rumble*(gamecontroller: GameControllerPtr,
+proc gameControllerRumble*(gamecontroller: GameControllerPtr,
   lowFrequencyRumble, highFrequencyRUmble: uint16,
   durationMs: uint32): SDL_Return {.
   importc: "SDL_GameControllerRumble".}
@@ -286,7 +286,7 @@ proc rumble*(gamecontroller: GameControllerPtr,
   ##
   ## `Returns` 0, or -1 if rumble isn't supported on this controller
 
-proc rumbleTriggers*(gamecontroller: GameControllerPtr,
+proc gameControllerRumbleTriggers*(gamecontroller: GameControllerPtr,
   leftRumble, rightRue: uint16, durationMs: uint32): cint {.
   importc: "SDL_GameControllerRumbleTriggers".}
   ## Start a rumble effect in the game controller's triggers.
@@ -301,35 +301,35 @@ proc rumbleTriggers*(gamecontroller: GameControllerPtr,
   ##
   ## `Returns` 0, or -1 if trigger rumble isn't supported on this controller
 
-proc hasLED*(gamecontroller: GameControllerPtr): Bool32 {.
+proc gameControllerHasLED*(gamecontroller: GameControllerPtr): Bool32 {.
   importc: "SDL_GameControllerHasLED".}
   ## Query whether a game controller has an LED.
   ##
   ## \returns SDL_TRUE, or SDL_FALSE if this controller does not have a
   ##          modifiable LED
 
-proc hasRumble*(gamecontroller: GameControllerPtr): Bool32 {.
+proc gameControllerHasRumble*(gamecontroller: GameControllerPtr): Bool32 {.
   importc: "SDL_GameControllerHasRumble".}
   ## Query whether a game controller has rumble support.
   ##
   ## `Returns` `True32`, or `False32` if this controller does not have rumble
   ##           support
 
-proc hasRumbleTriggers*(gamecontroller: GameControllerPtr) {.
+proc gameControllerHasRumbleTriggers*(gamecontroller: GameControllerPtr) {.
   importc: "SDL_GameControllerHasRumbleTriggers".}
   ## Query whether a game controller has rumble support on triggers.
   ##
   ## `Returns` `True32`, or `False32` if this controller does not have trigger
   ##           rumble support
 
-proc setLED*(gamecontroller: GameControllerPtr, red, green,
+proc gameControllerSetLED*(gamecontroller: GameControllerPtr, red, green,
     blue: uint8) {.
   importc: "SDL_GameControllerSetLED".}
   ## Update a game controller's LED color.
   ##
   ## `Returns` 0, or -1 if this controller does not have a modifiable LED
 
-proc sendEffect*(gamecontroller: GameControllerPtr, data: pointer,
+proc gameControllerSendEffect*(gamecontroller: GameControllerPtr, data: pointer,
     size: cint): cint {.
   importc: "SDL_GameControllerSendEffect".}
   ## Send a controller specific effect packet
@@ -337,7 +337,7 @@ proc sendEffect*(gamecontroller: GameControllerPtr, data: pointer,
   ## `Returns` 0, or -1 if this controller or driver doesn't support effect
   ##           packets
 
-proc getAppleSFSymbolsNameForButton*(
+proc gameControllerGetAppleSFSymbolsNameForButton*(
   gamecontroller: GameControllerPtr, button: GameControllerButton): cstring {.
   importc: "SDL_GameControllerGetAppleSFSymbolsNameForButton".}
   ## Return the sfSymbolsName for a given button on a game controller on Apple
@@ -346,7 +346,7 @@ proc getAppleSFSymbolsNameForButton*(
   ## `Returns` the sfSymbolsName or `nil` if the name can't be found
 
 
-proc getAppleSFSymbolsNameForAxis*(
+proc gameControllerGetAppleSFSymbolsNameForAxis*(
   gamecontroller: GameControllerPtr, axis: GameControllerAxis): cstring {.
   importc: "SDL_GameControllerGetAppleSFSymbolsNameForAxis".}
   ## Return the sfSymbolsName for a given axis on a game controller on Apple
