@@ -287,7 +287,7 @@ proc rumble*(gamecontroller: GameControllerPtr,
   ## `Returns` 0, or -1 if rumble isn't supported on this controller
 
 proc rumbleTriggers*(gamecontroller: GameControllerPtr,
-  leftRumble, rightRue: uint16, durationMs: Uint32): cint {.
+  leftRumble, rightRue: uint16, durationMs: uint32): cint {.
   importc: "SDL_GameControllerRumbleTriggers".}
   ## Start a rumble effect in the game controller's triggers.
   ##
