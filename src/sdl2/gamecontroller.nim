@@ -88,8 +88,8 @@ else:
     ##
     ## `Return` the number of mappings added or -1 on error
 
-  template gameControllerAddMappingsFromFile*(filename: untyped): untyped =
-    gameControllerAddMappingsFromRW(rwFromFile(filename, "rb"), 1)
+  proc gameControllerAddMappingsFromFile*(filename: cstring): cint =
+    return gameControllerAddMappingsFromRW(rwFromFile(filename, "rb"), 1)
     ## Load a set of mappings from a file, filtered by the current `GetPlatform`
     ##
     ## Convenience macro.
