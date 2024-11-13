@@ -317,8 +317,8 @@ proc getCurrentAudioDriver*(): cstring {.importc: "SDL_GetCurrentAudioDriver".}
   ## This procedure returns the name of the current audio driver, or `nil`
   ## if no driver has been initialized.
 
-proc openAudio*(desired: ptr AudioSpec; obtained: ptr AudioSpec): cint {.
-  importc: "SDL_OpenAudio".}
+proc openAudio*(desired: ptr AudioSpec; obtained: ptr AudioSpec): SDL_Return {.
+  importc: "SDL_OpenAudio", discardable.}
   ## This procedure opens the audio device with the desired parameters, and
   ## returns `0` if successful, placing the actual hardware parameters in the
   ## object pointed to by `obtained`.  If `obtained` is `nil`, the audio
@@ -457,8 +457,8 @@ proc getQueuedAudioSize*(dev: AudioDeviceID): uint32 {.
   ## **See also:**
   ## * `queueAudio proc<#queueAudio,AudioDeviceID,pointer,uint32>`_
 
-proc queueAudio*(dev: AudioDeviceID, data: pointer, len: uint32): cint {.
-  importc: "SDL_QueueAudio".}
+proc queueAudio*(dev: AudioDeviceID, data: pointer, len: uint32): SDL_Return {.
+  importc: "SDL_QueueAudio", discardable.}
   ## Queue more audio on non-callback devices.
   ##
   ## (If you are looking to retrieve queued audio from a non-callback capture
@@ -654,7 +654,7 @@ proc buildAudioCVT*(cvt: ptr AudioCVT; src_format: AudioFormat;
   ## `Return` `0` if no conversion is needed,
   ## `1` if the audio filter is set up, or `-1` on error.
 
-proc convertAudio*(cvt: ptr AudioCVT): cint {.importc: "SDL_ConvertAudio".}
+proc convertAudio*(cvt: ptr AudioCVT): SDL_Return {.importc: "SDL_ConvertAudio", discardable.}
   ## Once you have initialized the `cvt` object using `buildAudioCVT()`,
   ## created an audio buffer `cvt.buf`, and filled it with `cvt.len` bytes
   ## of audio data in the source format, this procedure will convert it
@@ -757,7 +757,7 @@ proc newAudioStream*(srcSpec, destSpec: AudioSpec): AudioStreamPtr =
 proc put*(
   stream: AudioStreamPtr,
   buf: pointer,
-  len: cint): cint {.importc: "SDL_AudioStreamPut".}
+  len: cint): SDL_Return {.importc: "SDL_AudioStreamPut", discardable.}
   ## (Available since SDL 2.0.7)
   ## Add data to be converted/resampled to the stream.Returns 0 on success, or -1 on error.
   ##
@@ -798,7 +798,7 @@ proc available*(stream: AudioStreamPtr): cint {.
   ## **See also:**
   ## * `AudioStreamPtr type<#AudioStreamPtr>`_
 
-proc flush*(stream: AudioStreamPtr): cint {.importc: "SDL_AudioStreamFlush".}
+proc flush*(stream: AudioStreamPtr): SDL_Return {.importc: "SDL_AudioStreamFlush", discardable.}
   ## (Available since SDL 2.0.7)
   ## Tell the stream that you're done sending data, and anything being buffered
   ## should be converted/resampled and made available immediately. Returns 0

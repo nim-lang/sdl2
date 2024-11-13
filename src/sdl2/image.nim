@@ -114,13 +114,13 @@ proc loadXCF*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXCF_RW".}
 proc loadXPM_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXPM_RW".}
 proc loadXPM*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXPM_RW".}
 proc loadXV_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXV_RW".}
-proc loadXV(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXV_RW".}
+proc loadXV*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadXV_RW".}
 proc loadWEBP_RW*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadWEBP_RW".}
 proc loadWEBP*(src: RWopsPtr): SurfacePtr {.importc: "IMG_LoadWEBP_RW".}
 proc readXPMFromArray*(xpm: cstringArray): SurfacePtr {.importc: "IMG_ReadXPMFromArray".}
 proc readXPM*(xpm: cstringArray): SurfacePtr {.importc: "IMG_ReadXPMFromArray".}
 # Saving functions
-proc savePNG*(surface: SurfacePtr, file: cstring): cint {.importc: "IMG_SavePNG".}
+proc savePNG*(surface: SurfacePtr, file: cstring): SDL_Return {.importc: "IMG_SavePNG", discardable.}
 
 when not defined(SDL_Static):
   {.pop.}
