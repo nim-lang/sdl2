@@ -26,14 +26,29 @@ sudo port install libsdl2 libsdl2_gfx libsdl2_image libsdl2_mixer libsdl2_ttf li
 Install SDL2 development libraries using your distribution's packaging tool of choice.
 
 ## Windows
+
 Using SDL2 with [mingw-w64](https://mingw-w64.org) environment
+
+### With mingw-w64-builds
+
  * Install [mingw-w64-builds](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe). Check that `x86_64-w64-mingw32\bin\` from the installed mingw toolchain is in your `PATH` variable.
  * Download [SDL2 Development Libraries](https://www.libsdl.org/download-2.0.php) for MinGW
  * Extract contents of the downloaded archive to your mingw-w64 folder (for example, `SDL2-2.0.12\x86_64-w64-mingw32\` to `mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\x86_64-w64-mingw32\`)
- ### Static linking SDL2
+
+#### Static linking SDL2
+
  Pass the following options to nim on compilation:
  `--dynlibOverride:libSDL2 --passL:"-static -lmingw32 -lSDL2main -lSDL2 -mwindows  -Wl,--no-undefined -Wl,--dynamicbase -Wl,--nxcompat -Wl,--high-entropy-va -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lsetupapi -lversion -luuid"`
  Options for the linker (`--passL:`) except `-static` are taken from `sdl2-config.cmake` which is included in SDL2 Development Libraries.
+
+### With MSYS2
+
+* Install [Msys2](https://www.msys2.org/) and add `yourpath\msys2\ucrt64\bin` to `PATH`.
+* Open **MSYS2 UCRT64** and run the following commands:
+    * `pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-sdl2`
+    * `pacman -S mingw-w64-ucrt-x86_64-SDL2_ttf`
+
+
 
 # Installation
 Add `requires "sdl2"` to your `.nimble` file.
