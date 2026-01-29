@@ -2444,6 +2444,10 @@ proc createRGBSurfaceFrom*(pixels: pointer; width, height, depth, pitch: cint;
   Rmask, Gmask, Bmask, Amask: uint32): SurfacePtr {.
   importc: "SDL_CreateRGBSurfaceFrom".}
 
+proc createRGBSurfaceWithFormatFrom*(pixels: pointer; width, height, depth, pitch: cint;
+  format: uint32): SurfacePtr {.
+  importc: "SDL_CreateRGBSurfaceWithFormatFrom".}
+
 proc freeSurface*(surface: SurfacePtr) {.importc: "SDL_FreeSurface".}
 
 proc setSurfacePalette*(surface: SurfacePtr; palette: ptr Palette): cint {.
