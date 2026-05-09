@@ -189,7 +189,7 @@ type
 # Open the mixer with a certain audio format
 
 proc openAudio*(frequency: cint; format: uint16; channels: cint;
-                chunksize: cint): cint {.importc: "Mix_OpenAudio".}
+                chunksize: cint): SDL_Return {.importc: "Mix_OpenAudio", discardable.}
   ## Open the mixer with a certain audio format.
   ##
   ## `frequency` Output sampling frequency in samples per second (Hz).
@@ -1084,8 +1084,8 @@ template playChannel*(channel, chunk, loops: untyped): untyped =
   ## On any errors, `-1` is returned.
   playChannelTimed(channel, chunk, loops, - 1)
 
-proc playMusic*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
-proc play*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
+proc playMusic*(music: ptr Music; loops: cint): SDL_Return {.importc: "Mix_PlayMusic", discardable.}
+proc play*(music: ptr Music; loops: cint): SDL_Return {.importc: "Mix_PlayMusic", discardable.}
   ## Play the loaded `music` `loops` times through from start to finish.
   ##
   ## `music` Pointer to `mixer.Music` to play.
@@ -1099,10 +1099,10 @@ proc play*(music: ptr Music; loops: cint): cint {.importc: "Mix_PlayMusic".}
   ##
   ## `Return` `0` on success, or `-1` on errors.
 
-proc fadeInMusic*(music: ptr Music; loops: cint; ms: cint): cint {.
-  importc: "Mix_FadeInMusic".}
-proc fadeIn*(music: ptr Music; loops: cint; ms: cint): cint {.
-  importc: "Mix_FadeInMusic".}
+proc fadeInMusic*(music: ptr Music; loops: cint; ms: cint): SDL_Return {.
+  importc: "Mix_FadeInMusic", discardable.}
+proc fadeIn*(music: ptr Music; loops: cint; ms: cint): SDL_Return {.
+  importc: "Mix_FadeInMusic", discardable.}
   ## Fade in over `ms` milliseconds of time, the loaded `music`,
   ## playing it `loops` times through from start to finish.
   ##
@@ -1123,9 +1123,9 @@ proc fadeIn*(music: ptr Music; loops: cint; ms: cint): cint {.
   ## `Return` `0` on success, or `-1` on errors.
 
 proc fadeInMusicPos*(music: ptr Music; loops: cint; ms: cint;
-                     position: cdouble): cint {.importc: "Mix_FadeInMusicPos".}
+                     position: cdouble): SDL_Return {.importc: "Mix_FadeInMusicPos", discardable.}
 proc fadeInPos*(music: ptr Music; loops: cint; ms: cint;
-                     position: cdouble): cint {.importc: "Mix_FadeInMusicPos".}
+                     position: cdouble): SDL_Return {.importc: "Mix_FadeInMusicPos", discardable.}
   ## Fade in over `ms` milliseconds of time, the loaded `music`,
   ## playing it `loops` times through from start to finish.
   ##
@@ -1444,8 +1444,8 @@ proc pausedMusic*(): cint {.importc: "Mix_PausedMusic".}
   ##
   ## `Return` `0` if music is not paused. `1` if it is paused.
 
-proc setMusicPosition*(position: cdouble): cint {.
-  importc: "Mix_SetMusicPosition".}
+proc setMusicPosition*(position: cdouble): SDL_Return {.
+  importc: "Mix_SetMusicPosition", discardable.}
   ## Set the current `position` in the music stream.
   ##
   ## `position` Posistion to play from.
@@ -1493,7 +1493,7 @@ proc playingMusic*(): cint {.importc: "Mix_PlayingMusic".}
   ##
   ## `Return` `0` if the music is not playing, or `1` if it is playing.
 
-proc setMusicCMD*(command: cstring): cint {.importc: "Mix_SetMusicCMD".}
+proc setMusicCMD*(command: cstring): SDL_Return {.importc: "Mix_SetMusicCMD", discardable.}
   ## Stop music and set external music playback command.
   ##
   ## `command` System command to play the music.

@@ -130,7 +130,7 @@ proc fontFaceIsFixedWidth*(font: FontPtr): cint {.importc: "TTF_FontFaceIsFixedW
 proc fontFaceFamilyName*(font: FontPtr): cstring {.importc: "TTF_FontFaceFamilyName".}
 proc fontFaceStyleName*(font: FontPtr): cstring {.importc: "TTF_FontFaceStyleName".}
 
-proc glyphIsProvided*(font: FontPtr; ch: uint16): cint {.
+proc glyphIsProvided*(font: FontPtr; ch: uint16): Bool32 {.
   importc: "TTF_GlyphIsProvided".}
   ## Check wether a glyph is provided by the font or not.
 
@@ -269,7 +269,7 @@ proc close*(font: FontPtr) {.importc: "TTF_CloseFont".}
 proc ttfQuit*() {.importc: "TTF_Quit".}
   ## De-initialize the TTF engine.
 
-proc ttfWasInit*(): bool {.importc: "TTF_WasInit".}
+proc ttfWasInit*(): Bool32 {.importc: "TTF_WasInit".}
   ## Check if the TTF engine is initialized.
 
 proc getFontKerningSize*(font: FontPtr; prev_index, indx: cint): cint {.

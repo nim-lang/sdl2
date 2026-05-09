@@ -658,7 +658,7 @@ proc gfxPrimitivesSetFontRotation*(rotation: uint32) {.importc.}
   ## `rotation`  Number of 90deg clockwise steps to rotate.
 
 proc characterColor*(renderer: RendererPtr; x: int16; y: int16;
-                     c: char; color: uint32): SDL_Return {.importc.}
+                     c: char; color: uint32): SDL_Return {.importc, discardable.}
   ## Draw a character of the currently set font.
   ##
   ## `x`, `y`  Coordinates of the upper left corner of the character.
@@ -666,7 +666,7 @@ proc characterColor*(renderer: RendererPtr; x: int16; y: int16;
   ## `c` The character to draw.
 
 proc characterRGBA*(renderer: RendererPtr; x: int16; y: int16; c: char;
-                    r, g, b, a: uint8): SDL_Return {.importc.}
+                    r, g, b, a: uint8): SDL_Return {.importc, discardable.}
   ## Draw a character of the currently set font.
   ##
   ## `x`, `y`  Coordinates of the upper left corner of the character.
@@ -674,7 +674,7 @@ proc characterRGBA*(renderer: RendererPtr; x: int16; y: int16; c: char;
   ## `c` The character to draw.
 
 proc stringColor*(renderer: RendererPtr; x: int16; y: int16;
-                  s: cstring; color: uint32): SDL_Return {.importc.}
+                  s: cstring; color: uint32): SDL_Return {.importc, discardable.}
   ## Draw a string in the currently set font.
   ##
   ## `x`, `y`  Coordinates of the upper left corner of the string.

@@ -160,8 +160,8 @@ proc quit*() {.importc: "SDLNet_Quit".}
 # IPv4 hostname resolution API
 #*********************************************************************
 
-proc resolveHost*(address: ptr IpAddress; host: cstring; port: uint16): cint {.
-  importc: "SDLNet_ResolveHost".}
+proc resolveHost*(address: ptr IpAddress; host: cstring; port: uint16): SDL_Return {.
+  importc: "SDLNet_ResolveHost", discardable.}
   ## Resolve a host name and port to an IP address in network form.
   ##
   ## `address` points to the `IPaddress` that will be filled in.
